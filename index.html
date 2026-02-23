@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>That Was The Year</title>
-  <link rel='stylesheet' href='css/style.css' type='text/css'/>
   <style>
     :root {
       --bg: #121212;
@@ -26,167 +25,46 @@
       overflow-x: hidden;
     }
 
-    /* Screens */
-    .screen {
-      display: none;
-      width: 95%;
-      max-width: 900px;
-      text-align: center;
-      padding: 20px;
-    }
+    .screen { display: none; width: 95%; max-width: 900px; text-align: center; padding: 20px; }
+    .active { display: block; }
 
-    .active {
-      display: block;
-    }
+    input { background: #282828; border: 1px solid #333; color: white; padding: 12px; margin: 5px; border-radius: 4px; width: 200px; }
+    button { background: var(--accent); border: none; padding: 12px 24px; border-radius: 25px; font-weight: bold; cursor: pointer; transition: 0.1s; margin: 5px; }
+    button:hover { transform: scale(1.05); }
 
-    /* Inputs */
-    input {
-      background: #282828;
-      border: 1px solid #333;
-      color: white;
-      padding: 12px;
-      margin: 5px;
-      border-radius: 4px;
-      width: 200px;
-    }
+    #controls { position: sticky; top: 0; background: var(--bg); padding: 15px; width: 100%; z-index: 10; border-bottom: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-    button {
-      background: var(--accent);
-      border: none;
-      padding: 12px 24px;
-      border-radius: 25px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
+    .player-area { background: var(--card-bg); margin: 20px 0; padding: 20px; border-radius: 12px; border: 2px solid transparent; }
+    .active-player-border { border-color: var(--accent); }
 
-    button:hover {
-      transform: scale(1.05);
-      opacity: 0.9;
-    }
+    .timeline { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; }
 
-    /* Board Layout */
-    .player-area {
-      background: var(--card-bg);
-      margin: 20px 0;
-      padding: 20px;
-      border-radius: 12px;
-      border: 2px solid transparent;
-      transition: 0.3s;
-    }
+    .drop-zone { width: 40px; height: 130px; border: 2px dashed #444; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .drop-zone.waiting-for-input { border-color: var(--accent); background: rgba(29, 185, 84, 0.1); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+    .drop-zone:hover { background: var(--accent); }
 
-    .active-player-border {
-      border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(29, 185, 84, 0.2);
-    }
+    .card { width: 100px; min-height: 140px; background: #282828; border-radius: 8px; padding: 8px; box-sizing: border-box; flex-shrink: 0; font-size: 0.65rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .card img { width: 100%; aspect-ratio: 1; border-radius: 4px; object-fit: cover; margin-bottom: 5px; }
+    .card .year { font-weight: bold; font-size: 1rem; color: var(--accent); margin: 4px 0; }
+    .card.mystery { background: linear-gradient(135deg, #1DB954 0%, #121212 100%); display: flex; align-items: center; justify-content: center; font-size: 2rem; border: 2px solid var(--accent); }
 
-    .timeline {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      min-height: 120px;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-    }
-
-    /* Drop Zones */
-    .drop-zone {
-      width: 15px;
-      height: 100px;
-      border: 2px dashed #333;
-      border-radius: 6px;
-      transition: all 0.3s;
-    }
-
-    .drop-zone.hover {
-      background: rgba(29, 185, 84, 0.3);
-      width: 90px;
-      border-color: var(--accent);
-    }
-
-    /* Cards */
-    .card {
-      width: 90px;
-      /* Change height to min-height or increase the value */
-      min-height: 130px;
-      background: #282828;
-      border-radius: 8px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start; /* Changed from space-between for better flow */
-      font-size: 0.65rem;
-      padding: 8px;
-      box-sizing: border-box;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      /* overflow: hidden; */ /* Optional: remove if you want to see spills during dev */
-    }
-
-    .card img {
-      width: 100%;
-      aspect-ratio: 1;
-      border-radius: 4px;
-      object-fit: cover;
-      margin-bottom: 5px;
-    }
-
-    .card.mystery {
-      background: linear-gradient(135deg, #1DB954 0%, #121212 100%);
-      cursor: grab;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.2rem;
-      border: 2px solid var(--accent);
-    }
-
-    .card .year {
-      font-weight: bold;
-      font-size: 1rem;
-      color: var(--accent);
-    }
-
-    #controls {
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      padding: 15px;
-      width: 100%;
-      z-index: 10;
-      border-bottom: 1px solid #333;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    #audio-status {
-      color: var(--accent);
-      font-weight: bold;
-      margin-bottom: 10px;
-      height: 20px;
-    }
-
-    canvas#confetti {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 999;
-    }
+    #preview-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; flex-direction: column; align-items: center; justify-content: center; }
+    .overlay-content { background: var(--card-bg); padding: 30px; border-radius: 20px; text-align: center; border: 2px solid var(--accent); }
   </style>
 </head>
 <body>
 
-<canvas id="confetti"></canvas>
-
 <div id="splash" class="screen active">
   <h1 style="color: var(--accent); font-size: 3rem;">That Was The Year</h1>
-  <p>A musical timeline game</p>
   <div id="player-inputs">
-    <input type="text" placeholder="Player 1" class="p-name">
-    <input type="text" placeholder="Player 2" class="p-name">
+    <label for="player1">
+      <input type="text" placeholder="Player 1" class="p-name">
+    </label>
+
+    <label for="player2">
+      <input type="text" placeholder="Player 2" class="p-name">
+    </label>
     <div id="extra-players"></div>
   </div>
   <button onclick="addPlayerField()">+ Add Player</button>
@@ -195,17 +73,26 @@
 
 <div id="game" class="screen">
   <div id="controls">
-    <h2 id="turn-indicator">Player's Turn</h2>
-    <div id="audio-status">Ready</div>
-    <button id="draw-btn" onclick="drawSong()">Draw Song & Play</button>
-    <div id="current-drag-item" style="margin-top:15px; display: flex; justify-content: center; height: 140px;"></div>
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto;">
+      <h2 id="turn-indicator">Player's Turn</h2>
+      <div id="round-display" style="font-weight: bold; color: var(--accent);">Round 1</div>
+    </div>
+    <div id="audio-status" style="margin-top: 5px;"></div>
+    <div id="action-bar">
+        <button id="draw-btn" onclick="drawSong()">Draw Song</button>
+        <button id="replay-btn" style="display:none; background:#444;" onclick="playPreview()">Replay ♫</button>
+    </div>
+    <div id="current-drag-item" style="margin-top:15px; display: flex; justify-content: center; height: 150px;"></div>
   </div>
   <div id="players-container"></div>
 </div>
 
-<div id="win" class="screen">
-  <h1 id="winner-text" style="font-size: 4rem; color: var(--accent);">Winner!</h1>
-  <button onclick="location.reload()">New Game</button>
+<div id="preview-overlay">
+  <div class="overlay-content">
+    <h1 style="color: var(--accent);">CORRECT!</h1>
+    <div id="reveal-card"></div>
+    <button onclick="closeOverlay()">Continue</button>
+  </div>
 </div>
 
 <script src="js/songs.js"></script>
