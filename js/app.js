@@ -21,7 +21,7 @@ async function startGame() {
     .map(i => i.value.trim())
     .filter(n => n !== "");
 
-  if (names.length < 2) return alert("Min 2 players required.");
+  // if (names.length < 2) return alert("Min 2 players required.");
 
   players = names.map(name => ({name, timeline: []}));
 
