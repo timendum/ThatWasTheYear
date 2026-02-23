@@ -1,4 +1,4 @@
-ThatWasTheYear is a browser-based multiplayer game where players take turns drawing mystery song cards and placing them into their personal timelines in chronological order.
+ThatWasTheYear (hosted at https://ellorans.github.io/ThatWasTheYear/) is a browser-based multiplayer game where players take turns drawing mystery song cards and placing them into their personal timelines in chronological order.
 Each round, a song is drawn from a deck (sourced from a local songLibrary).
 The game attempts to fetch artwork and a 30s preview from the iTunes Search API; if a preview is available, the player hears a 10-second preview and must drop the mystery card into the correct chronological position on their timeline.
 The first player to build a timeline of 10 songs wins.
