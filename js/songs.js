@@ -1,1031 +1,540 @@
-const songLibrary = [{a: "The Beatles", t: "I Want to Hold Your Hand", y: 1963}, {
-  a: "Aretha Franklin", t: "Respect", y: 1967
-}, {a: "Led Zeppelin", t: "Stairway to Heaven", y: 1971}, {
-  a: "ABBA", t: "Dancing Queen", y: 1976
-}, {a: "Michael Jackson", t: "Billie Jean", y: 1982}, {a: "Prince", t: "Purple Rain", y: 1984}, {
-  a: "Nirvana", t: "Smells Like Teen Spirit", y: 1991
-}, {a: "Coolio", t: "Gangsta's Paradise", y: 1995}, {
-  a: "Britney Spears", t: "...Baby One More Time", y: 1998
-}, {a: "Outkast", t: "Hey Ya!", y: 2003}, {a: "Amy Winehouse", t: "Rehab", y: 2006}, {
-  a: "Adele", t: "Rolling in the Deep", y: 2010
-}, {a: "Daft Punk", t: "Get Lucky", y: 2013}, {a: "The Weeknd", t: "Blinding Lights", y: 2019}, {
-  a: "Taylor Swift", t: "Anti-Hero", y: 2022
-}, {a: "Billie Eilish", t: "Birds of a Feather", y: 2024}, {a: "Queen", t: "Bohemian Rhapsody", y: 1975}, {
-  a: "Eminem", t: "Lose Yourself", y: 2002
-}, {a: "Beyoncé", t: "Crazy In Love", y: 2003}, {a: "Fleetwood Mac", t: "Dreams", y: 1977}, {
-  a: "Madonna", t: "Like a Virgin", y: 1984
-}, {a: "The Killers", t: "Mr. Brightside", y: 2004}, {
-  a: "Olivia Rodrigo", t: "Drivers License", y: 2021
-}, {a: "Bee Gees", t: "Stayin' Alive", y: 1977}, {a: "Bon Jovi", t: "Livin' on a Prayer", y: 1986}, {
-  a: "Oasis", t: "Wonderwall", y: 1995
-}, {a: "Whitney Houston", t: "I Wanna Dance with Somebody", y: 1987}, {
-  a: "Radiohead", t: "Creep", y: 1992
-}, {a: "Rolling Stones", t: "Paint It Black", y: 1966}, {a: "Dua Lipa", t: "Levitating", y: 2020}, {
-  a: "Eagles", t: "Hotel California", y: 1976
-}, {a: "Guns N Roses", t: "Sweet Child O Mine", y: 1987}, {
-  a: "Sinead O Connor", t: "Nothing Compares 2 U", y: 1990
-}, {a: "Spice Girls", t: "Wannabe", y: 1996}, {a: "White Stripes", t: "Seven Nation Army", y: 2003}, {
-  a: "Rihanna", t: "Umbrella", y: 2007
-}, {a: "Lady Gaga", t: "Poker Face", y: 2008}, {
-  a: "Gotye", t: "Somebody That I Used To Know", y: 2011
-}, {a: "Pharrell Williams", t: "Happy", y: 2013}, {a: "Harry Styles", t: "As It Was", y: 2022}, {
-  a: "Ed Sheeran", t: "Shape of You", y: 2017
-}, {
-  a: "Harry Styles", t: "As It Was", y: 2022
-}, {
-  a: "Townes Van Zandt", t: "Pancho and Lefty", y: 1972
-}, {
-  a: "Lizzo", t: "Truth Hurts", y: 2017
-}, {
-  a: "Harry Nilsson", t: "Without You", y: 1971
-}, {
-  a: "Carly Simon", t: "Youre So Vain", y: 1972
-}, {
-  a: "Cyndi Lauper", t: "Time After Time", y: 1983
-}, {
-  a: "The Pixies", t: "Where Is My Mind?", y: 1988
-}, {
-  a: "Kanye West", t: "Stronger", y: 2007
-}, {
-  a: "Miles Davis", t: "So What", y: 1959
-}, {
-  a: "Bad Bunny", t: "Titi Me Pregunto", y: 2022
-}, {
-  a: "Lil Nas X", t: "Old Town Road", y: 2019
-}, {
-  a: "The Breeders", t: "Cannonball", y: 1993
-}, {
-  a: "The Weeknd", t: "House of Balloons", y: 2011
-}, {
-  a: "Solange", t: "Cranes in the Sky", y: 2016
-}, {
-  a: "Lil Wayne", t: "A Milli", y: 2009
-}, {
-  a: "Azealia Banks", t: "212", y: 2011
-}, {
-  a: "Weezer", t: "Buddy Holly", y: 1994
-}, {
-  a: "The Four Tops", t: "I Cant Help Myself (Sugar Pie", y: 1965
-}, {
-  a: "Lady Gaga", t: "Bad Romance", y: 2009
-}, {
-  a: "Robert Johnson", t: "Cross Road Blues", y: 1937
-}, {
-  a: "Biz Markie", t: "Just a Friend", y: 1989
-}, {
-  a: "Santana", t: "Oye Como Va", y: 1970
-}, {
-  a: "Juvenile feat. Lil Wayne and Mannie Fresh", t: "Back That Azz Up", y: 1998
-}, {
-  a: "The Go-Gos", t: "Our Lips Are Sealed", y: 1981
-}, {
-  a: "Kris Kristofferson", t: "Sunday Mornin Comin Down", y: 1970
-}, {
-  a: "Janet Jackson", t: "Rhythm Nation", y: 1989
-}, {
-  a: "Curtis Mayfield", t: "Move On Up", y: 1970
-}, {
-  a: "Tammy Wynette", t: "Stand by Your Man", y: 1968
-}, {
-  a: "Peter Gabriel", t: "Solsbury Hill", y: 1977
-}, {
-  a: "The Animals", t: "The House of the Rising Sun", y: 1964
-}, {
-  a: "Gladys Knight and the Pips", t: "Midnight Train to Georgia", y: 1973
-}, {
-  a: "Dixie Chicks", t: "Goodbye Earl", y: 2000
-}, {
-  a: "Mazzy Star", t: "Fade Into You", y: 1993
-}, {
-  a: "Nirvana", t: "Come as You Are", y: 1991
-}, {
-  a: "Luther Vandross", t: "Never Too Much", y: 1981
-}, {
-  a: "Daft Punk feat. Pharrell Williams", t: "Get Lucky", y: 2013
-}, {
-  a: "Joni Mitchell", t: "Help Me", y: 1974
-}, {
-  a: "John Lee Hooker", t: "Boom Boom", y: 1962
-}, {
-  a: "Van Morrison", t: "Into the Mystic", y: 1970
-}, {
-  a: "Roy Orbison", t: "Crying", y: 1962
-}, {
-  a: "Steel Pulse", t: "Ku Klux Klan", y: 1978
-}, {
-  a: "Sade", t: "No Ordinary Love", y: 1992
-}, {
-  a: "Beck", t: "Loser", y: 1993
-}, {
-  a: "Bon Jovi", t: "Livin on a Prayer", y: 1986
-}, {
-  a: "Lana Del Rey", t: "A&W", y: 2023
-}, {
-  a: "Jefferson Airplane", t: "White Rabbit", y: 1967
-}, {
-  a: "Sister Nancy", t: "Bam Bam", y: 1982
-}, {
-  a: "Missy Elliot", t: "The Rain (Supa Dupa Fly)", y: 1997
-}, {
-  a: "Toto", t: "Africa", y: 1982
-}, {
-  a: "Migos feat. Lil Uzi Vert", t: "Bad and Boujee", y: 2016
-}, {
-  a: "Daddy Yankee", t: "Gasolina", y: 2010
-}, {
-  a: "Lauryn Hill", t: "Doo Wop (That Thing)", y: 1998
-}, {
-  a: "Radiohead", t: "Idioteque", y: 2000
-}, {
-  a: "Elton John", t: "Tiny Dancer", y: 1972
-}, {
-  a: "M.I.A.", t: "Paper Planes", y: 2008
-}, {
-  a: "Kendrick Lamar", t: "Alright", y: 2015
-}, {
-  a: "Michael Jackson", t: "Billie Jean", y: 1982
-}, {
-  a: "The Temptations", t: "My Girl", y: 1965
-}, {
-  a: "Bob Marley and the Wailers", t: "Redemption Song", y: 1980
-}, {
-  a: "Joy Division", t: "Love Will Tear Us Apart", y: 1980
-}, {
-  a: "The Jimi Hendrix Experience", t: "All Along the Watchtower", y: 1968
-}, {
-  a: "Outkast", t: "B.O.B.", y: 2000
-}, {
-  a: "Otis Redding", t: "(Sittin On) the Dock of the Bay", y: 1967
-}, {
-  a: "Prince and the Revolution", t: "When Doves Cry", y: 1984
-}, {
-  a: "The White Stripes", t: "Seven Nation Army", y: 2003
-}, {
-  a: "Little Richard", t: "Tutti-Frutti", y: 1955
-}, {
-  a: "James Brown", t: "Papas Got a Brand New Bag", y: 1966
-}, {
-  a: "Chuck Berry", t: "Johnny B. Goode", y: 1958
-}, {
-  a: "Notorious B.I.G.", t: "Juicy", y: 1994
-}, {
-  a: "The Rolling Stones", t: "(I Cant Get No) Satisfaction", y: 1965
-}, {
-  a: "Lorde", t: "Royals", y: 2011
-}, {
-  a: "Dr. Dre feat. Snoop Doggy Dogg", t: "Nuthin but a G Thang", y: 1992
-}, {
-  a: "Talking Heads", t: "Once in a Lifetime", y: 1980
-}, {
-  a: "Bruce Springsteen", t: "Born to Run", y: 1975
-}, {
-  a: "Joni Mitchell", t: "A Case of You", y: 1971
-}, {
-  a: "Kanye West feat. Pusha T", t: "Runaway", y: 2010
-}, {
-  a: "The Beatles", t: "A Day in the Life", y: 1967
-}, {
-  a: "David Bowie", t: "Heroes", y: 1977
-}, {
-  a: "The Ronettes", t: "Be My Baby", y: 1963
-}, {
-  a: "Billie Holiday", t: "Strange Fruit", y: 1939
-}, {
-  a: "Robyn", t: "Dancing on My Own", y: 2010
-}, {
-  a: "John Lennon", t: "Imagine", y: 1971
-}, {
-  a: "Prince and the Revolution", t: "Purple Rain", y: 1984
-}, {
-  a: "Queen", t: "Bohemian Rhapsody", y: 1975
-}, {
-  a: "Beyoncé feat. Jay-Z", t: "Crazy in Love", y: 2003
-}, {
-  a: "The Beatles", t: "I Want to Hold Your Hand", y: 1963
-}, {
-  a: "The Kinks", t: "Waterloo Sunset", y: 1967
-}, {
-  a: "The Rolling Stones", t: "Gimme Shelter", y: 1969
-}, {
-  a: "Stevie Wonder", t: "Superstition", y: 1972
-}, {
-  a: "The Beach Boys", t: "God Only Knows", y: 1966
-}, {
-  a: "Outkast", t: "Hey Ya!", y: 2003
-}, {
-  a: "Fleetwood Mac", t: "Dreams", y: 1977
-}, {
-  a: "Missy Elliott", t: "Get Ur Freak On", y: 2001
-}, {
-  a: "The Beatles", t: "Strawberry Fields Forever", y: 1967
-}, {
-  a: "Marvin Gaye", t: "Whats Going On", y: 1971
-}, {
-  a: "Nirvana", t: "Smells Like Teen Spirit", y: 1991
-}, {
-  a: "Bob Dylan", t: "Like a Rolling Stone", y: 1965
-}, {
-  a: "Sam Cooke", t: "A Change Is Gonna Come", y: 1964
-}, {
-  a: "Public Enemy", t: "Fight the Power", y: 1989
-}, {
-  a: "Aretha Franklin", t: "Respect", y: 1967
-}, {
-  a: "Bob Dylan", t: "Blowin in the Wind", y: 1963
-}, {
-  a: "Bee Gees", t: "Stayin Alive", y: 1977
-}, {
-  a: "The Beatles", t: "In My Life", y: 1965
-}, {
-  a: "Patti Smith", t: "Gloria", y: 1975
-}, {
-  a: "Jay-Z", t: "99 Problems", y: 2003
-}, {
-  a: "Oasis", t: "Wonderwall", y: 1995
-}, {
-  a: "Whitney Houston", t: "I Will Always Love You", y: 1992
-}, {
-  a: "Kelly Clarkson", t: "Since U Been Gone", y: 2004
-}, {
-  a: "Little Richard", t: "Good Golly", y: 1958
-}, {
-  a: "UGK feat. Outkast", t: "Intl Players Anthem (I Choose You)", y: 2007
-}, {
-  a: "Aretha Franklin", t: "(You Make Me Feel Like) A Natural Woman", y: 1967
-}, {
-  a: "The Beatles", t: "Hey Jude", y: 1968
-}, {
-  a: "Guns N’ Roses", t: "Sweet Child O Mine", y: 1987
-}, {
-  a: "LCD Soundsystem", t: "All My Friends", y: 2007
-}, {
-  a: "The Rolling Stones", t: "Tumbling Dice", y: 1972
-}, {
-  a: "Prince", t: "Kiss", y: 1986
-}, {
-  a: "Al Green", t: "Lets Stay Together", y: 1971
-}, {
-  a: "Bob Dylan", t: "Desolation Row", y: 1965
-}, {
-  a: "Adele", t: "Rolling in the Deep", y: 2011
-}, {
-  a: "The Velvet Underground", t: "Im Waiting for the Man", y: 1967
-}, {
-  a: "Ray Charles", t: "Whatd I Say", y: 1957
-}, {
-  a: "Amy Winehouse", t: "Back to Black", y: 2006
-}, {
-  a: "The Four Tops", t: "Reach Out (Ill Be There)", y: 1967
-}, {
-  a: "The Modern Lovers", t: "Roadrunner", y: 1976
-}, {
-  a: "Johnny Cash", t: "I Walk the Line", y: 1956
-}, {
-  a: "Pulp", t: "Common People", y: 1996
-}, {
-  a: "Leonard Cohen", t: "Hallelujah", y: 1984
-}, {
-  a: "Beyoncé", t: "Formation", y: 2016
-}, {
-  a: "The Beatles", t: "Yesterday", y: 1965
-}, {
-  a: "Tracy Chapman", t: "Fast Car", y: 1988
-}, {
-  a: "Elvis Presley", t: "Suspicious Minds", y: 1969
-}, {
-  a: "Taylor Swift", t: "All Too Well", y: 2012
-}, {
-  a: "Chic", t: "Good Times", y: 1979
-}, {
-  a: "Bob Dylan", t: "Tangled Up in Blue", y: 1975
-}, {
-  a: "Simon and Garfunkel", t: "Bridge Over Troubled Water", y: 1970
-}, {
-  a: "Earth", t: "Wind", y: 1978
-}, {
-  a: "Ramones", t: "Blitzkrieg Bop", y: 1976
-}, {
-  a: "Dolly Parton", t: "Jolene", y: 1974
-}, {
-  a: "U2", t: "One", y: 1992
-}, {
-  a: "Led Zeppelin", t: "Stairway to Heaven", y: 1971
-}, {
-  a: "Kate Bush", t: "Running Up That Hill", y: 1985
-}, {
-  a: "Grandmaster Flash and the Furious Five", t: "The Message", y: 1982
-}, {
-  a: "The Band", t: "The Weight", y: 1968
-}, {
-  a: "Sly and the Family Stone", t: "Family Affair", y: 1971
-}, {
-  a: "Missy Elliott", t: "Work It", y: 2000
-}, {
-  a: "Madonna", t: "Like a Prayer", y: 1989
-}, {
-  a: "Smokey Robinson and the Miracles", t: "The Tracks of My Tears", y: 1965
-}, {
-  a: "The Beach Boys", t: "Good Vibrations", y: 1966
-}, {
-  a: "Donna Summer", t: "I Feel Love", y: 1977
-}, {
-  a: "Dionne Warwick", t: "Walk on By", y: 1964
-}, {
-  a: "Green Day", t: "Basket Case", y: 1994
-}, {
-  a: "Elton John", t: "Rocket Man", y: 1972
-}, {
-  a: "Led Zeppelin", t: "Kashmir", y: 1975
-}, {
-  a: "Fats Domino", t: "Blueberry Hill", y: 1956
-}, {
-  a: "James Taylor", t: "Fire and Rain", y: 1970
-}, {
-  a: "Outkast", t: "Ms. Jackson", y: 2000
-}, {
-  a: "The Rolling Stones", t: "Jumpin Jack Flash", y: 1968
-}, {
-  a: "The Clash", t: "London Calling", y: 1980
-}, {
-  a: "George Jones", t: "He Stopped Loving Her Today", y: 1980
-}, {
-  a: "Rod Stewart", t: "Maggie May", y: 1971
-}, {
-  a: "Bob Marley and the Wailers", t: "No Woman No Cry", y: 1975
-}, {
-  a: "Madonna", t: "Vogue", y: 1990
-}, {
-  a: "Blondie", t: "Heart of Glass", y: 1979
-}, {
-  a: "Ariana Grande", t: "Thank U", y: 2019
-}, {
-  a: "Otis Redding", t: "Try a Little Tenderness", y: 1966
-}, {
-  a: "The Beatles", t: "She Loves You", y: 1964
-}, {
-  a: "Tina Turner", t: "Whats Love Got to Do With It", y: 1984
-}, {
-  a: "Journey", t: "Dont Stop Believin", y: 1981
-}, {
-  a: "Eric B. and Rakim", t: "Paid in Full", y: 1987
-}, {
-  a: "Ben E. King", t: "Stand by Me", y: 1961
-}, {
-  a: "Martha and the Vandellas", t: "Dancing in the Street", y: 1964
-}, {
-  a: "Drake feat. Majid Jordan", t: "Hold On", y: 2013
-}, {
-  a: "Led Zeppelin", t: "Whole Lotta Love", y: 1969
-}, {
-  a: "TLC", t: "Waterfalls", y: 1995
-}, {
-  a: "George Michael", t: "Freedom! 90", y: 1990
-}, {
-  a: "Sex Pistols", t: "Anarchy in the U.K.", y: 1977
-}, {
-  a: "Buddy Holly", t: "Thatll Be the Day", y: 1957
-}, {
-  a: "Talking Heads", t: "This Must Be the Place (Naive Melody)", y: 1983
-}, {
-  a: "The Impressions", t: "People Get Ready", y: 1965
-}, {
-  a: "The Beatles", t: "Let It Be", y: 1970
-}, {
-  a: "X-Ray Spex", t: "Oh Bondage! Up Yours!", y: 1977
-}, {
-  a: "Marvin Gaye", t: "I Heard It Through the Grapevine", y: 1968
-}, {
-  a: "Radiohead", t: "Creep", y: 1992
-}, {
-  a: "Aretha Franklin", t: "I Say a Little Prayer", y: 1968
-}, {
-  a: "Rob Base and DJ E-Z Rock", t: "It Takes Two", y: 1988
-}, {
-  a: "Etta James", t: "At Last", y: 1960
-}, {
-  a: "Britney Spears", t: "Toxic", y: 2003
-}, {
-  a: "Stevie Wonder", t: "Higher Ground", y: 1973
-}, {
-  a: "R.E.M.", t: "Losing My Religion", y: 1991
-}, {
-  a: "Bruce Springsteen", t: "Thunder Road", y: 1975
-}, {
-  a: "The Beatles", t: "Something", y: 1969
-}, {
-  a: "Sly and the Family Stone", t: "Everyday People", y: 1968
-}, {
-  a: "The Cure", t: "Just Like Heaven", y: 1987
-}, {
-  a: "Wu-Tang Clan", t: "C.R.E.A.M.", y: 1994
-}, {
-  a: "The Rolling Stones", t: "Sympathy for the Devil", y: 1968
-}, {
-  a: "David Bowie", t: "Life on Mars?", y: 1971
-}, {
-  a: "The Jackson 5", t: "I Want You Back", y: 1969
-}, {
-  a: "Alanis Morissette", t: "You Oughta Know", y: 1995
-}, {
-  a: "Chuck Berry", t: "Maybelline", y: 1955
-}, {
-  a: "Yeah Yeah Yeahs", t: "Maps", y: 2003
-}, {
-  a: "David Bowie", t: "Changes", y: 1971
-}, {
-  a: "Aerosmith", t: "Dream On", y: 1973
-}, {
-  a: "Marvin Gaye", t: "Sexual Healing", y: 1982
-}, {
-  a: "Ann Peebles", t: "I Cant Stand the Rain", y: 1973
-}, {
-  a: "James Brown", t: "Get Up (I Feel Like Being A) Sex Machine", y: 1970
-}, {
-  a: "Patsy Cline", t: "Crazy", y: 1961
-}, {
-  a: "PJ Harvey", t: "Rid of Me", y: 1993
-}, {
-  a: "The Rolling Stones", t: "Wild Horses", y: 1971
-}, {
-  a: "Geto Boys", t: "Mind Playing Tricks on Me", y: 1991
-}, {
-  a: "Bobbie Gentry", t: "Ode to Billie Joe", y: 1967
-}, {
-  a: "N.W.A", t: "Fuck tha Police", y: 1988
-}, {
-  a: "David Bowie", t: "Space Oddity", y: 1969
-}, {
-  a: "The Jimi Hendrix Experience", t: "Little Wing", y: 1967
-}, {
-  a: "Bob Dylan", t: "Subterranean Homesick Blues", y: 1965
-}, {
-  a: "The Staple Singers", t: "Ill Take You There", y: 1972
-}, {
-  a: "Michael Jackson", t: "Beat It", y: 1982
-}, {
-  a: "Sinéad O’Connor", t: "Nothing Compares 2 U", y: 1990
-}, {
-  a: "Stevie Wonder", t: "You Are the Sunshine of My Life", y: 1972
-}, {
-  a: "Simon and Garfunkel", t: "The Sounds of Silence", y: 1964
-}, {
-  a: "The Byrds", t: "Eight Miles High", y: 1966
-}, {
-  a: "Lou Reed", t: "Walk on the Wild Side", y: 1972
-}, {
-  a: "Pink Floyd", t: "Comfortably Numb", y: 1979
-}, {
-  a: "Billie Eilish", t: "Bad Guy", y: 2019
-}, {
-  a: "Van Halen", t: "Jump", y: 1983
-}, {
-  a: "The Kinks", t: "You Really Got Me", y: 1964
-}, {
-  a: "The Flamingos", t: "I Only Have Eyes for You", y: 1959
-}, {
-  a: "R.E.M.", t: "Radio Free Europe", y: 1983
-}, {
-  a: "Television", t: "Marquee Moon", y: 1977
-}, {
-  a: "Nina Simone", t: "Mississippi Goddam", y: 1964
-}, {
-  a: "Louis Armstrong", t: "What a Wonderful World", y: 1967
-}, {
-  a: "The Five Satins", t: "In the Still of the Night", y: 1956
-}, {
-  a: "Tom Petty and the Heartbreakers", t: "American Girl", y: 1976
-}, {
-  a: "Dusty Springfield", t: "Son of a Preacher Man", y: 1968
-}, {
-  a: "Eminem", t: "Lose Yourself", y: 2002
-}, {
-  a: "Mott the Hoople", t: "All the Young Dudes", y: 1972
-}, {
-  a: "Hank Williams", t: "Im So Lonesome I Could Cry", y: 1949
-}, {
-  a: "Bob Dylan", t: "Mr. Tambourine Man", y: 1965
-}, {
-  a: "Fleetwood Mac", t: "Landslide", y: 1975
-}, {
-  a: "Nick Drake", t: "Pink Moon", y: 1972
-}, {
-  a: "Madonna", t: "Into the Groove", y: 1985
-}, {
-  a: "R.E.M.", t: "Nightswimming", y: 1992
-}, {
-  a: "The Who", t: "Baba ORiley", y: 1971
-}, {
-  a: "The Meters", t: "Cissy Strut", y: 1969
-}, {
-  a: "Sonic Youth", t: "Teenage Riot", y: 1988
-}, {
-  a: "The Kingsmen", t: "Louie Louie", y: 1963
-}, {
-  a: "The Strokes", t: "Last Nite", y: 2001
-}, {
-  a: "Howlin’ Wolf", t: "Spoonful", y: 1960
-}, {
-  a: "Rick James", t: "Super Freak", y: 1981
-}, {
-  a: "Creedence Clearwater Revival", t: "Proud Mary", y: 1969
-}, {
-  a: "The Shirelles", t: "Will You Love Me Tomorrow", y: 1960
-}, {
-  a: "The Jimi Hendrix Experience", t: "Purple Haze", y: 1967
-}, {
-  a: "Joan Jett", t: "Bad Reputation", y: 1980
-}, {
-  a: "N.W.A", t: "Straight Outta Compton", y: 1988
-}, {
-  a: "Joni Mitchell", t: "River", y: 1971
-}, {
-  a: "Faces", t: "Ooh La La", y: 1973
-}, {
-  a: "Beastie Boys", t: "Sabotage", y: 1994
-}, {
-  a: "Pavement", t: "Summer Babe (Winter Version)", y: 1992
-}, {
-  a: "The Beatles", t: "Eleanor Rigby", y: 1966
-}, {
-  a: "Jerry Lee Lewis", t: "Great Balls of Fire", y: 1957
-}, {
-  a: "Digital Underground", t: "The Humpty Dance", y: 1990
-}, {
-  a: "Backstreet Boys", t: "I Want It That Way", y: 1999
-}, {
-  a: "Big Star", t: "September Gurls", y: 1974
-}, {
-  a: "Aaliyah", t: "Are You That Somebody?", y: 1998
-}, {
-  a: "Hank Williams", t: "Your Cheatin Heart", y: 1953
-}, {
-  a: "Bill Withers", t: "Lean on Me", y: 1972
-}, {
-  a: "New Order", t: "Blue Monday", y: 1983
-}, {
-  a: "The Supremes", t: "You Keep Me Hangin On", y: 1966
-}, {
-  a: "Deee-Lite", t: "Groove Is in the Heart", y: 1990
-}, {
-  a: "The Who", t: "My Generation", y: 1965
-}, {
-  a: "Whitney Houston", t: "I Wanna Dance With Somebody (Who Loves Me)", y: 1987
-}, {
-  a: "The Byrds", t: "Mr. Tambourine Man", y: 1965
-}, {
-  a: "Woody Guthrie", t: "This Land Is Your Land", y: 1951
-}, {
-  a: "Beyoncé", t: "Single Ladies (Put a Ring On It)", y: 2008
-}, {
-  a: "Creedence Clearwater Revival", t: "Fortunate Son", y: 1969
-}, {
-  a: "The Smiths", t: "There Is a Light That Never Goes Out", y: 1986
-}, {
-  a: "Joni Mitchell", t: "Both Sides Now", y: 1969
-}, {
-  a: "Derek and the Dominos", t: "Layla", y: 1970
-}, {
-  a: "Eminem feat. Dido", t: "Stan", y: 2000
-}, {
-  a: "Crosby", t: "Stills", y: 1969
-}, {
-  a: "Ike and Tina Turner", t: "River Deep", y: 1966
-}, {
-  a: "New Order", t: "Bizarre Love Triangle", y: 1986
-}, {
-  a: "Tom Petty", t: "Free Fallin”", y: 1989
-}, {
-  a: "Wilson Pickett", t: "In the Midnight Hour", y: 1965
-}, {
-  a: "Stevie Nicks", t: "Edge of Seventeen", y: 1981
-}, {
-  a: "Elvis Presley", t: "Jailhouse Rock", y: 1957
-}, {
-  a: "Mobb Deep", t: "Shook Ones", y: 1995
-}, {
-  a: "Steely Dan", t: "Deacon Blues", y: 1977
-}, {
-  a: "The Rolling Stones", t: "Paint It", y: 1966
-}, {
-  a: "Boston", t: "More Than a Feeling", y: 1976
-}, {
-  a: "U2", t: "With or Without You", y: 1987
-}, {
-  a: "Funkadelic", t: "One Nation Under a Groove", y: 1978
-}, {
-  a: "Don Henley", t: "Boys of Summer", y: 1984
-}, {
-  a: "Hole", t: "Doll Parts", y: 1994
-}, {
-  a: "Rage Against the Machine", t: "Killing in the Name", y: 1992
-}, {
-  a: "Glen Campbell", t: "Wichita Lineman", y: 1968
-}, {
-  a: "Britney Spears", t: "…Baby One More Time", y: 1998
-}, {
-  a: "David Bowie", t: "Young Americans", y: 1975
-}, {
-  a: "Stevie Wonder", t: "Signed", y: 1970
-}, {
-  a: "Elton John", t: "Your Song", y: 1970
-}, {
-  a: "Johnny Cash", t: "Ring of Fire", y: 1963
-}, {
-  a: "The B-52’s", t: "Rock Lobster", y: 1978
-}, {
-  a: "Screamin’ Jay Hawkins", t: "I Put a Spell on You", y: 1956
-}, {
-  a: "Bruce Springsteen", t: "Jungleland", y: 1975
-}, {
-  a: "Beach Boys", t: "Wouldnt It Be Nice", y: 1966
-}, {
-  a: "Bikini Kill", t: "Rebel Girl", y: 1993
-}, {
-  a: "The Who", t: "Wont Get Fooled Again", y: 1971
-}, {
-  a: "The Velvet Underground", t: "Sweet Jane", y: 1970
-}, {
-  a: "Alice Cooper", t: "Schools Out", y: 1972
-}, {
-  a: "A Tribe Called Quest", t: "Can I Kick It?", y: 1990
-}, {
-  a: "Phil Collins", t: "In the Air Tonight", y: 1981
-}, {
-  a: "Usher feat. Lil Jon and Ludacris", t: "Yeah!", y: 2004
-}, {
-  a: "Bruce Springsteen", t: "Atlantic City", y: 1982
-}, {
-  a: "The Funky 4 + 1", t: "Thats the Joint", y: 1980
-}, {
-  a: "AC/DC", t: "You Shook Me All Night Long", y: 1980
-}, {
-  a: "ABBA", t: "Dancing Queen", y: 1976
-}, {
-  a: "Destiny’s Child", t: "Say My Name", y: 1999
-}, {
-  a: "Leonard Cohen", t: "Suzanne", y: 1967
-}, {
-  a: "Ray Charles", t: "Georgia on My Mind", y: 1960
-}, {
-  a: "INXS", t: "Never Tear Us Apart", y: 1988
-}, {
-  a: "Clipse", t: "Grindin”", y: 2002
-}, {
-  a: "BTS", t: "Spring Day", y: 2017
-}, {
-  a: "Radiohead", t: "Karma Police", y: 1997
-}, {
-  a: "Toots and the Maytals", t: "Pressure Drop", y: 1973
-}, {
-  a: "Bo Diddley", t: "Bo Diddley", y: 1955
-}, {
-  a: "Buzzcocks", t: "Ever Fallen in Love (With Someone You Shouldntve)", y: 1978
-}, {
-  a: "Randy Newman", t: "Sail Away", y: 1972
-}, {
-  a: "Al Green", t: "Love and Happiness", y: 1972
-}, {
-  a: "Roberta Flack", t: "Killing Me Softly With His Song", y: 1973
-}, {
-  a: "Thin Lizzy", t: "The Boys Are Back in Town", y: 1976
-}, {
-  a: "Procol Harum", t: "A Whiter Shade of Pale", y: 1967
-}, {
-  a: "Nine Inch Nails", t: "Closer", y: 1994
-}, {
-  a: "The Righteous Brothers", t: "Unchained Melody", y: 1965
-}, {
-  a: "The Isley Brothers", t: "Shout (Parts 1 and 2)", y: 1959
-}, {
-  a: "SZA", t: "Kill Bill", y: 2022
-}, {
-  a: "Augustus Pablo", t: "King Tubby Meets the Rockers Uptown", y: 1974
-}, {
-  a: "The Replacements", t: "Left of the Dial", y: 1985
-}, {
-  a: "Marvin Gaye", t: "Lets Get It On", y: 1973
-}, {
-  a: "Dolly Parton", t: "Coat of Many Colors", y: 1971
-}, {
-  a: "Paul Simon", t: "American Tune", y: 1973
-}, {
-  a: "Curtis Mayfield", t: "Pusherman", y: 1972
-}, {
-  a: "The Wailers", t: "Get Up", y: 1973
-}, {
-  a: "Neil Young", t: "Heart of Gold", y: 1972
-}, {
-  a: "Gil-Scott Heron", t: "The Revolution Will Not Be Televised", y: 1971
-}, {
-  a: "Martha Reeves and the Vandellas", t: "Heat Wave", y: 1963
-}, {
-  a: "Metallica", t: "Master of Puppets", y: 1986
-}, {
-  a: "Loretta Lynn", t: "Coal Miners Daughter", y: 1970
-}, {
-  a: "The Supremes", t: "Stop! In the Name of Love", y: 1965
-}, {
-  a: "Willie Nelson", t: "Blue Eyes Crying in the Rain", y: 1975
-}, {
-  a: "Parliament", t: "Flash Light", y: 1977
-}, {
-  a: "Gloria Gaynor", t: "I Will Survive", y: 1978
-}, {
-  a: "The Zombies", t: "Time of the Season", y: 1968
-}, {
-  a: "Roxy Music", t: "Virginia Plain", y: 1972
-}, {
-  a: "Elvis Presley", t: "Heartbreak Hotel", y: 1958
-}, {
-  a: "BTS", t: "Dynamite", y: 2020
-}, {
-  a: "Carole King", t: "Its Too Late", y: 1971
-}, {
-  a: "Black Sabbath", t: "Iron Man", y: 1971
-}, {
-  a: "The Doobie Brothers", t: "What a Fool Believes", y: 1979
-}, {
-  a: "Chuck Berry", t: "Promised Land", y: 1964
-}, {
-  a: "The Monkees", t: "Im a Believer", y: 1966
-}, {
-  a: "The Clash", t: "(White Man) in Hammersmith Palais", y: 1978
-}, {
-  a: "Prince", t: "1999", y: 1982
-}, {
-  a: "Black Sabbath", t: "Paranoid", y: 1970
-}, {
-  a: "Cher", t: "Believe", y: 1998
-}, {
-  a: "Hall and Oates", t: "Shes Gone", y: 1973
-}, {
-  a: "Marshall Jefferson", t: "Move Your Body (The House Music Anthem)", y: 1986
-}, {
-  a: "The Grateful Dead", t: "Ripple", y: 1970
-}, {
-  a: "The Temptations", t: "Papa Was a Rollin Stone", y: 1972
-}, {
-  a: "Rihanna feat. Jay-Z", t: "Umbrella", y: 2007
-}, {
-  a: "The Marvelettes", t: "Please Mr. Postman", y: 1961
-}, {
-  a: "The Notorious B.I.G.", t: "Big Poppa", y: 1994
-}, {
-  a: "Bad Bunny", t: "Safaera", y: 2020
-}, {
-  a: "Red Hot Chili Peppers", t: "Under the Bridge", y: 1991
-}, {
-  a: "Mary J. Blige", t: "Real Love", y: 1992
-}, {
-  a: "Rilo Kiley", t: "Portions for Foxes", y: 2004
-}, {
-  a: "Iggy Pop", t: "Lust for Life", y: 1977
-}, {
-  a: "Billy Joel", t: "Scenes From an Italian Restaurant", y: 1977
-}, {
-  a: "Everly Brothers", t: "All I Have to Do Is Dream", y: 1958
-}, {
-  a: "Neil Young", t: "After the Gold Rush", y: 1970
-}, {
-  a: "U2", t: "I Still Havent Found What Im Looking For", y: 1987
-}, {
-  a: "2Pac", t: "California Love", y: 1995
-}, {
-  a: "Taylor Swift", t: "Blank Space", y: 2014
-}, {
-  a: "Tears for Fears", t: "Everybody Wants to Rule the World", y: 1985
-}, {
-  a: "Big Mama Thornton", t: "Hound Dog", y: 1953
-}, {
-  a: "Bob Dylan", t: "Visions of Johanna", y: 1966
-}, {
-  a: "The Shangri-Las", t: "Leader of the Pack", y: 1964
-}, {
-  a: "John Coltrane", t: "Pt. 1-Acknowledgement", y: 1965
-}, {
-  a: "The Stooges", t: "I Wanna Be Your Dog", y: 1969
-}, {
-  a: "Smokey Robinson and the Miracles", t: "The Tears of a Clown", y: 1967
-}, {
-  a: "Isaac Hayes", t: "Walk on By", y: 1969
-}, {
-  a: "The Eagles", t: "Hotel California", y: 1976
-}, {
-  a: "The Doors", t: "Light My Fire", y: 1967
-}, {
-  a: "Bill Withers", t: "Aint No Sunshine", y: 1971
-}, {
-  a: "Liz Phair", t: "Divorce Song", y: 1993
-}, {
-  a: "Gnarls Barkley", t: "Crazy", y: 2006
-}, {
-  a: "Aretha Franklin", t: "Chain of Fools", y: 1967
-}, {
-  a: "The Police", t: "Every Breath You Take", y: 1983
-}, {
-  a: "Kraftwerk", t: "Trans-Europe Express", y: 1977
-}, {
-  a: "TLC", t: "No Scrubs", y: 1999
-}, {
-  a: "Pink Floyd", t: "Wish You Were Here", y: 1975
-}, {
-  a: "Bob Seger", t: "Night Moves", y: 1976
-}, {
-  a: "Taylor Swift", t: "Cruel Summer", y: 2019
-}, {
-  a: "Sylvester", t: "You Make Me Feel (Mighty Real)", y: 1978
-}, {
-  a: "Duran Duran", t: "Hungry Like the Wolf", y: 1982
-}, {
-  a: "Public Enemy", t: "Bring the Noise", y: 1987
-}, {
-  a: "Elvis Costello", t: "Alison", y: 1977
-}, {
-  a: "Afrika Bambaataa and the Soulsonic Force", t: "Planet Rock", y: 1982
-}, {
-  a: "Jeff Buckley", t: "Grace", y: 1994
-}, {
-  a: "James Brown", t: "Say It Loud (Im Black and Im Proud)", y: 1968
-}, {
-  a: "Coldplay", t: "Fix You", y: 2005
-}, {
-  a: "Eric Church", t: "Springsteen", y: 2011
-}, {
-  a: "Metallica", t: "Enter Sandman", y: 1991
-}, {
-  a: "Pretenders", t: "Brass in Pocket", y: 1979
-}, {
-  a: "DMX", t: "Party Up (Up in Here)", y: 1999
-}, {
-  a: "New York Dolls", t: "Personality Crisis", y: 1973
-}, {
-  a: "The Kinks", t: "Lola", y: 1970
-}, {
-  a: "Diana Ross", t: "Im Coming Out", y: 1980
-}, {
-  a: "Cardi B", t: "J Balvin", y: 2018
-}, {
-  a: "Childish Gambino", t: "Redbone", y: 2016
-}, {
-  a: "Fiona Apple", t: "Paper Bag", y: 1999
-}, {
-  a: "The Slits", t: "Typical Girls", y: 1979
-}, {
-  a: "Fountains of Wayne", t: "Radiation Vibe", y: 1996
-}, {
-  a: "D’Angelo", t: "Untitled (How Does It Feel)", y: 2000
-}, {
-  a: "The Killers", t: "Mr. Brightside", y: 2003
-}, {
-  a: "Olivia Rodrigo", t: "Drivers License", y: 2021
-}, {
-  a: "Merle Haggard", t: "Mama Tried", y: 1968
-}, {
-  a: "The Drifters", t: "Up on the Roof", y: 1964
-}, {
-  a: "William DeVaughn", t: "Be Thankful for What You Got", y: 1974
-}, {
-  a: "Drake", t: "Hotline Bling", y: 2015
-}, {
-  a: "Bonnie Raitt", t: "I Cant Make You Love Me", y: 1991
-}, {
-  a: "Elton John", t: "Bennie and the Jets", y: 1973
-}, {
-  a: "Buddy Holly", t: "Peggy Sue", y: 1958
-}, {
-  a: "The Cars", t: "Just What I Needed", y: 1978
-}, {
-  a: "Soundgarden", t: "Black Hole Sun", y: 1994
-}, {
-  a: "Frank Ocean", t: "Thinkin Bout You", y: 2012
-}, {
-  a: "The Crystals", t: "Da Doo Ron Ron", y: 1963
-}, {
-  a: "Sex Pistols", t: "God Save the Queen", y: 1977
-}, {
-  a: "The Grateful Dead", t: "Box of Rain", y: 1970
-}, {
-  a: "Bob Marley and the Wailers", t: "Could You Be Loved", y: 1980
-}, {
-  a: "Kacey Musgraves", t: "Merry Go Round", y: 2013
-}, {
-  a: "Jimmy Cliff", t: "The Harder They Come", y: 1972
-}, {
-  a: "Prince", t: "Little Red Corvette", y: 1982
-}, {
-  a: "Fugees", t: "Killing Me Softly With His Song", y: 1996
-}, {
-  a: "Patti Smith", t: "Because the Night", y: 1978
-}, {
-  a: "Cheap Trick", t: "Surrender", y: 1978
-}, {
-  a: "Thelma Houston", t: "Dont Leave Me This Way", y: 1976
-}, {
-  a: "Michael Jackson", t: "Rock With You", y: 1979
-}, {
-  a: "Eurythmics", t: "Sweet Dreams (Are Made of This)", y: 1983
-}, {
-  a: "Ice Cube", t: "It Was a Good Day", y: 1992
-}, {
-  a: "Jorge Ben", t: "Ponta de Lança Africano (Umbabarauma)", y: 1976
-}, {
-  a: "John Prine", t: "Angel From Montgomery", y: 1971
-}, {
-  a: "Neil Young", t: "Powderfinger", y: 1979
-}, {
-  a: "Blue Öyster Cult", t: "(Dont Fear) The Reaper", y: 1976
-}, {
-  a: "Erykah Badu", t: "Tyrone", y: 1997
-}, {
-  a: "The Beatles", t: "Help!", y: 1965
-}, {
-  a: "Bruce Springsteen", t: "Rosalita (Come Out Tonight)", y: 1973
-}, {
-  a: "T. Rex", t: "Cosmic Dancer", y: 1971
-}, {
-  a: "50 Cent", t: "In Da Club", y: 2003
-}, {
-  a: "Fall Out Boy", t: "Sugar", y: 2005
-}, {
-  a: "Motörhead", t: "Ace of Spades", y: 1980
-}, {
-  a: "Miranda Lambert", t: "The House That Built Me", y: 2010
-}, {
-  a: "Alicia Keys", t: "If I Aint Got You", y: 2003
-}, {
-  a: "Celia Cruz", t: "La Vida Es un Carnaval", y: 1998
-}, {
-  a: "Megan Thee Stallion feat. Beyoncé", t: "Savage (Remix)", y: 2020
-}, {
-  a: "Lucinda Williams", t: "Passionate Kisses", y: 1988
-}, {
-  a: "Carly Rae Jepsen", t: "Call Me Maybe", y: 2012
-}, {
-  a: "Rush", t: "Limelight", y: 1981
-}, {
-  a: "Ramones", t: "Sheena Is a Punk Rocker", y: 1977
-}, {
-  a: "Pet Shop Boys", t: "West End Girls", y: 1984
-}, {
-  a: "Eddie Cochran", t: "Summertime Blues", y: 1958
-}, {
-  a: "Prince", t: "Adore", y: 1987
-}, {
-  a: "Pete Rock and CL Smooth", t: "They Reminisce Over You", y: 1992
-}, {
-  a: "Queen and David Bowie", t: "Under Pressure", y: 1981
-}, {
-  a: "Beyonce", t: "Break My Soul", y: 2022
-}, {
-  a: "Sugar Hill Gang", t: "Rappers Delight", y: 1979
-}, {
-  a: "Nicki Minaj", t: "Super Bass", y: 2010
-}, {
-  a: "Muddy Waters", t: "Mannish Boy", y: 1955
-}, {
-  a: "Blackstreet feat. Dr. Dre and Queen Pen", t: "No Diggity", y: 1996
-}, {
-  a: "Fiona Apple", t: "Criminal", y: 1996
-}, {
-  a: "Craig Mack feat. Notorious B.I.G.", t: "LL Cool J", y: 1994
-}, {
-  a: "The Smiths", t: "How Soon Is Now?", y: 1984
-}, {
-  a: "The Mamas and the Papas", t: "California Dreamin", y: 1965
-}, {
-  a: "Mariah Carey", t: "Fantasy", y: 1995
-}, {
-  a: "Booker T. and the MGs", t: "Green Onions", y: 1962
-}, {
-  a: "Mark Ronson feat. Bruno Mars", t: "Uptown Funk", y: 2015
-}, {
-  a: "Pearl Jam", t: "Alive", y: 1991
-}, {
-  a: "Depeche Mode", t: "Enjoy the Silence", y: 1990
-}, {
-  a: "Wizkid feat. Tems", t: "Essence", y: 2021
-}, {
-  a: "Them", t: "Gloria", y: 1965
-}, {
-  a: "Neneh Cherry", t: "Buffalo Stance", y: 1988
-}, {
-  a: "Wilco", t: "Heavy Metal Drummer", y: 2002
-}, {
-  a: "Allman Brothers Band", t: "Whipping Post", y: 1969
-}, {
-  a: "Foo Fighters", t: "Everlong", y: 1997
-}, {
-  a: "Cat Stevens/Yusuf", t: "Father and Son", y: 1970
-}, {
-  a: "Lynyrd Skynyrd", t: "Free Bird", y: 1973
-}, {
-  a: "Run-DMC", t: "Sucker MCs", y: 1984
-}, {
-  a: "Selena", t: "Amor Prohibido", y: 1994
-}, {
-  a: "Kiss", t: "Rock and Roll All Nite", y: 1975
-}, {
-  a: "Rufus and Chaka Khan", t: "Aint Nobody", y: 1983
-}, {
-  a: "Eslabon Armado and Peso Pluma", t: "Ella Baila Sola", y: 2023
-}, {a: "Fleetwood Mac", t: "Go Your Own Way", y: 1977}];
+const songLibrary = [
+  {t: "(Dont Fear) The Reaper", a: "Blue Öyster Cult", y: 1976},
+{t: "(I Cant Get No) Satisfaction", a: "The Rolling Stones", y: 1965},
+{t: "(Sittin On) the Dock of the Bay", a: "Otis Redding", y: 1967},
+{t: "(White Man) in Hammersmith Palais", a: "The Clash", y: 1978},
+{t: "(You Make Me Feel Like) A Natural Woman", a: "Aretha Franklin", y: 1967},
+{t: "...Baby One More Time", a: "Britney Spears", y: 1998},
+{t: "1999", a: "Prince", y: 1982},
+{t: "212", a: "Azealia Banks", y: 2011},
+{t: "99 Problems", a: "Jay-Z", y: 2003},
+{t: "A Case of You", a: "Joni Mitchell", y: 1971},
+{t: "A Change Is Gonna Come", a: "Sam Cooke", y: 1964},
+{t: "A Day in the Life", a: "The Beatles", y: 1967},
+{t: "A Milli", a: "Lil Wayne", y: 2009},
+{t: "A Whiter Shade of Pale", a: "Procol Harum", y: 1967},
+{t: "A&W", a: "Lana Del Rey", y: 2023},
+{t: "Ace of Spades", a: "Motörhead", y: 1980},
+{t: "Adore", a: "Prince", y: 1987},
+{t: "Africa", a: "Toto", y: 1982},
+{t: "After the Gold Rush", a: "Neil Young", y: 1970},
+{t: "Aint No Sunshine", a: "Bill Withers", y: 1971},
+{t: "Aint Nobody", a: "Rufus and Chaka Khan", y: 1983},
+{t: "Alison", a: "Elvis Costello", y: 1977},
+{t: "Alive", a: "Pearl Jam", y: 1991},
+{t: "All Along the Watchtower", a: "The Jimi Hendrix Experience", y: 1968},
+{t: "All I Have to Do Is Dream", a: "Everly Brothers", y: 1958},
+{t: "All My Friends", a: "LCD Soundsystem", y: 2007},
+{t: "All Too Well", a: "Taylor Swift", y: 2012},
+{t: "All the Young Dudes", a: "Mott the Hoople", y: 1972},
+{t: "Alright", a: "Kendrick Lamar", y: 2015},
+{t: "American Girl", a: "Tom Petty and the Heartbreakers", y: 1976},
+{t: "American Tune", a: "Paul Simon", y: 1973},
+{t: "Amor Prohibido", a: "Selena", y: 1994},
+{t: "Anarchy in the U.K.", a: "Sex Pistols", y: 1977},
+{t: "Angel From Montgomery", a: "John Prine", y: 1971},
+{t: "Anti-Hero", a: "Taylor Swift", y: 2022},
+{t: "Are You That Somebody?", a: "Aaliyah", y: 1998},
+{t: "As It Was", a: "Harry Styles", y: 2022},
+{t: "At Last", a: "Etta James", y: 1960},
+{t: "Atlantic City", a: "Bruce Springsteen", y: 1982},
+{t: "B.O.B.", a: "Outkast", y: 2000},
+{t: "Baba ORiley", a: "The Who", y: 1971},
+{t: "Back That Azz Up", a: "Juvenile feat. Lil Wayne and Mannie Fresh", y: 1998},
+{t: "Back to Black", a: "Amy Winehouse", y: 2006},
+{t: "Bad Guy", a: "Billie Eilish", y: 2019},
+{t: "Bad Reputation", a: "Joan Jett", y: 1980},
+{t: "Bad Romance", a: "Lady Gaga", y: 2009},
+{t: "Bad and Boujee", a: "Migos feat. Lil Uzi Vert", y: 2016},
+{t: "Bam Bam", a: "Sister Nancy", y: 1982},
+{t: "Basket Case", a: "Green Day", y: 1994},
+{t: "Be My Baby", a: "The Ronettes", y: 1963},
+{t: "Be Thankful for What You Got", a: "William DeVaughn", y: 1974},
+{t: "Beat It", a: "Michael Jackson", y: 1982},
+{t: "Because the Night", a: "Patti Smith", y: 1978},
+{t: "Believe", a: "Cher", y: 1998},
+{t: "Bennie and the Jets", a: "Elton John", y: 1973},
+{t: "Big Poppa", a: "The Notorious B.I.G.", y: 1994},
+{t: "Billie Jean", a: "Michael Jackson", y: 1982},
+{t: "Billie Jean", a: "Michael Jackson", y: 1982},
+{t: "Birds of a Feather", a: "Billie Eilish", y: 2024},
+{t: "Bizarre Love Triangle", a: "New Order", y: 1986},
+{t: "Black Hole Sun", a: "Soundgarden", y: 1994},
+{t: "Blank Space", a: "Taylor Swift", y: 2014},
+{t: "Blinding Lights", a: "The Weeknd", y: 2019},
+{t: "Blitzkrieg Bop", a: "Ramones", y: 1976},
+{t: "Blowin in the Wind", a: "Bob Dylan", y: 1963},
+{t: "Blue Eyes Crying in the Rain", a: "Willie Nelson", y: 1975},
+{t: "Blue Monday", a: "New Order", y: 1983},
+{t: "Blueberry Hill", a: "Fats Domino", y: 1956},
+{t: "Bo Diddley", a: "Bo Diddley", y: 1955},
+{t: "Bohemian Rhapsody", a: "Queen", y: 1975},
+{t: "Bohemian Rhapsody", a: "Queen", y: 1975},
+{t: "Boom Boom", a: "John Lee Hooker", y: 1962},
+{t: "Born to Run", a: "Bruce Springsteen", y: 1975},
+{t: "Both Sides Now", a: "Joni Mitchell", y: 1969},
+{t: "Box of Rain", a: "The Grateful Dead", y: 1970},
+{t: "Boys of Summer", a: "Don Henley", y: 1984},
+{t: "Brass in Pocket", a: "Pretenders", y: 1979},
+{t: "Break My Soul", a: "Beyonce", y: 2022},
+{t: "Bridge Over Troubled Water", a: "Simon and Garfunkel", y: 1970},
+{t: "Bring the Noise", a: "Public Enemy", y: 1987},
+{t: "Buddy Holly", a: "Weezer", y: 1994},
+{t: "Buffalo Stance", a: "Neneh Cherry", y: 1988},
+{t: "C.R.E.A.M.", a: "Wu-Tang Clan", y: 1994},
+{t: "California Dreamin", a: "The Mamas and the Papas", y: 1965},
+{t: "California Love", a: "2Pac", y: 1995},
+{t: "Call Me Maybe", a: "Carly Rae Jepsen", y: 2012},
+{t: "Can I Kick It?", a: "A Tribe Called Quest", y: 1990},
+{t: "Cannonball", a: "The Breeders", y: 1993},
+{t: "Chain of Fools", a: "Aretha Franklin", y: 1967},
+{t: "Changes", a: "David Bowie", y: 1971},
+{t: "Cissy Strut", a: "The Meters", y: 1969},
+{t: "Closer", a: "Nine Inch Nails", y: 1994},
+{t: "Coal Miners Daughter", a: "Loretta Lynn", y: 1970},
+{t: "Coat of Many Colors", a: "Dolly Parton", y: 1971},
+{t: "Come as You Are", a: "Nirvana", y: 1991},
+{t: "Comfortably Numb", a: "Pink Floyd", y: 1979},
+{t: "Common People", a: "Pulp", y: 1996},
+{t: "Cosmic Dancer", a: "T. Rex", y: 1971},
+{t: "Could You Be Loved", a: "Bob Marley and the Wailers", y: 1980},
+{t: "Cranes in the Sky", a: "Solange", y: 2016},
+{t: "Crazy", a: "Patsy Cline", y: 1961},
+{t: "Crazy", a: "Gnarls Barkley", y: 2006},
+{t: "Crazy In Love", a: "Beyoncé", y: 2003},
+{t: "Crazy in Love", a: "Beyoncé feat. Jay-Z", y: 2003},
+{t: "Creep", a: "Radiohead", y: 1992},
+{t: "Creep", a: "Radiohead", y: 1992},
+{t: "Criminal", a: "Fiona Apple", y: 1996},
+{t: "Cross Road Blues", a: "Robert Johnson", y: 1937},
+{t: "Cruel Summer", a: "Taylor Swift", y: 2019},
+{t: "Crying", a: "Roy Orbison", y: 1962},
+{t: "Da Doo Ron Ron", a: "The Crystals", y: 1963},
+{t: "Dancing Queen", a: "ABBA", y: 1976},
+{t: "Dancing Queen", a: "ABBA", y: 1976},
+{t: "Dancing in the Street", a: "Martha and the Vandellas", y: 1964},
+{t: "Dancing on My Own", a: "Robyn", y: 2010},
+{t: "Deacon Blues", a: "Steely Dan", y: 1977},
+{t: "Desolation Row", a: "Bob Dylan", y: 1965},
+{t: "Divorce Song", a: "Liz Phair", y: 1993},
+{t: "Doll Parts", a: "Hole", y: 1994},
+{t: "Dont Leave Me This Way", a: "Thelma Houston", y: 1976},
+{t: "Dont Stop Believin", a: "Journey", y: 1981},
+{t: "Doo Wop (That Thing)", a: "Lauryn Hill", y: 1998},
+{t: "Dream On", a: "Aerosmith", y: 1973},
+{t: "Dreams", a: "Fleetwood Mac", y: 1977},
+{t: "Dreams", a: "Fleetwood Mac", y: 1977},
+{t: "Drivers License", a: "Olivia Rodrigo", y: 2021},
+{t: "Drivers License", a: "Olivia Rodrigo", y: 2021},
+{t: "Dynamite", a: "BTS", y: 2020},
+{t: "Edge of Seventeen", a: "Stevie Nicks", y: 1981},
+{t: "Eight Miles High", a: "The Byrds", y: 1966},
+{t: "Eleanor Rigby", a: "The Beatles", y: 1966},
+{t: "Ella Baila Sola", a: "Eslabon Armado and Peso Pluma", y: 2023},
+{t: "Enjoy the Silence", a: "Depeche Mode", y: 1990},
+{t: "Enter Sandman", a: "Metallica", y: 1991},
+{t: "Essence", a: "Wizkid feat. Tems", y: 2021},
+{t: "Ever Fallen in Love (With Someone You Shouldntve)", a: "Buzzcocks", y: 1978},
+{t: "Everlong", a: "Foo Fighters", y: 1997},
+{t: "Every Breath You Take", a: "The Police", y: 1983},
+{t: "Everybody Wants to Rule the World", a: "Tears for Fears", y: 1985},
+{t: "Everyday People", a: "Sly and the Family Stone", y: 1968},
+{t: "Fade Into You", a: "Mazzy Star", y: 1993},
+{t: "Family Affair", a: "Sly and the Family Stone", y: 1971},
+{t: "Fantasy", a: "Mariah Carey", y: 1995},
+{t: "Fast Car", a: "Tracy Chapman", y: 1988},
+{t: "Father and Son", a: "Cat Stevens/Yusuf", y: 1970},
+{t: "Fight the Power", a: "Public Enemy", y: 1989},
+{t: "Fire and Rain", a: "James Taylor", y: 1970},
+{t: "Fix You", a: "Coldplay", y: 2005},
+{t: "Flash Light", a: "Parliament", y: 1977},
+{t: "Formation", a: "Beyoncé", y: 2016},
+{t: "Fortunate Son", a: "Creedence Clearwater Revival", y: 1969},
+{t: "Free Bird", a: "Lynyrd Skynyrd", y: 1973},
+{t: "Free Fallin”", a: "Tom Petty", y: 1989},
+{t: "Freedom! 90", a: "George Michael", y: 1990},
+{t: "Fuck tha Police", a: "N.W.A", y: 1988},
+{t: "Gangsta's Paradise", a: "Coolio", y: 1995},
+{t: "Gasolina", a: "Daddy Yankee", y: 2010},
+{t: "Georgia on My Mind", a: "Ray Charles", y: 1960},
+{t: "Get Lucky", a: "Daft Punk", y: 2013},
+{t: "Get Lucky", a: "Daft Punk feat. Pharrell Williams", y: 2013},
+{t: "Get Up", a: "The Wailers", y: 1973},
+{t: "Get Up (I Feel Like Being A) Sex Machine", a: "James Brown", y: 1970},
+{t: "Get Ur Freak On", a: "Missy Elliott", y: 2001},
+{t: "Gimme Shelter", a: "The Rolling Stones", y: 1969},
+{t: "Gloria", a: "Patti Smith", y: 1975},
+{t: "Gloria", a: "Them", y: 1965},
+{t: "Go Your Own Way", a: "Fleetwood Mac", y: 1977},
+{t: "God Only Knows", a: "The Beach Boys", y: 1966},
+{t: "God Save the Queen", a: "Sex Pistols", y: 1977},
+{t: "Good Golly", a: "Little Richard", y: 1958},
+{t: "Good Times", a: "Chic", y: 1979},
+{t: "Good Vibrations", a: "The Beach Boys", y: 1966},
+{t: "Goodbye Earl", a: "Dixie Chicks", y: 2000},
+{t: "Grace", a: "Jeff Buckley", y: 1994},
+{t: "Great Balls of Fire", a: "Jerry Lee Lewis", y: 1957},
+{t: "Green Onions", a: "Booker T. and the MGs", y: 1962},
+{t: "Grindin”", a: "Clipse", y: 2002},
+{t: "Groove Is in the Heart", a: "Deee-Lite", y: 1990},
+{t: "Hallelujah", a: "Leonard Cohen", y: 1984},
+{t: "Happy", a: "Pharrell Williams", y: 2013},
+{t: "He Stopped Loving Her Today", a: "George Jones", y: 1980},
+{t: "Heart of Glass", a: "Blondie", y: 1979},
+{t: "Heart of Gold", a: "Neil Young", y: 1972},
+{t: "Heartbreak Hotel", a: "Elvis Presley", y: 1958},
+{t: "Heat Wave", a: "Martha Reeves and the Vandellas", y: 1963},
+{t: "Heavy Metal Drummer", a: "Wilco", y: 2002},
+{t: "Help Me", a: "Joni Mitchell", y: 1974},
+{t: "Help!", a: "The Beatles", y: 1965},
+{t: "Heroes", a: "David Bowie", y: 1977},
+{t: "Hey Jude", a: "The Beatles", y: 1968},
+{t: "Hey Ya!", a: "Outkast", y: 2003},
+{t: "Hey Ya!", a: "Outkast", y: 2003},
+{t: "Higher Ground", a: "Stevie Wonder", y: 1973},
+{t: "Hold On", a: "Drake feat. Majid Jordan", y: 2013},
+{t: "Hotel California", a: "Eagles", y: 1976},
+{t: "Hotel California", a: "The Eagles", y: 1976},
+{t: "Hotline Bling", a: "Drake", y: 2015},
+{t: "Hound Dog", a: "Big Mama Thornton", y: 1953},
+{t: "House of Balloons", a: "The Weeknd", y: 2011},
+{t: "How Soon Is Now?", a: "The Smiths", y: 1984},
+{t: "Hungry Like the Wolf", a: "Duran Duran", y: 1982},
+{t: "I Cant Help Myself (Sugar Pie", a: "The Four Tops", y: 1965},
+{t: "I Cant Make You Love Me", a: "Bonnie Raitt", y: 1991},
+{t: "I Cant Stand the Rain", a: "Ann Peebles", y: 1973},
+{t: "I Feel Love", a: "Donna Summer", y: 1977},
+{t: "I Heard It Through the Grapevine", a: "Marvin Gaye", y: 1968},
+{t: "I Only Have Eyes for You", a: "The Flamingos", y: 1959},
+{t: "I Put a Spell on You", a: "Screamin’ Jay Hawkins", y: 1956},
+{t: "I Say a Little Prayer", a: "Aretha Franklin", y: 1968},
+{t: "I Still Havent Found What Im Looking For", a: "U2", y: 1987},
+{t: "I Walk the Line", a: "Johnny Cash", y: 1956},
+{t: "I Wanna Be Your Dog", a: "The Stooges", y: 1969},
+{t: "I Wanna Dance With Somebody (Who Loves Me)", a: "Whitney Houston", y: 1987},
+{t: "I Wanna Dance with Somebody", a: "Whitney Houston", y: 1987},
+{t: "I Want It That Way", a: "Backstreet Boys", y: 1999},
+{t: "I Want You Back", a: "The Jackson 5", y: 1969},
+{t: "I Want to Hold Your Hand", a: "The Beatles", y: 1963},
+{t: "I Want to Hold Your Hand", a: "The Beatles", y: 1963},
+{t: "I Will Always Love You", a: "Whitney Houston", y: 1992},
+{t: "I Will Survive", a: "Gloria Gaynor", y: 1978},
+{t: "Idioteque", a: "Radiohead", y: 2000},
+{t: "If I Aint Got You", a: "Alicia Keys", y: 2003},
+{t: "Ill Take You There", a: "The Staple Singers", y: 1972},
+{t: "Im Coming Out", a: "Diana Ross", y: 1980},
+{t: "Im So Lonesome I Could Cry", a: "Hank Williams", y: 1949},
+{t: "Im Waiting for the Man", a: "The Velvet Underground", y: 1967},
+{t: "Im a Believer", a: "The Monkees", y: 1966},
+{t: "Imagine", a: "John Lennon", y: 1971},
+{t: "In Da Club", a: "50 Cent", y: 2003},
+{t: "In My Life", a: "The Beatles", y: 1965},
+{t: "In the Air Tonight", a: "Phil Collins", y: 1981},
+{t: "In the Midnight Hour", a: "Wilson Pickett", y: 1965},
+{t: "In the Still of the Night", a: "The Five Satins", y: 1956},
+{t: "Intl Players Anthem (I Choose You)", a: "UGK feat. Outkast", y: 2007},
+{t: "Into the Groove", a: "Madonna", y: 1985},
+{t: "Into the Mystic", a: "Van Morrison", y: 1970},
+{t: "Iron Man", a: "Black Sabbath", y: 1971},
+{t: "It Takes Two", a: "Rob Base and DJ E-Z Rock", y: 1988},
+{t: "It Was a Good Day", a: "Ice Cube", y: 1992},
+{t: "Its Too Late", a: "Carole King", y: 1971},
+{t: "J Balvin", a: "Cardi B", y: 2018},
+{t: "Jailhouse Rock", a: "Elvis Presley", y: 1957},
+{t: "Johnny B. Goode", a: "Chuck Berry", y: 1958},
+{t: "Jolene", a: "Dolly Parton", y: 1974},
+{t: "Juicy", a: "Notorious B.I.G.", y: 1994},
+{t: "Jump", a: "Van Halen", y: 1983},
+{t: "Jumpin Jack Flash", a: "The Rolling Stones", y: 1968},
+{t: "Jungleland", a: "Bruce Springsteen", y: 1975},
+{t: "Just Like Heaven", a: "The Cure", y: 1987},
+{t: "Just What I Needed", a: "The Cars", y: 1978},
+{t: "Just a Friend", a: "Biz Markie", y: 1989},
+{t: "Karma Police", a: "Radiohead", y: 1997},
+{t: "Kashmir", a: "Led Zeppelin", y: 1975},
+{t: "Kill Bill", a: "SZA", y: 2022},
+{t: "Killing Me Softly With His Song", a: "Roberta Flack", y: 1973},
+{t: "Killing Me Softly With His Song", a: "Fugees", y: 1996},
+{t: "Killing in the Name", a: "Rage Against the Machine", y: 1992},
+{t: "King Tubby Meets the Rockers Uptown", a: "Augustus Pablo", y: 1974},
+{t: "Kiss", a: "Prince", y: 1986},
+{t: "Ku Klux Klan", a: "Steel Pulse", y: 1978},
+{t: "LL Cool J", a: "Craig Mack feat. Notorious B.I.G.", y: 1994},
+{t: "La Vida Es un Carnaval", a: "Celia Cruz", y: 1998},
+{t: "Landslide", a: "Fleetwood Mac", y: 1975},
+{t: "Last Nite", a: "The Strokes", y: 2001},
+{t: "Layla", a: "Derek and the Dominos", y: 1970},
+{t: "Leader of the Pack", a: "The Shangri-Las", y: 1964},
+{t: "Lean on Me", a: "Bill Withers", y: 1972},
+{t: "Left of the Dial", a: "The Replacements", y: 1985},
+{t: "Let It Be", a: "The Beatles", y: 1970},
+{t: "Lets Get It On", a: "Marvin Gaye", y: 1973},
+{t: "Lets Stay Together", a: "Al Green", y: 1971},
+{t: "Levitating", a: "Dua Lipa", y: 2020},
+{t: "Life on Mars?", a: "David Bowie", y: 1971},
+{t: "Light My Fire", a: "The Doors", y: 1967},
+{t: "Like a Prayer", a: "Madonna", y: 1989},
+{t: "Like a Rolling Stone", a: "Bob Dylan", y: 1965},
+{t: "Like a Virgin", a: "Madonna", y: 1984},
+{t: "Limelight", a: "Rush", y: 1981},
+{t: "Little Red Corvette", a: "Prince", y: 1982},
+{t: "Little Wing", a: "The Jimi Hendrix Experience", y: 1967},
+{t: "Livin on a Prayer", a: "Bon Jovi", y: 1986},
+{t: "Livin' on a Prayer", a: "Bon Jovi", y: 1986},
+{t: "Lola", a: "The Kinks", y: 1970},
+{t: "London Calling", a: "The Clash", y: 1980},
+{t: "Lose Yourself", a: "Eminem", y: 2002},
+{t: "Lose Yourself", a: "Eminem", y: 2002},
+{t: "Loser", a: "Beck", y: 1993},
+{t: "Losing My Religion", a: "R.E.M.", y: 1991},
+{t: "Louie Louie", a: "The Kingsmen", y: 1963},
+{t: "Love Will Tear Us Apart", a: "Joy Division", y: 1980},
+{t: "Love and Happiness", a: "Al Green", y: 1972},
+{t: "Lust for Life", a: "Iggy Pop", y: 1977},
+{t: "Maggie May", a: "Rod Stewart", y: 1971},
+{t: "Mama Tried", a: "Merle Haggard", y: 1968},
+{t: "Mannish Boy", a: "Muddy Waters", y: 1955},
+{t: "Maps", a: "Yeah Yeah Yeahs", y: 2003},
+{t: "Marquee Moon", a: "Television", y: 1977},
+{t: "Master of Puppets", a: "Metallica", y: 1986},
+{t: "Maybelline", a: "Chuck Berry", y: 1955},
+{t: "Merry Go Round", a: "Kacey Musgraves", y: 2013},
+{t: "Midnight Train to Georgia", a: "Gladys Knight and the Pips", y: 1973},
+{t: "Mind Playing Tricks on Me", a: "Geto Boys", y: 1991},
+{t: "Mississippi Goddam", a: "Nina Simone", y: 1964},
+{t: "More Than a Feeling", a: "Boston", y: 1976},
+{t: "Move On Up", a: "Curtis Mayfield", y: 1970},
+{t: "Move Your Body (The House Music Anthem)", a: "Marshall Jefferson", y: 1986},
+{t: "Mr. Brightside", a: "The Killers", y: 2004},
+{t: "Mr. Brightside", a: "The Killers", y: 2003},
+{t: "Mr. Tambourine Man", a: "Bob Dylan", y: 1965},
+{t: "Mr. Tambourine Man", a: "The Byrds", y: 1965},
+{t: "Ms. Jackson", a: "Outkast", y: 2000},
+{t: "My Generation", a: "The Who", y: 1965},
+{t: "My Girl", a: "The Temptations", y: 1965},
+{t: "Never Tear Us Apart", a: "INXS", y: 1988},
+{t: "Never Too Much", a: "Luther Vandross", y: 1981},
+{t: "Night Moves", a: "Bob Seger", y: 1976},
+{t: "Nightswimming", a: "R.E.M.", y: 1992},
+{t: "No Diggity", a: "Blackstreet feat. Dr. Dre and Queen Pen", y: 1996},
+{t: "No Ordinary Love", a: "Sade", y: 1992},
+{t: "No Scrubs", a: "TLC", y: 1999},
+{t: "No Woman No Cry", a: "Bob Marley and the Wailers", y: 1975},
+{t: "Nothing Compares 2 U", a: "Sinead O Connor", y: 1990},
+{t: "Nothing Compares 2 U", a: "Sinéad O’Connor", y: 1990},
+{t: "Nuthin but a G Thang", a: "Dr. Dre feat. Snoop Doggy Dogg", y: 1992},
+{t: "Ode to Billie Joe", a: "Bobbie Gentry", y: 1967},
+{t: "Oh Bondage! Up Yours!", a: "X-Ray Spex", y: 1977},
+{t: "Old Town Road", a: "Lil Nas X", y: 2019},
+{t: "Once in a Lifetime", a: "Talking Heads", y: 1980},
+{t: "One", a: "U2", y: 1992},
+{t: "One Nation Under a Groove", a: "Funkadelic", y: 1978},
+{t: "Ooh La La", a: "Faces", y: 1973},
+{t: "Our Lips Are Sealed", a: "The Go-Gos", y: 1981},
+{t: "Oye Como Va", a: "Santana", y: 1970},
+{t: "Paid in Full", a: "Eric B. and Rakim", y: 1987},
+{t: "Paint It", a: "The Rolling Stones", y: 1966},
+{t: "Paint It Black", a: "Rolling Stones", y: 1966},
+{t: "Pancho and Lefty", a: "Townes Van Zandt", y: 1972},
+{t: "Papa Was a Rollin Stone", a: "The Temptations", y: 1972},
+{t: "Papas Got a Brand New Bag", a: "James Brown", y: 1966},
+{t: "Paper Bag", a: "Fiona Apple", y: 1999},
+{t: "Paper Planes", a: "M.I.A.", y: 2008},
+{t: "Paranoid", a: "Black Sabbath", y: 1970},
+{t: "Party Up (Up in Here)", a: "DMX", y: 1999},
+{t: "Passionate Kisses", a: "Lucinda Williams", y: 1988},
+{t: "Peggy Sue", a: "Buddy Holly", y: 1958},
+{t: "People Get Ready", a: "The Impressions", y: 1965},
+{t: "Personality Crisis", a: "New York Dolls", y: 1973},
+{t: "Pink Moon", a: "Nick Drake", y: 1972},
+{t: "Planet Rock", a: "Afrika Bambaataa and the Soulsonic Force", y: 1982},
+{t: "Please Mr. Postman", a: "The Marvelettes", y: 1961},
+{t: "Poker Face", a: "Lady Gaga", y: 2008},
+{t: "Ponta de Lança Africano (Umbabarauma)", a: "Jorge Ben", y: 1976},
+{t: "Portions for Foxes", a: "Rilo Kiley", y: 2004},
+{t: "Powderfinger", a: "Neil Young", y: 1979},
+{t: "Pressure Drop", a: "Toots and the Maytals", y: 1973},
+{t: "Promised Land", a: "Chuck Berry", y: 1964},
+{t: "Proud Mary", a: "Creedence Clearwater Revival", y: 1969},
+{t: "Pt. 1-Acknowledgement", a: "John Coltrane", y: 1965},
+{t: "Purple Haze", a: "The Jimi Hendrix Experience", y: 1967},
+{t: "Purple Rain", a: "Prince", y: 1984},
+{t: "Purple Rain", a: "Prince and the Revolution", y: 1984},
+{t: "Pusherman", a: "Curtis Mayfield", y: 1972},
+{t: "Radiation Vibe", a: "Fountains of Wayne", y: 1996},
+{t: "Radio Free Europe", a: "R.E.M.", y: 1983},
+{t: "Rappers Delight", a: "Sugar Hill Gang", y: 1979},
+{t: "Reach Out (Ill Be There)", a: "The Four Tops", y: 1967},
+{t: "Real Love", a: "Mary J. Blige", y: 1992},
+{t: "Rebel Girl", a: "Bikini Kill", y: 1993},
+{t: "Redbone", a: "Childish Gambino", y: 2016},
+{t: "Redemption Song", a: "Bob Marley and the Wailers", y: 1980},
+{t: "Rehab", a: "Amy Winehouse", y: 2006},
+{t: "Respect", a: "Aretha Franklin", y: 1967},
+{t: "Respect", a: "Aretha Franklin", y: 1967},
+{t: "Rhythm Nation", a: "Janet Jackson", y: 1989},
+{t: "Rid of Me", a: "PJ Harvey", y: 1993},
+{t: "Ring of Fire", a: "Johnny Cash", y: 1963},
+{t: "Ripple", a: "The Grateful Dead", y: 1970},
+{t: "River", a: "Joni Mitchell", y: 1971},
+{t: "River Deep", a: "Ike and Tina Turner", y: 1966},
+{t: "Roadrunner", a: "The Modern Lovers", y: 1976},
+{t: "Rock Lobster", a: "The B-52’s", y: 1978},
+{t: "Rock With You", a: "Michael Jackson", y: 1979},
+{t: "Rock and Roll All Nite", a: "Kiss", y: 1975},
+{t: "Rocket Man", a: "Elton John", y: 1972},
+{t: "Rolling in the Deep", a: "Adele", y: 2010},
+{t: "Rolling in the Deep", a: "Adele", y: 2011},
+{t: "Rosalita (Come Out Tonight)", a: "Bruce Springsteen", y: 1973},
+{t: "Royals", a: "Lorde", y: 2011},
+{t: "Runaway", a: "Kanye West feat. Pusha T", y: 2010},
+{t: "Running Up That Hill", a: "Kate Bush", y: 1985},
+{t: "Sabotage", a: "Beastie Boys", y: 1994},
+{t: "Safaera", a: "Bad Bunny", y: 2020},
+{t: "Sail Away", a: "Randy Newman", y: 1972},
+{t: "Savage (Remix)", a: "Megan Thee Stallion feat. Beyoncé", y: 2020},
+{t: "Say It Loud (Im Black and Im Proud)", a: "James Brown", y: 1968},
+{t: "Say My Name", a: "Destiny’s Child", y: 1999},
+{t: "Scenes From an Italian Restaurant", a: "Billy Joel", y: 1977},
+{t: "Schools Out", a: "Alice Cooper", y: 1972},
+{t: "September Gurls", a: "Big Star", y: 1974},
+{t: "Seven Nation Army", a: "White Stripes", y: 2003},
+{t: "Seven Nation Army", a: "The White Stripes", y: 2003},
+{t: "Sexual Healing", a: "Marvin Gaye", y: 1982},
+{t: "Shape of You", a: "Ed Sheeran", y: 2017},
+{t: "She Loves You", a: "The Beatles", y: 1964},
+{t: "Sheena Is a Punk Rocker", a: "Ramones", y: 1977},
+{t: "Shes Gone", a: "Hall and Oates", y: 1973},
+{t: "Shook Ones", a: "Mobb Deep", y: 1995},
+{t: "Shout (Parts 1 and 2)", a: "The Isley Brothers", y: 1959},
+{t: "Signed", a: "Stevie Wonder", y: 1970},
+{t: "Since U Been Gone", a: "Kelly Clarkson", y: 2004},
+{t: "Single Ladies (Put a Ring On It)", a: "Beyoncé", y: 2008},
+{t: "Smells Like Teen Spirit", a: "Nirvana", y: 1991},
+{t: "Smells Like Teen Spirit", a: "Nirvana", y: 1991},
+{t: "So What", a: "Miles Davis", y: 1959},
+{t: "Solsbury Hill", a: "Peter Gabriel", y: 1977},
+{t: "Somebody That I Used To Know", a: "Gotye", y: 2011},
+{t: "Something", a: "The Beatles", y: 1969},
+{t: "Son of a Preacher Man", a: "Dusty Springfield", y: 1968},
+{t: "Space Oddity", a: "David Bowie", y: 1969},
+{t: "Spoonful", a: "Howlin’ Wolf", y: 1960},
+{t: "Spring Day", a: "BTS", y: 2017},
+{t: "Springsteen", a: "Eric Church", y: 2011},
+{t: "Stairway to Heaven", a: "Led Zeppelin", y: 1971},
+{t: "Stairway to Heaven", a: "Led Zeppelin", y: 1971},
+{t: "Stan", a: "Eminem feat. Dido", y: 2000},
+{t: "Stand by Me", a: "Ben E. King", y: 1961},
+{t: "Stand by Your Man", a: "Tammy Wynette", y: 1968},
+{t: "Stayin Alive", a: "Bee Gees", y: 1977},
+{t: "Stayin' Alive", a: "Bee Gees", y: 1977},
+{t: "Stills", a: "Crosby", y: 1969},
+{t: "Stop! In the Name of Love", a: "The Supremes", y: 1965},
+{t: "Straight Outta Compton", a: "N.W.A", y: 1988},
+{t: "Strange Fruit", a: "Billie Holiday", y: 1939},
+{t: "Strawberry Fields Forever", a: "The Beatles", y: 1967},
+{t: "Stronger", a: "Kanye West", y: 2007},
+{t: "Subterranean Homesick Blues", a: "Bob Dylan", y: 1965},
+{t: "Sucker MCs", a: "Run-DMC", y: 1984},
+{t: "Sugar", a: "Fall Out Boy", y: 2005},
+{t: "Summer Babe (Winter Version)", a: "Pavement", y: 1992},
+{t: "Summertime Blues", a: "Eddie Cochran", y: 1958},
+{t: "Sunday Mornin Comin Down", a: "Kris Kristofferson", y: 1970},
+{t: "Super Bass", a: "Nicki Minaj", y: 2010},
+{t: "Super Freak", a: "Rick James", y: 1981},
+{t: "Superstition", a: "Stevie Wonder", y: 1972},
+{t: "Surrender", a: "Cheap Trick", y: 1978},
+{t: "Suspicious Minds", a: "Elvis Presley", y: 1969},
+{t: "Suzanne", a: "Leonard Cohen", y: 1967},
+{t: "Sweet Child O Mine", a: "Guns N Roses", y: 1987},
+{t: "Sweet Child O Mine", a: "Guns N’ Roses", y: 1987},
+{t: "Sweet Dreams (Are Made of This)", a: "Eurythmics", y: 1983},
+{t: "Sweet Jane", a: "The Velvet Underground", y: 1970},
+{t: "Sympathy for the Devil", a: "The Rolling Stones", y: 1968},
+{t: "Tangled Up in Blue", a: "Bob Dylan", y: 1975},
+{t: "Teenage Riot", a: "Sonic Youth", y: 1988},
+{t: "Thank U", a: "Ariana Grande", y: 2019},
+{t: "Thatll Be the Day", a: "Buddy Holly", y: 1957},
+{t: "Thats the Joint", a: "The Funky 4 + 1", y: 1980},
+{t: "The Boys Are Back in Town", a: "Thin Lizzy", y: 1976},
+{t: "The Harder They Come", a: "Jimmy Cliff", y: 1972},
+{t: "The House That Built Me", a: "Miranda Lambert", y: 2010},
+{t: "The House of the Rising Sun", a: "The Animals", y: 1964},
+{t: "The Humpty Dance", a: "Digital Underground", y: 1990},
+{t: "The Message", a: "Grandmaster Flash and the Furious Five", y: 1982},
+{t: "The Rain (Supa Dupa Fly)", a: "Missy Elliot", y: 1997},
+{t: "The Revolution Will Not Be Televised", a: "Gil-Scott Heron", y: 1971},
+{t: "The Sounds of Silence", a: "Simon and Garfunkel", y: 1964},
+{t: "The Tears of a Clown", a: "Smokey Robinson and the Miracles", y: 1967},
+{t: "The Tracks of My Tears", a: "Smokey Robinson and the Miracles", y: 1965},
+{t: "The Weight", a: "The Band", y: 1968},
+{t: "There Is a Light That Never Goes Out", a: "The Smiths", y: 1986},
+{t: "They Reminisce Over You", a: "Pete Rock and CL Smooth", y: 1992},
+{t: "Thinkin Bout You", a: "Frank Ocean", y: 2012},
+{t: "This Land Is Your Land", a: "Woody Guthrie", y: 1951},
+{t: "This Must Be the Place (Naive Melody)", a: "Talking Heads", y: 1983},
+{t: "Thunder Road", a: "Bruce Springsteen", y: 1975},
+{t: "Time After Time", a: "Cyndi Lauper", y: 1983},
+{t: "Time of the Season", a: "The Zombies", y: 1968},
+{t: "Tiny Dancer", a: "Elton John", y: 1972},
+{t: "Titi Me Pregunto", a: "Bad Bunny", y: 2022},
+{t: "Toxic", a: "Britney Spears", y: 2003},
+{t: "Trans-Europe Express", a: "Kraftwerk", y: 1977},
+{t: "Truth Hurts", a: "Lizzo", y: 2017},
+{t: "Try a Little Tenderness", a: "Otis Redding", y: 1966},
+{t: "Tumbling Dice", a: "The Rolling Stones", y: 1972},
+{t: "Tutti-Frutti", a: "Little Richard", y: 1955},
+{t: "Typical Girls", a: "The Slits", y: 1979},
+{t: "Tyrone", a: "Erykah Badu", y: 1997},
+{t: "Umbrella", a: "Rihanna", y: 2007},
+{t: "Unchained Melody", a: "The Righteous Brothers", y: 1965},
+{t: "Under Pressure", a: "Queen and David Bowie", y: 1981},
+{t: "Under the Bridge", a: "Red Hot Chili Peppers", y: 1991},
+{t: "Untitled (How Does It Feel)", a: "D’Angelo", y: 2000},
+{t: "Up on the Roof", a: "The Drifters", y: 1964},
+{t: "Uptown Funk", a: "Mark Ronson feat. Bruno Mars", y: 2015},
+{t: "Virginia Plain", a: "Roxy Music", y: 1972},
+{t: "Visions of Johanna", a: "Bob Dylan", y: 1966},
+{t: "Vogue", a: "Madonna", y: 1990},
+{t: "Walk on By", a: "Dionne Warwick", y: 1964},
+{t: "Walk on By", a: "Isaac Hayes", y: 1969},
+{t: "Walk on the Wild Side", a: "Lou Reed", y: 1972},
+{t: "Wannabe", a: "Spice Girls", y: 1996},
+{t: "Waterfalls", a: "TLC", y: 1995},
+{t: "Waterloo Sunset", a: "The Kinks", y: 1967},
+{t: "West End Girls", a: "Pet Shop Boys", y: 1984},
+{t: "What a Fool Believes", a: "The Doobie Brothers", y: 1979},
+{t: "What a Wonderful World", a: "Louis Armstrong", y: 1967},
+{t: "Whatd I Say", a: "Ray Charles", y: 1957},
+{t: "Whats Going On", a: "Marvin Gaye", y: 1971},
+{t: "Whats Love Got to Do With It", a: "Tina Turner", y: 1984},
+{t: "When Doves Cry", a: "Prince and the Revolution", y: 1984},
+{t: "Where Is My Mind?", a: "The Pixies", y: 1988},
+{t: "Whipping Post", a: "Allman Brothers Band", y: 1969},
+{t: "White Rabbit", a: "Jefferson Airplane", y: 1967},
+{t: "Whole Lotta Love", a: "Led Zeppelin", y: 1969},
+{t: "Wichita Lineman", a: "Glen Campbell", y: 1968},
+{t: "Wild Horses", a: "The Rolling Stones", y: 1971},
+{t: "Will You Love Me Tomorrow", a: "The Shirelles", y: 1960},
+{t: "Wind", a: "Earth", y: 1978},
+{t: "Wish You Were Here", a: "Pink Floyd", y: 1975},
+{t: "With or Without You", a: "U2", y: 1987},
+{t: "Without You", a: "Harry Nilsson", y: 1971},
+{t: "Wonderwall", a: "Oasis", y: 1995},
+{t: "Wont Get Fooled Again", a: "The Who", y: 1971},
+{t: "Work It", a: "Missy Elliott", y: 2000},
+{t: "Wouldnt It Be Nice", a: "Beach Boys", y: 1966},
+{t: "Yeah!", a: "Usher feat. Lil Jon and Ludacris", y: 2004},
+{t: "Yesterday", a: "The Beatles", y: 1965},
+{t: "You Are the Sunshine of My Life", a: "Stevie Wonder", y: 1972},
+{t: "You Keep Me Hangin On", a: "The Supremes", y: 1966},
+{t: "You Make Me Feel (Mighty Real)", a: "Sylvester", y: 1978},
+{t: "You Oughta Know", a: "Alanis Morissette", y: 1995},
+{t: "You Really Got Me", a: "The Kinks", y: 1964},
+{t: "You Shook Me All Night Long", a: "AC/DC", y: 1980},
+{t: "Young Americans", a: "David Bowie", y: 1975},
+{t: "Your Cheatin Heart", a: "Hank Williams", y: 1953},
+{t: "Your Song", a: "Elton John", y: 1970},
+{t: "Youre So Vain", a: "Carly Simon", y: 1972},
+{t: "…Baby One More Time", a: "Britney Spears", y: 1998},
+];
