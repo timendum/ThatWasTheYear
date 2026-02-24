@@ -57,7 +57,7 @@ function updateTurn() {
   document.getElementById('draw-btn').style.display = 'inline-block';
   document.getElementById('replay-btn').style.display = 'none';
   document.getElementById('current-drag-item').innerHTML = '';
-  document.getElementById('audio-status').innerText = "Draw a card to start.";
+  document.getElementById('audio-status').innerText = "";
   renderBoard();
 }
 
@@ -69,7 +69,7 @@ async function drawSong() {
   currentSong = await getDetailedSong(rawSong);
 
   document.getElementById('current-drag-item').innerHTML = `<div class="card mystery">?</div>`;
-  document.getElementById('audio-status').innerText = "Listen and place the card!";
+  document.getElementById('audio-status').innerText = "Listen and click the right position on the timeline!";
 
   if (currentSong.preview) {
     document.getElementById('replay-btn').style.display = 'inline-block';
