@@ -21,7 +21,7 @@ async function startGame() {
     .filter(n => n !== "");
 
   if (names.length === 0) return alert("Enter at least one name.");
-  players = names.map(name => ({ name, timeline: [] }));
+  players = names.map(name => ({name, timeline: []}));
 
   // Initial cards
   for (let p of players) {
@@ -46,7 +46,7 @@ async function getDetailedSong(song) {
       link: res?.trackViewUrl || "#"
     };
   } catch (e) {
-    return { ...song, img: "https://via.placeholder.com/100", link: "#" };
+    return {...song, img: "https://via.placeholder.com/100", link: "#"};
   }
 }
 
@@ -107,10 +107,13 @@ function renderBoard() {
       const card = document.createElement('div');
       card.className = "card";
       card.innerHTML = `
-        <a href="${song.link}" target="_blank"><img src="${song.img}" title="Listen on iTunes"></a>
-        <div class="year">${song.y}</div>
-        <div style="font-weight:bold; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${song.t}</div>
-      `;
+    <a href="${song.link}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
+      <img src="${song.img}" title="Listen on iTunes">
+      <div class="year">${song.y}</div>
+      <div style="font-weight:bold; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${song.t}</div>
+    </a>
+  `;
+
       timeline.appendChild(card);
       timeline.appendChild(createDropZone(pIdx, sIdx + 1));
     });
