@@ -16,7 +16,7 @@ A 10-second preview will play and you may replay it by clicking the "Replay ♫"
 Drag the mystery card and drop it into the timeline drop zone at the position you believe is correct chronologically.
 If your guess is correct, the card is inserted at that position.
 If incorrect, your guess fails and the turn passes to the next player.
-The first player whose timeline reaches 10 songs wins and a confetti animation is shown.
+Play to see who scores the most points!
 
 <section id="requirements">
 <h2>Requirements</h2>
