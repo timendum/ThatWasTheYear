@@ -62,7 +62,7 @@ const songLibrary = [
 {t: "Black Hole Sun", a: "Soundgarden", y: 1994},
 {t: "Blank Space", a: "Taylor Swift", y: 2014},
 {t: "Blinding Lights", a: "The Weeknd", y: 2019},
-{t: "Blitzkrieg Bop", a: "Ramones", y: 1976},
+{t: "Blitzkrieg-Bop", a: "Ramones", y: 1976},
 {t: "Blowin in the Wind", a: "Bob Dylan", y: 1963},
 {t: "Blue Eyes Crying in the Rain", a: "Willie Nelson", y: 1975},
 {t: "Blue Monday", a: "New Order", y: 1983},
