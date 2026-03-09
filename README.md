@@ -13,7 +13,7 @@ Start the game and enter at least two player names (additional players can be ad
 Each player begins with one random song in their timeline.
 On your turn, click "Draw" to draw a mystery song.
 A 10-second preview will play and you may replay it by clicking the "Replay ♫" button.
-Drag the mystery card and drop it into the timeline drop zone at the position you believe is correct chronologically.
+Select the slot at the position into the timeline you believe is correct chronologically.
 If your guess is correct, the card is inserted at that position.
 If incorrect, your guess fails and the turn passes to the next player.
 Play to see who scores the most points!
@@ -25,7 +25,6 @@ Play to see who scores the most points!
 <li>Support for ES6+ JavaScript</li>
 <li>Fetch API</li>
 <li>Audio playback</li>
-<li>Drag &amp; drop APIs</li>
 </ul>
-<p>The iTunes Search API is used to fetch album artwork and audio previews. (No API key required.)</p>
+<p>The iTunes Search API is used to fetch album artwork and audio previews (No API key required)</p>
 </section>
