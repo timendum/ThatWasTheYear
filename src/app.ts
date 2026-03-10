@@ -61,6 +61,8 @@ function updateTurn(): void {
   document.getElementById('current-drag-item')!.replaceChildren();
   document.getElementById('audio-status')!.textContent = "";
   renderBoard();
+  audio.pause();
+  clearTimeout(audioTimeout);
 }
 
 async function drawSong(): Promise<void> {
