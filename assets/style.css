@@ -209,3 +209,29 @@ button:hover {
 .reveal-artist {
   opacity: 0.8;
 }
+
+#end-condition {
+  margin-top: 20px;
+}
+
+.end-condition-title {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.end-condition-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.end-condition-option input[type="radio"] {
+  margin-right: 5px;
+  width: auto;
+}
+
+#turnsPerPlayer {
+  width: 60px;
+  margin-left: 5px;
+}
