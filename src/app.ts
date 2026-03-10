@@ -1,11 +1,58 @@
 import { songLibrary } from './songs';
 import type { Player, Song, DetailedSong } from './types';
 
-let players: Player[] = [];
-let currentPlayerIndex = 0;
-let roundCount = 1;
-let currentSong: DetailedSong | null = null;
-let deck: Song[] = [...songLibrary];
+const STORAGE_KEY = 'thatWasTheYear_gameState';
+
+class GameState {
+  players: Player[] = [];
+  currentPlayerIndex = 0;
+  roundCount = 1;
+  currentSong: DetailedSong | null = null;
+  deck: Song[] = [...songLibrary];
+
+  serialize(): string {
+    return JSON.stringify({
+      players: this.players,
+      currentPlayerIndex: this.currentPlayerIndex,
+      roundCount: this.roundCount,
+      currentSong: this.currentSong,
+      deck: this.deck
+    });
+  }
+
+  deserialize(json: string): void {
+    const data = JSON.parse(json);
+    this.players = data.players;
+    this.currentPlayerIndex = data.currentPlayerIndex;
+    this.roundCount = data.roundCount;
+    this.currentSong = data.currentSong;
+    this.deck = data.deck;
+  }
+
+  save(): void {
+    localStorage.setItem(STORAGE_KEY, this.serialize());
+  }
+
+  restore(): boolean {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      this.deserialize(saved);
+      return true;
+    }
+    return false;
+  }
+
+  clear(): void {
+    this.players = [];
+    this.currentPlayerIndex = 0;
+    this.roundCount = 1;
+    this.currentSong = null;
+    this.deck = [...songLibrary];
+    localStorage.removeItem(STORAGE_KEY);
+  }
+}
+
+const gameState = new GameState();
 const audio = new Audio();
 let audioTimeout: number;
 
@@ -24,15 +71,17 @@ async function startGame(): Promise<void> {
     .filter(n => n !== "");
 
   if (names.length === 0) return alert("Enter at least one name.");
-  players = names.map(name => ({ name, timeline: [] }));
+  gameState.clear();
+  gameState.players = names.map(name => ({ name, timeline: [] }));
 
-  for (const p of players) {
-    const song = await getDetailedSong(deck.splice(Math.floor(Math.random() * deck.length), 1)[0]);
+  for (const p of gameState.players) {
+    const song = await getDetailedSong(gameState.deck.splice(Math.floor(Math.random() * gameState.deck.length), 1)[0]);
     p.timeline.push(song);
   }
 
   document.getElementById('splash')!.classList.remove('active');
   document.getElementById('game')!.classList.add('active');
+  gameState.save();
   updateTurn();
 }
 
@@ -53,9 +102,9 @@ async function getDetailedSong(song: Song): Promise<DetailedSong> {
 }
 
 function updateTurn(): void {
-  const p = players[currentPlayerIndex];
+  const p = gameState.players[gameState.currentPlayerIndex];
   document.getElementById('turn-indicator')!.textContent = `${p.name}'s Turn`;
-  document.getElementById('round-display')!.textContent = `Round ${roundCount}`;
+  document.getElementById('round-display')!.textContent = `Round ${gameState.roundCount}`;
   document.getElementById('draw-btn')!.style.display = 'inline-block';
   document.getElementById('replay-btn')!.style.display = 'none';
   document.getElementById('current-drag-item')!.replaceChildren();
@@ -69,8 +118,8 @@ async function drawSong(): Promise<void> {
   document.getElementById('draw-btn')!.style.display = 'none';
   document.getElementById('audio-status')!.textContent = "Searching iTunes...";
 
-  const rawSong = deck.splice(Math.floor(Math.random() * deck.length), 1)[0];
-  currentSong = await getDetailedSong(rawSong);
+  const rawSong = gameState.deck.splice(Math.floor(Math.random() * gameState.deck.length), 1)[0];
+  gameState.currentSong = await getDetailedSong(rawSong);
 
   const mysteryCard = document.createElement('div');
   mysteryCard.className = 'card mystery';
@@ -78,20 +127,21 @@ async function drawSong(): Promise<void> {
   document.getElementById('current-drag-item')!.replaceChildren(mysteryCard);
   document.getElementById('audio-status')!.textContent = "Listen and click the right position on the timeline!";
 
-  if (currentSong.preview) {
+  if (gameState.currentSong.preview) {
     document.getElementById('replay-btn')!.style.display = 'inline-block';
     playPreview();
   } else {
     document.getElementById('audio-status')!.textContent = "No audio found! Guess by title.";
   }
+  gameState.save();
   renderBoard();
 }
 
 function playPreview(): void {
-  if (!currentSong?.preview) return;
+  if (!gameState.currentSong?.preview) return;
   audio.pause();
   clearTimeout(audioTimeout);
-  audio.src = currentSong.preview;
+  audio.src = gameState.currentSong.preview;
   audio.play();
   audioTimeout = window.setTimeout(() => audio.pause(), 10000);
 }
@@ -100,8 +150,8 @@ function renderBoard(): void {
   const container = document.getElementById('players-container')!;
   container.replaceChildren();
 
-  players.forEach((player, pIdx) => {
-    const isCurrent = pIdx === currentPlayerIndex;
+  gameState.players.forEach((player, pIdx) => {
+    const isCurrent = pIdx === gameState.currentPlayerIndex;
     const area = document.createElement('div');
     area.className = `player-area ${isCurrent ? 'active-player-border' : ''}`;
     
@@ -148,10 +198,10 @@ function renderBoard(): void {
 function createDropZone(pIdx: number, insertIndex: number): HTMLDivElement {
   const dz = document.createElement('div');
   dz.className = "drop-zone";
-  if (pIdx === currentPlayerIndex && currentSong) dz.classList.add('waiting-for-input');
+  if (pIdx === gameState.currentPlayerIndex && gameState.currentSong) dz.classList.add('waiting-for-input');
 
   dz.onclick = () => {
-    if (pIdx !== currentPlayerIndex || !currentSong) return;
+    if (pIdx !== gameState.currentPlayerIndex || !gameState.currentSong) return;
     handleGuess(insertIndex);
   };
   return dz;
@@ -161,16 +211,18 @@ function handleGuess(index: number): void {
   audio.pause();
   clearTimeout(audioTimeout);
 
-  const timeline = players[currentPlayerIndex].timeline;
+  const timeline = gameState.players[gameState.currentPlayerIndex].timeline;
   const prevYear = index === 0 ? -Infinity : timeline[index - 1].y;
   const nextYear = index === timeline.length ? Infinity : timeline[index].y;
 
-  if (currentSong!.y >= prevYear && currentSong!.y <= nextYear) {
-    timeline.splice(index, 0, currentSong!);
-    showOverlay(currentSong!);
+  if (gameState.currentSong!.y >= prevYear && gameState.currentSong!.y <= nextYear) {
+    timeline.splice(index, 0, gameState.currentSong!);
+    gameState.save();
+    showOverlay(gameState.currentSong!);
   } else {
     alert(`WRONG! The song might reappear later!`);
-    deck.push(currentSong!);
+    gameState.deck.push(gameState.currentSong!);
+    gameState.save();
     nextTurn();
   }
 }
@@ -214,10 +266,23 @@ function closeOverlay(): void {
 }
 
 function nextTurn(): void {
-  currentSong = null;
-  currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-  if (currentPlayerIndex === 0) roundCount++;
+  gameState.currentSong = null;
+  gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
+  if (gameState.currentPlayerIndex === 0) gameState.roundCount++;
+  gameState.save();
   updateTurn();
+}
+
+function restoreGame(): void {
+  if (gameState.restore()) {
+    document.getElementById('splash')!.classList.remove('active');
+    document.getElementById('game')!.classList.add('active');
+    updateTurn();
+  }
+}
+
+if (gameState.restore()) {
+  restoreGame();
 }
 declare global {
   interface Window {
