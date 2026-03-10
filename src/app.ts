@@ -1,7 +1,20 @@
-import { songLibrary } from "./songs";
 import type { Player, Song, DetailedSong, GameStateData } from "./types";
 
 const STORAGE_KEY = "thatWasTheYear_gameState";
+
+let songLibrary: Song[] = [];
+let songsLoaded = false;
+
+async function loadSongs() {
+	if (songsLoaded) return;
+	try {
+		const resp = await fetch('./songs.json');
+		songLibrary = await resp.json();
+		songsLoaded = true;
+	} catch (e) {
+		console.error('Failed to load songs', e);
+	}
+}
 
 function shuffleDeck(deck: Song[]): void {
 	for (let i = deck.length - 1; i > 0; i--) {
@@ -15,7 +28,7 @@ class GameState implements GameStateData {
 	currentPlayerIndex = 0;
 	roundCount = 1;
 	currentSong: DetailedSong | null = null;
-	deck: Song[] = [...songLibrary];
+	deck: Song[] = [];
 	endCondition: { type: "infinite" | "turns"; value: number } = {
 		type: "infinite",
 		value: 10,
@@ -102,7 +115,12 @@ class GameState implements GameStateData {
 	restore(): boolean {
 		const saved = localStorage.getItem(STORAGE_KEY);
 		if (saved) {
-			this.deserialize(saved);
+			try {
+        this.deserialize(saved);
+      } catch (e) {
+        this.clear();
+        return false;
+      } 
 			return true;
 		}
 		return false;
@@ -113,8 +131,12 @@ class GameState implements GameStateData {
 		this.currentPlayerIndex = 0;
 		this.roundCount = 1;
 		this.currentSong = null;
-		this.deck = [...songLibrary];
-		shuffleDeck(this.deck);
+		if (songsLoaded) {
+			this.deck = [...songLibrary];
+			shuffleDeck(this.deck);
+		} else {
+			this.deck = [];
+		}
 		localStorage.removeItem(STORAGE_KEY);
 	}
 }
@@ -133,6 +155,7 @@ function addPlayerField(): void {
 }
 
 async function startGame(): Promise<void> {
+	await loadSongs();
 	const names = Array.from(
 		document.querySelectorAll<HTMLInputElement>(".p-name"),
 	)

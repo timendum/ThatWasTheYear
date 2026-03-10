@@ -15,7 +15,8 @@ Bun.serve({
       return new Response(result.outputs[0]);
     }
     
-    if (url.pathname.match(/\.(ico|png|svg|css|html)$/)) {
+    console.log(url.pathname, url.pathname.slice(1));
+    if (url.pathname.slice(1).split('/').length == 1) {
       return new Response(Bun.file('assets/' + url.pathname.slice(1)));
     }
     
