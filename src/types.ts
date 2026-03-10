@@ -14,3 +14,12 @@ export interface Player {
   name: string;
   timeline: DetailedSong[];
 }
+
+export interface GameStateData {
+  players: Player[];
+  currentPlayerIndex: number;
+  roundCount: number;
+  currentSong: DetailedSong | null;
+  deck: Song[];
+  endCondition: { type: 'infinite' | 'turns'; value: number };
+}
