@@ -3,6 +3,13 @@ import type { Player, Song, DetailedSong } from './types';
 
 const STORAGE_KEY = 'thatWasTheYear_gameState';
 
+function shuffleDeck(deck: Song[]): void {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
 class GameState {
   players: Player[] = [];
   currentPlayerIndex = 0;
@@ -48,6 +55,7 @@ class GameState {
     this.roundCount = 1;
     this.currentSong = null;
     this.deck = [...songLibrary];
+    shuffleDeck(this.deck);
     localStorage.removeItem(STORAGE_KEY);
   }
 }
@@ -75,13 +83,12 @@ async function startGame(): Promise<void> {
   gameState.players = names.map(name => ({ name, timeline: [] }));
 
   for (const p of gameState.players) {
-    const song = await getDetailedSong(gameState.deck.splice(Math.floor(Math.random() * gameState.deck.length), 1)[0]);
+    const song = await getDetailedSong(gameState.deck.pop()!);
     p.timeline.push(song);
   }
 
   document.getElementById('splash')!.classList.remove('active');
   document.getElementById('game')!.classList.add('active');
-  gameState.save();
   updateTurn();
 }
 
@@ -109,6 +116,7 @@ function updateTurn(): void {
   document.getElementById('replay-btn')!.style.display = 'none';
   document.getElementById('current-drag-item')!.replaceChildren();
   document.getElementById('audio-status')!.textContent = "";
+  gameState.save();
   renderBoard();
   audio.pause();
   clearTimeout(audioTimeout);
@@ -118,7 +126,7 @@ async function drawSong(): Promise<void> {
   document.getElementById('draw-btn')!.style.display = 'none';
   document.getElementById('audio-status')!.textContent = "Searching iTunes...";
 
-  const rawSong = gameState.deck.splice(Math.floor(Math.random() * gameState.deck.length), 1)[0];
+  const rawSong = gameState.deck.pop()!;
   gameState.currentSong = await getDetailedSong(rawSong);
 
   const mysteryCard = document.createElement('div');
@@ -133,7 +141,6 @@ async function drawSong(): Promise<void> {
   } else {
     document.getElementById('audio-status')!.textContent = "No audio found! Guess by title.";
   }
-  gameState.save();
   renderBoard();
 }
 
@@ -222,6 +229,7 @@ function handleGuess(index: number): void {
   } else {
     alert(`WRONG! The song might reappear later!`);
     gameState.deck.push(gameState.currentSong!);
+    shuffleDeck(gameState.deck);
     gameState.save();
     nextTurn();
   }
