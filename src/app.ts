@@ -54,30 +54,33 @@ async function getDetailedSong(song: Song): Promise<DetailedSong> {
 
 function updateTurn(): void {
   const p = players[currentPlayerIndex];
-  document.getElementById('turn-indicator')!.innerText = `${p.name}'s Turn`;
-  document.getElementById('round-display')!.innerText = `Round ${roundCount}`;
+  document.getElementById('turn-indicator')!.textContent = `${p.name}'s Turn`;
+  document.getElementById('round-display')!.textContent = `Round ${roundCount}`;
   document.getElementById('draw-btn')!.style.display = 'inline-block';
   document.getElementById('replay-btn')!.style.display = 'none';
-  document.getElementById('current-drag-item')!.innerHTML = '';
-  document.getElementById('audio-status')!.innerText = "";
+  document.getElementById('current-drag-item')!.replaceChildren();
+  document.getElementById('audio-status')!.textContent = "";
   renderBoard();
 }
 
 async function drawSong(): Promise<void> {
   document.getElementById('draw-btn')!.style.display = 'none';
-  document.getElementById('audio-status')!.innerText = "Searching iTunes...";
+  document.getElementById('audio-status')!.textContent = "Searching iTunes...";
 
   const rawSong = deck.splice(Math.floor(Math.random() * deck.length), 1)[0];
   currentSong = await getDetailedSong(rawSong);
 
-  document.getElementById('current-drag-item')!.innerHTML = `<div class="card mystery">?</div>`;
-  document.getElementById('audio-status')!.innerText = "Listen and click the right position on the timeline!";
+  const mysteryCard = document.createElement('div');
+  mysteryCard.className = 'card mystery';
+  mysteryCard.textContent = '?';
+  document.getElementById('current-drag-item')!.replaceChildren(mysteryCard);
+  document.getElementById('audio-status')!.textContent = "Listen and click the right position on the timeline!";
 
   if (currentSong.preview) {
     document.getElementById('replay-btn')!.style.display = 'inline-block';
     playPreview();
   } else {
-    document.getElementById('audio-status')!.innerText = "No audio found! Guess by title.";
+    document.getElementById('audio-status')!.textContent = "No audio found! Guess by title.";
   }
   renderBoard();
 }
@@ -93,13 +96,16 @@ function playPreview(): void {
 
 function renderBoard(): void {
   const container = document.getElementById('players-container')!;
-  container.innerHTML = '';
+  container.replaceChildren();
 
   players.forEach((player, pIdx) => {
     const isCurrent = pIdx === currentPlayerIndex;
     const area = document.createElement('div');
     area.className = `player-area ${isCurrent ? 'active-player-border' : ''}`;
-    area.innerHTML = `<h3>${player.name} (${player.timeline.length} Cards)</h3>`;
+    
+    const h3 = document.createElement('h3');
+    h3.textContent = `${player.name} (${player.timeline.length} Cards)`;
+    area.appendChild(h3);
 
     const timeline = document.createElement('div');
     timeline.className = "timeline";
@@ -108,14 +114,26 @@ function renderBoard(): void {
     player.timeline.forEach((song, sIdx) => {
       const card = document.createElement('div');
       card.className = "card";
-      card.innerHTML = `
-    <a href="${song.link}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
-      <img src="${song.img}" title="Listen on iTunes">
-      <div class="year">${song.y}</div>
-      <div style="font-weight:bold; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${song.t}</div>
-    </a>
-  `;
-
+      
+      const link = document.createElement('a');
+      link.href = song.link;
+      link.target = '_blank';
+      link.style.cssText = 'text-decoration: none; color: inherit; display: block;';
+      
+      const img = document.createElement('img');
+      img.src = song.img;
+      img.title = 'Listen on iTunes';
+      
+      const yearDiv = document.createElement('div');
+      yearDiv.className = 'year';
+      yearDiv.textContent = String(song.y);
+      
+      const titleDiv = document.createElement('div');
+      titleDiv.style.cssText = 'font-weight:bold; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;';
+      titleDiv.textContent = song.t;
+      
+      link.append(img, yearDiv, titleDiv);
+      card.appendChild(link);
       timeline.appendChild(card);
       timeline.appendChild(createDropZone(pIdx, sIdx + 1));
     });
@@ -158,14 +176,35 @@ function handleGuess(index: number): void {
 function showOverlay(song: DetailedSong): void {
   audio.play();
   const reveal = document.getElementById('reveal-card')!;
-  reveal.innerHTML = `
-    <div class="card" style="width:180px; min-height:240px; margin: 20px auto; font-size: 1rem;">
-      <a href="${song.link}" target="_blank"><img src="${song.img}" style="width:100%"></a>
-      <div class="year" style="font-size: 2.5rem;">${song.y}</div>
-      <p><strong>${song.t}</strong></p>
-      <p style="opacity:0.8">${song.a}</p>
-    </div>
-  `;
+  
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.cssText = 'width:180px; min-height:240px; margin: 20px auto; font-size: 1rem;';
+  
+  const link = document.createElement('a');
+  link.href = song.link;
+  link.target = '_blank';
+  const img = document.createElement('img');
+  img.src = song.img;
+  img.style.width = '100%';
+  link.appendChild(img);
+  
+  const yearDiv = document.createElement('div');
+  yearDiv.className = 'year';
+  yearDiv.style.fontSize = '2.5rem';
+  yearDiv.textContent = String(song.y);
+  
+  const titleP = document.createElement('p');
+  const strong = document.createElement('strong');
+  strong.textContent = song.t;
+  titleP.appendChild(strong);
+  
+  const artistP = document.createElement('p');
+  artistP.style.opacity = '0.8';
+  artistP.textContent = song.a;
+  
+  card.append(link, yearDiv, titleP, artistP);
+  reveal.replaceChildren(card);
   document.getElementById('preview-overlay')!.style.display = 'flex';
 }
 
