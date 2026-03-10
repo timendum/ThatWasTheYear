@@ -120,7 +120,7 @@ function renderBoard(): void {
       const link = document.createElement('a');
       link.href = song.link;
       link.target = '_blank';
-      link.style.cssText = 'text-decoration: none; color: inherit; display: block;';
+      link.className = 'card-link';
       
       const img = document.createElement('img');
       img.src = song.img;
@@ -131,7 +131,7 @@ function renderBoard(): void {
       yearDiv.textContent = String(song.y);
       
       const titleDiv = document.createElement('div');
-      titleDiv.style.cssText = 'font-weight:bold; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;';
+      titleDiv.className = 'card-title';
       titleDiv.textContent = song.t;
       
       link.append(img, yearDiv, titleDiv);
@@ -180,20 +180,18 @@ function showOverlay(song: DetailedSong): void {
   const reveal = document.getElementById('reveal-card')!;
   
   const card = document.createElement('div');
-  card.className = 'card';
-  card.style.cssText = 'width:180px; min-height:240px; margin: 20px auto; font-size: 1rem;';
+  card.className = 'card reveal-card-large';
   
   const link = document.createElement('a');
   link.href = song.link;
   link.target = '_blank';
+  link.className = 'card-link';
   const img = document.createElement('img');
   img.src = song.img;
-  img.style.width = '100%';
   link.appendChild(img);
   
   const yearDiv = document.createElement('div');
   yearDiv.className = 'year';
-  yearDiv.style.fontSize = '2.5rem';
   yearDiv.textContent = String(song.y);
   
   const titleP = document.createElement('p');
@@ -202,7 +200,7 @@ function showOverlay(song: DetailedSong): void {
   titleP.appendChild(strong);
   
   const artistP = document.createElement('p');
-  artistP.style.opacity = '0.8';
+  artistP.className = 'reveal-artist';
   artistP.textContent = song.a;
   
   card.append(link, yearDiv, titleP, artistP);
