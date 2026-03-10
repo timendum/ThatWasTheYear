@@ -1,13 +1,16 @@
-let players = [];
+import { songLibrary } from './songs';
+import type { Player, Song, DetailedSong } from './types';
+
+let players: Player[] = [];
 let currentPlayerIndex = 0;
 let roundCount = 1;
-let currentSong = null;
-let deck = [...songLibrary];
+let currentSong: DetailedSong | null = null;
+let deck: Song[] = [...songLibrary];
 const audio = new Audio();
-let audioTimeout;
+let audioTimeout: number;
 
-function addPlayerField() {
-  const container = document.getElementById('extra-players');
+function addPlayerField(): void {
+  const container = document.getElementById('extra-players')!;
   const input = document.createElement('input');
   input.type = "text";
   input.placeholder = `Player ${document.querySelectorAll('.p-name').length + 1}`;
@@ -15,26 +18,25 @@ function addPlayerField() {
   container.appendChild(input);
 }
 
-async function startGame() {
-  const names = Array.from(document.querySelectorAll('.p-name'))
+async function startGame(): Promise<void> {
+  const names = Array.from(document.querySelectorAll<HTMLInputElement>('.p-name'))
     .map(i => i.value.trim())
     .filter(n => n !== "");
 
   if (names.length === 0) return alert("Enter at least one name.");
-  players = names.map(name => ({name, timeline: []}));
+  players = names.map(name => ({ name, timeline: [] }));
 
-  // Initial cards
-  for (let p of players) {
+  for (const p of players) {
     const song = await getDetailedSong(deck.splice(Math.floor(Math.random() * deck.length), 1)[0]);
     p.timeline.push(song);
   }
 
-  document.getElementById('splash').classList.remove('active');
-  document.getElementById('game').classList.add('active');
+  document.getElementById('splash')!.classList.remove('active');
+  document.getElementById('game')!.classList.add('active');
   updateTurn();
 }
 
-async function getDetailedSong(song) {
+async function getDetailedSong(song: Song): Promise<DetailedSong> {
   try {
     const resp = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`);
     const data = await resp.json();
@@ -45,52 +47,52 @@ async function getDetailedSong(song) {
       preview: res?.previewUrl || null,
       link: res?.trackViewUrl || "#"
     };
-  } catch (e) {
-    return {...song, img: "https://via.placeholder.com/100", link: "#"};
+  } catch {
+    return { ...song, img: "https://via.placeholder.com/100", link: "#" };
   }
 }
 
-function updateTurn() {
+function updateTurn(): void {
   const p = players[currentPlayerIndex];
-  document.getElementById('turn-indicator').innerText = `${p.name}'s Turn`;
-  document.getElementById('round-display').innerText = `Round ${roundCount}`;
-  document.getElementById('draw-btn').style.display = 'inline-block';
-  document.getElementById('replay-btn').style.display = 'none';
-  document.getElementById('current-drag-item').innerHTML = '';
-  document.getElementById('audio-status').innerText = "";
+  document.getElementById('turn-indicator')!.innerText = `${p.name}'s Turn`;
+  document.getElementById('round-display')!.innerText = `Round ${roundCount}`;
+  document.getElementById('draw-btn')!.style.display = 'inline-block';
+  document.getElementById('replay-btn')!.style.display = 'none';
+  document.getElementById('current-drag-item')!.innerHTML = '';
+  document.getElementById('audio-status')!.innerText = "";
   renderBoard();
 }
 
-async function drawSong() {
-  document.getElementById('draw-btn').style.display = 'none';
-  document.getElementById('audio-status').innerText = "Searching iTunes...";
+async function drawSong(): Promise<void> {
+  document.getElementById('draw-btn')!.style.display = 'none';
+  document.getElementById('audio-status')!.innerText = "Searching iTunes...";
 
   const rawSong = deck.splice(Math.floor(Math.random() * deck.length), 1)[0];
   currentSong = await getDetailedSong(rawSong);
 
-  document.getElementById('current-drag-item').innerHTML = `<div class="card mystery">?</div>`;
-  document.getElementById('audio-status').innerText = "Listen and click the right position on the timeline!";
+  document.getElementById('current-drag-item')!.innerHTML = `<div class="card mystery">?</div>`;
+  document.getElementById('audio-status')!.innerText = "Listen and click the right position on the timeline!";
 
   if (currentSong.preview) {
-    document.getElementById('replay-btn').style.display = 'inline-block';
+    document.getElementById('replay-btn')!.style.display = 'inline-block';
     playPreview();
   } else {
-    document.getElementById('audio-status').innerText = "No audio found! Guess by title.";
+    document.getElementById('audio-status')!.innerText = "No audio found! Guess by title.";
   }
   renderBoard();
 }
 
-function playPreview() {
-  if (!currentSong || !currentSong.preview) return;
+function playPreview(): void {
+  if (!currentSong?.preview) return;
   audio.pause();
   clearTimeout(audioTimeout);
   audio.src = currentSong.preview;
   audio.play();
-  audioTimeout = setTimeout(() => audio.pause(), 10000);
+  audioTimeout = window.setTimeout(() => audio.pause(), 10000);
 }
 
-function renderBoard() {
-  const container = document.getElementById('players-container');
+function renderBoard(): void {
+  const container = document.getElementById('players-container')!;
   container.innerHTML = '';
 
   players.forEach((player, pIdx) => {
@@ -123,7 +125,7 @@ function renderBoard() {
   });
 }
 
-function createDropZone(pIdx, insertIndex) {
+function createDropZone(pIdx: number, insertIndex: number): HTMLDivElement {
   const dz = document.createElement('div');
   dz.className = "drop-zone";
   if (pIdx === currentPlayerIndex && currentSong) dz.classList.add('waiting-for-input');
@@ -135,7 +137,7 @@ function createDropZone(pIdx, insertIndex) {
   return dz;
 }
 
-function handleGuess(index) {
+function handleGuess(index: number): void {
   audio.pause();
   clearTimeout(audioTimeout);
 
@@ -143,19 +145,19 @@ function handleGuess(index) {
   const prevYear = index === 0 ? -Infinity : timeline[index - 1].y;
   const nextYear = index === timeline.length ? Infinity : timeline[index].y;
 
-  if (currentSong.y >= prevYear && currentSong.y <= nextYear) {
-    timeline.splice(index, 0, currentSong);
-    showOverlay(currentSong);
+  if (currentSong!.y >= prevYear && currentSong!.y <= nextYear) {
+    timeline.splice(index, 0, currentSong!);
+    showOverlay(currentSong!);
   } else {
     alert(`WRONG! The song might reappear later!`);
-    deck.push(currentSong); // Put it back
+    deck.push(currentSong!);
     nextTurn();
   }
 }
 
-function showOverlay(song) {
+function showOverlay(song: DetailedSong): void {
   audio.play();
-  const reveal = document.getElementById('reveal-card');
+  const reveal = document.getElementById('reveal-card')!;
   reveal.innerHTML = `
     <div class="card" style="width:180px; min-height:240px; margin: 20px auto; font-size: 1rem;">
       <a href="${song.link}" target="_blank"><img src="${song.img}" style="width:100%"></a>
@@ -164,17 +166,32 @@ function showOverlay(song) {
       <p style="opacity:0.8">${song.a}</p>
     </div>
   `;
-  document.getElementById('preview-overlay').style.display = 'flex';
+  document.getElementById('preview-overlay')!.style.display = 'flex';
 }
 
-function closeOverlay() {
-  document.getElementById('preview-overlay').style.display = 'none';
+function closeOverlay(): void {
+  document.getElementById('preview-overlay')!.style.display = 'none';
   nextTurn();
 }
 
-function nextTurn() {
+function nextTurn(): void {
   currentSong = null;
   currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
   if (currentPlayerIndex === 0) roundCount++;
   updateTurn();
 }
+declare global {
+  interface Window {
+    addPlayerField: typeof addPlayerField;
+    startGame: typeof startGame;
+    drawSong: typeof drawSong;
+    playPreview: typeof playPreview;
+    closeOverlay: typeof closeOverlay;
+  }
+}
+
+window.addPlayerField = addPlayerField;
+window.startGame = startGame;
+window.drawSong = drawSong;
+window.playPreview = playPreview;
+window.closeOverlay = closeOverlay;

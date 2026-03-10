@@ -1,4 +1,6 @@
-const songLibrary = [
+import type { Song } from './types';
+
+export const songLibrary: Song[] = [
   {t: "(Dont Fear) The Reaper", a: "Blue Öyster Cult", y: 1976},
 {t: "(I Cant Get No) Satisfaction", a: "The Rolling Stones", y: 1965},
 {t: "(Sittin On) the Dock of the Bay", a: "Otis Redding", y: 1967},
