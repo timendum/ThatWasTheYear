@@ -68,7 +68,7 @@ const audio = new Audio();
 let audioTimeout: number;
 
 function addPlayerField(): void {
-  const container = document.getElementById('extra-players')!;
+  const container = document.getElementById('player-inputs')!;
   const input = document.createElement('input');
   input.type = "text";
   input.placeholder = `Player ${document.querySelectorAll('.p-name').length + 1}`;

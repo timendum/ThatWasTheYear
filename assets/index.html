@@ -10,21 +10,24 @@
 
 <div id="splash" class="screen active">
   <h1 style="color: var(--accent); font-size: 3rem;">That Was The Year</h1>
+  <div class="player-inputs-title">Players:</div>
   <div id="player-inputs">
-    <label for="player1">
-      <input type="text" placeholder="Player 1" class="p-name">
-    </label>
-
-    <label for="player2">
-      <input type="text" placeholder="Player 2" class="p-name">
-    </label>
-    <div id="extra-players"></div>
+    <input type="text" placeholder="Player 1" class="p-name">
+    <input type="text" placeholder="Player 2" class="p-name">
   </div>
   <button onclick="addPlayerField()">+ Add Player</button>
-  <div id="end-condition">
-    <label class="end-condition-title">End Condition:</label>
-    <label class="end-condition-option"><input type="radio" name="endCondition" value="infinite" checked> Infinite (until songs run out)</label>
-    <label class="end-condition-option"><input type="radio" name="endCondition" value="turns"> Number of turns per player: <input type="number" id="turnsPerPlayer" min="1" value="10"></label>
+  <div class="end-condition-title">End Condition:</div>
+  <div id="end-condition-wrapper">
+    <div id="end-condition">
+      <label class="end-condition-option">
+        <input type="radio" name="endCondition" value="infinite" checked>
+        <span>Infinite (until songs run out)</span>
+      </label>
+      <label class="end-condition-option">
+        <input type="radio" name="endCondition" value="turns">
+        <span>Number of turns per player: <input type="number" id="turnsPerPlayer" min="1" value="10"></span>
+      </label>
+    </div>
   </div>
   <button onclick="startGame()">Start Game</button>
 </div>

@@ -210,8 +210,30 @@ button:hover {
   opacity: 0.8;
 }
 
-#end-condition {
+#player-inputs {
   margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.player-inputs-title {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+#end-condition-wrapper {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+#end-condition {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  gap: 5px 10px;
+  justify-items: start;
 }
 
 .end-condition-title {
@@ -221,13 +243,10 @@ button:hover {
 }
 
 .end-condition-option {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
+  display: contents;
 }
 
 .end-condition-option input[type="radio"] {
-  margin-right: 5px;
   width: auto;
 }
 
