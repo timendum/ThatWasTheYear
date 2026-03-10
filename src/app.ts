@@ -8,11 +8,11 @@ let songsLoaded = false;
 async function loadSongs() {
 	if (songsLoaded) return;
 	try {
-		const resp = await fetch('./songs.json');
+		const resp = await fetch("./songs.json");
 		songLibrary = await resp.json();
 		songsLoaded = true;
 	} catch (e) {
-		console.error('Failed to load songs', e);
+		console.error("Failed to load songs", e);
 	}
 }
 
@@ -116,11 +116,11 @@ class GameState implements GameStateData {
 		const saved = localStorage.getItem(STORAGE_KEY);
 		if (saved) {
 			try {
-        this.deserialize(saved);
-      } catch (e) {
-        this.clear();
-        return false;
-      } 
+				this.deserialize(saved);
+			} catch (e) {
+				this.clear();
+				return false;
+			}
 			return true;
 		}
 		return false;
@@ -228,18 +228,25 @@ async function drawSong(): Promise<void> {
 
 	const mysteryCard = document.createElement("div");
 	mysteryCard.className = "card mystery";
-	mysteryCard.textContent = "?";
-	document.getElementById("current-drag-item")!.replaceChildren(mysteryCard);
-	document.getElementById("audio-status")!.textContent =
-		"Listen and click the right position on the timeline!";
 
 	if (gameState.currentSong.preview) {
+		mysteryCard.textContent = "?";
+		document.getElementById("audio-status")!.textContent =
+			"Listen and click the right position on the timeline!";
 		document.getElementById("replay-btn")!.style.display = "inline-block";
 		playPreview();
 	} else {
+		const img = document.createElement("img");
+		img.src = gameState.currentSong.img;
+		const titleDiv = document.createElement("div");
+		titleDiv.className = "card-title";
+		titleDiv.textContent = gameState.currentSong.t;
+		mysteryCard.append(img, titleDiv);
 		document.getElementById("audio-status")!.textContent =
-			"No audio found! Guess by title.";
+			"No audio found! Guess by cover.";
 	}
+
+	document.getElementById("current-drag-item")!.replaceChildren(mysteryCard);
 	renderBoard();
 }
 
