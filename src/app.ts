@@ -418,6 +418,16 @@ function endGame(): void {
 	document.getElementById("splash")!.classList.add("active");
 }
 
+function resetGame(): void {
+	if (confirm("Are you sure you want to start over?")) {
+		audio.pause();
+		clearTimeout(audioTimeout);
+		gameState.clear();
+		document.getElementById("game")!.classList.remove("active");
+		document.getElementById("splash")!.classList.add("active");
+	}
+}
+
 function restoreGame(): void {
 	if (gameState.restore()) {
 		document.getElementById("splash")!.classList.remove("active");
@@ -436,6 +446,7 @@ declare global {
 		drawSong: typeof drawSong;
 		playPreview: typeof playPreview;
 		closeOverlay: typeof closeOverlay;
+		resetGame: typeof resetGame;
 	}
 }
 
@@ -444,3 +455,4 @@ window.startGame = startGame;
 window.drawSong = drawSong;
 window.playPreview = playPreview;
 window.closeOverlay = closeOverlay;
+window.resetGame = resetGame;

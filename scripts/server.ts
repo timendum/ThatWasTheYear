@@ -15,7 +15,6 @@ Bun.serve({
       return new Response(result.outputs[0]);
     }
     
-    console.log(url.pathname, url.pathname.slice(1));
     if (url.pathname.slice(1).split('/').length == 1) {
       return new Response(Bun.file('assets/' + url.pathname.slice(1)));
     }

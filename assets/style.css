@@ -268,6 +268,13 @@ button:hover {
   margin: 0 auto;
 }
 
+#reset-btn {
+  background: #777;
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  min-width: auto;
+}
+
 #audio-status {
   margin-top: 5px;
 }
