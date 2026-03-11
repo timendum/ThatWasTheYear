@@ -58,7 +58,7 @@ class GameState implements GameStateData {
 		this.roundCount = data.roundCount;
 		this.currentSong = data.currentSong;
 		this.deck = data.deck;
-		this.endCondition = data.endCondition || { type: "infinite", value: 10 };
+		this.endCondition = data.endCondition;
 	}
 
 	private isValidGameData(data: any): data is GameStateData {
@@ -69,7 +69,17 @@ class GameState implements GameStateData {
 			typeof data.roundCount === "number" &&
 			(data.currentSong === null || this.isDetailedSong(data.currentSong)) &&
 			Array.isArray(data.deck) &&
-			data.deck.every((s: unknown) => this.isSong(s))
+			data.deck.every((s: unknown) => this.isSong(s)) &&
+			this.isEndCondition(data.endCondition)
+		);
+	}
+
+	private isEndCondition(e: any): boolean {
+		return (
+			typeof e === "object" &&
+			e !== null &&
+			(e.type === "infinite" || e.type === "turns") &&
+			typeof e.value === "number"
 		);
 	}
 
