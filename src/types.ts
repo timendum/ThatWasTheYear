@@ -2,11 +2,12 @@ export interface Song {
   t: string;
   a: string;
   y: number;
+  itunesId?: string;
 }
 
 export interface DetailedSong extends Song {
   img: string;
-  preview?: string | null;
+  preview: string | null;
   link: string;
 }
 

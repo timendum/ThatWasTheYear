@@ -197,21 +197,23 @@ async function startGame(): Promise<void> {
 }
 
 async function getDetailedSong(song: Song): Promise<DetailedSong> {
-	try {
-		const resp = await fetch(
-			`https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`,
-		);
-		const data = await resp.json();
-		const res = data.results?.[0];
-		return {
-			...song,
-			img: res?.artworkUrl100 || "./placeholder-100.png",
-			preview: res?.previewUrl || null,
-			link: res?.trackViewUrl || "#",
-		};
-	} catch {
-		return { ...song, img: "./placeholder-100.png", link: "#" };
+	let url = `https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`;
+	if (typeof song.itunesId === "string") {
+		url = `https://itunes.apple.com/lookup?id=${song.itunesId}`;
 	}
+	const resp = await fetch(url);
+	const data = await resp.json();
+	const res = data.results?.[0];
+	const itunes_song = {
+		...song,
+		img: res?.artworkUrl100  as string|| "./placeholder-100.png",
+		preview: res?.previewUrl as string || null,
+		link: res?.trackViewUrl as string || "#",
+	};
+	if (!res || (!itunes_song.preview && itunes_song.img == "./placeholder-100.png")) {
+		throw new Error("No results");
+	}
+	return itunes_song;
 }
 
 function updateTurn(): void {
@@ -234,7 +236,14 @@ async function drawSong(): Promise<void> {
 	document.getElementById("audio-status")!.textContent = "Searching iTunes...";
 
 	const rawSong = gameState.deck.pop()!;
-	gameState.currentSong = await getDetailedSong(rawSong);
+	try {
+		gameState.currentSong = await getDetailedSong(rawSong);
+	} catch (e) {
+		console.error(e);
+		alert("Failed to fetch song details. Try again.");
+		updateTurn();
+		return;
+	}
 
 	const mysteryCard = document.createElement("div");
 	mysteryCard.className = "card mystery";
