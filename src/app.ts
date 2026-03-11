@@ -205,12 +205,12 @@ async function getDetailedSong(song: Song): Promise<DetailedSong> {
 		const res = data.results?.[0];
 		return {
 			...song,
-			img: res?.artworkUrl100 || "https://via.placeholder.com/100",
+			img: res?.artworkUrl100 || "./placeholder-100.png",
 			preview: res?.previewUrl || null,
 			link: res?.trackViewUrl || "#",
 		};
 	} catch {
-		return { ...song, img: "https://via.placeholder.com/100", link: "#" };
+		return { ...song, img: "./placeholder-100.png", link: "#" };
 	}
 }
 
