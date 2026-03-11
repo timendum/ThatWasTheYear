@@ -254,3 +254,40 @@ button:hover {
   width: 60px;
   margin-left: 5px;
 }
+
+.splash-title {
+  color: var(--accent);
+  font-size: 3rem;
+}
+
+.controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+#audio-status {
+  margin-top: 5px;
+}
+
+#replay-btn {
+  background: #444;
+}
+
+#current-drag-item {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  height: 150px;
+}
+
+#round-display {
+  font-weight: bold;
+  color: var(--accent);
+}
+
+.overlay-title {
+  color: var(--accent);
+}

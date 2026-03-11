@@ -9,7 +9,7 @@
 <body>
 
 <div id="splash" class="screen active">
-  <h1 style="color: var(--accent); font-size: 3rem;">That Was The Year</h1>
+  <h1 class="splash-title">That Was The Year</h1>
   <div class="player-inputs-title">Players:</div>
   <div id="player-inputs">
     <input type="text" placeholder="Player 1" class="p-name">
@@ -34,23 +34,23 @@
 
 <div id="game" class="screen">
   <div id="controls">
-    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto;">
+    <div class="controls-header">
       <h2 id="turn-indicator">Player's Turn</h2>
-      <div id="round-display" style="font-weight: bold; color: var(--accent);">Round 1</div>
+      <div id="round-display">Round 1</div>
     </div>
-    <div id="audio-status" style="margin-top: 5px;"></div>
+    <div id="audio-status"></div>
     <div id="action-bar">
         <button id="draw-btn" onclick="drawSong()">Play Random Song</button>
-        <button id="replay-btn" style="display:none; background:#444;" onclick="playPreview()">Replay ♫</button>
+        <button id="replay-btn" style="display:none;" onclick="playPreview()">Replay ♫</button>
     </div>
-    <div id="current-drag-item" style="margin-top:15px; display: flex; justify-content: center; height: 150px;"></div>
+    <div id="current-drag-item"></div>
   </div>
   <div id="players-container"></div>
 </div>
 
 <div id="preview-overlay">
   <div class="overlay-content">
-    <h1 style="color: var(--accent);">CORRECT!</h1>
+    <h1 class="overlay-title">CORRECT!</h1>
     <div id="reveal-card"></div>
     <button onclick="closeOverlay()">Continue</button>
   </div>
