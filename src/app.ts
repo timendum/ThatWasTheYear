@@ -94,17 +94,16 @@ class GameState implements GameStateData {
 	}
 
 	private isDetailedSong(s: any): s is DetailedSong {
+		if (!this.isSong(s)) {
+			return false;
+		}
+		s = s as any;
 		return (
-			typeof s === "object" &&
-			s !== null &&
-			typeof s.t === "string" &&
-			typeof s.a === "string" &&
-			typeof s.y === "number" &&
 			typeof s.img === "string" &&
-			(s.preview === undefined ||
-				s.preview === null ||
-				typeof s.preview === "string") &&
-			typeof s.link === "string"
+			((s as any).preview === undefined ||
+				(s as any).preview === null ||
+				typeof (s as any).preview === "string") &&
+			typeof (s as any).link === "string"
 		);
 	}
 
@@ -114,7 +113,8 @@ class GameState implements GameStateData {
 			s !== null &&
 			typeof s.t === "string" &&
 			typeof s.a === "string" &&
-			typeof s.y === "number"
+			typeof s.y === "number" &&
+			(s.itunesId === undefined || typeof s.itunesId === "string")
 		);
 	}
 
