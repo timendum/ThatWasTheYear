@@ -3,14 +3,14 @@ import type { Player, Song, DetailedSong, GameStateData } from "./types";
 const STORAGE_KEY = "thatWasTheYear_gameState";
 
 let songLibrary: Song[] = [];
-let songsLoaded = false;
 
 async function loadSongs() {
-	if (songsLoaded) return;
+	if (songLibrary.length > 0) {
+		return;
+	}
 	try {
 		const resp = await fetch("./songs.json");
 		songLibrary = await resp.json();
-		songsLoaded = true;
 	} catch (e) {
 		console.error("Failed to load songs", e);
 	}
@@ -144,7 +144,7 @@ class GameState implements GameStateData {
 		this.currentPlayerIndex = 0;
 		this.roundCount = 1;
 		this.currentSong = null;
-		if (songsLoaded) {
+		if (songLibrary.length > 0) {
 			this.deck = [...songLibrary];
 			shuffleDeck(this.deck);
 		} else {
