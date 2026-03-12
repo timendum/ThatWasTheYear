@@ -114,7 +114,7 @@ class GameState implements GameStateData {
 			typeof s.t === "string" &&
 			typeof s.a === "string" &&
 			typeof s.y === "number" &&
-			(s.itunesId === undefined || typeof s.itunesId === "string")
+			(s.itunesId === undefined || typeof s.itunesId === "number")
 		);
 	}
 
@@ -197,20 +197,42 @@ async function startGame(): Promise<void> {
 }
 
 async function getDetailedSong(song: Song): Promise<DetailedSong> {
-	let url = `https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`;
-	if (typeof song.itunesId === "string") {
-		url = `https://itunes.apple.com/lookup?id=${song.itunesId}`;
+	let data = undefined;
+	if (typeof song.itunesId === "number") {
+		// Let's try with itunesId
+		try {
+			const resp = await fetch(
+				`https://itunes.apple.com/lookup?id=${song.itunesId}`,
+			);
+			if (resp.status == 200) {
+				data = await resp.json();
+				const res = data.results?.[0];
+				if (!data.results || !data.results?.[0]) {
+					data = undefined;
+				}
+			}
+		} catch (e) {
+			console.error("Error fetching song by itunesId", e);
+		}
 	}
-	const resp = await fetch(url);
-	const data = await resp.json();
+	if (!data) {
+		// Fallback to search by title and author
+		const resp = await fetch(
+			`https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`,
+		);
+		data = await resp.json();
+	}
 	const res = data.results?.[0];
 	const itunes_song = {
 		...song,
-		img: res?.artworkUrl100  as string|| "./placeholder-100.png",
-		preview: res?.previewUrl as string || null,
-		link: res?.trackViewUrl as string || "#",
+		img: (res?.artworkUrl100 as string) || "./placeholder-100.png",
+		preview: (res?.previewUrl as string) || null,
+		link: (res?.trackViewUrl as string) || "#",
 	};
-	if (!res || (!itunes_song.preview && itunes_song.img == "./placeholder-100.png")) {
+	if (
+		!res ||
+		(!itunes_song.preview && itunes_song.img == "./placeholder-100.png")
+	) {
 		throw new Error("No results");
 	}
 	return itunes_song;

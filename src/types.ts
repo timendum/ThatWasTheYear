@@ -2,7 +2,7 @@ export interface Song {
   t: string;
   a: string;
   y: number;
-  itunesId?: string;
+  itunesId?: number;
 }
 
 export interface DetailedSong extends Song {
