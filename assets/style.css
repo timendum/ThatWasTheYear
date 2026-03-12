@@ -51,6 +51,10 @@ button {
   margin: 5px;
 }
 
+.overlay-content.wrong button {
+  background: var(--error);
+}
+
 button:hover {
   transform: scale(1.05);
 }
@@ -178,6 +182,10 @@ button:hover {
   border: 2px solid var(--accent);
 }
 
+.overlay-content.wrong {
+  border-color: var(--error);
+}
+
 .card-link {
   text-decoration: none;
   color: inherit;
@@ -250,7 +258,7 @@ button:hover {
   width: auto;
 }
 
-#turnsPerPlayer {
+#turnsPerPlayer, #correctSongsTarget {
   width: 60px;
   margin-left: 5px;
 }
@@ -297,4 +305,8 @@ button:hover {
 
 .overlay-title {
   color: var(--accent);
+}
+
+.overlay-content.wrong .overlay-title {
+  color: var(--error);
 }

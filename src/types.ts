@@ -22,5 +22,5 @@ export interface GameStateData {
   roundCount: number;
   currentSong: DetailedSong | null;
   deck: Song[];
-  endCondition: { type: 'infinite' | 'turns'; value: number };
+  endCondition: { type: 'infinite' | 'turns' | 'correctSongs'; value: number };
 }

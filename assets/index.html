@@ -27,6 +27,10 @@
         <input type="radio" name="endCondition" value="turns">
         <span>Number of turns per player: <input type="number" id="turnsPerPlayer" min="1" value="10"></span>
       </label>
+      <label class="end-condition-option">
+        <input type="radio" name="endCondition" value="correctSongs">
+        <span>First to reach: <input type="number" id="correctSongsTarget" min="1" value="10"> correct songs</span>
+      </label>
     </div>
   </div>
   <button onclick="startGame()">Start Game</button>

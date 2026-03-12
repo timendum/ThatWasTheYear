@@ -29,10 +29,11 @@ class GameState implements GameStateData {
 	roundCount = 1;
 	currentSong: DetailedSong | null = null;
 	deck: Song[] = [];
-	endCondition: { type: "infinite" | "turns"; value: number } = {
-		type: "infinite",
-		value: 10,
-	};
+	endCondition: { type: "infinite" | "turns" | "correctSongs"; value: number } =
+		{
+			type: "infinite",
+			value: 10,
+		};
 
 	serialize(): string {
 		const data: GameStateData = {
@@ -78,7 +79,9 @@ class GameState implements GameStateData {
 		return (
 			typeof e === "object" &&
 			e !== null &&
-			(e.type === "infinite" || e.type === "turns") &&
+			(e.type === "infinite" ||
+				e.type === "turns" ||
+				e.type === "correctSongs") &&
 			typeof e.value === "number"
 		);
 	}
@@ -176,11 +179,19 @@ async function startGame(): Promise<void> {
 
 	const type = (document.querySelector<HTMLInputElement>(
 		'input[name="endCondition"]:checked',
-	)?.value || "infinite") as "infinite" | "turns";
-	const value = parseInt(
-		(document.getElementById("turnsPerPlayer") as HTMLInputElement)?.value ||
-			"10",
-	);
+	)?.value || "infinite") as "infinite" | "turns" | "correctSongs";
+	let value = 0;
+	if (type === "turns") {
+		value = parseInt(
+			(document.getElementById("turnsPerPlayer") as HTMLInputElement)?.value ||
+				"10",
+		);
+	} else if (type === "correctSongs") {
+		value = parseInt(
+			(document.getElementById("correctSongsTarget") as HTMLInputElement)
+				?.value || "10",
+		);
+	}
 
 	gameState.clear();
 	gameState.players = names.map((name) => ({ name, timeline: [] }));
@@ -389,6 +400,14 @@ function handleGuess(index: number): void {
 }
 
 function showOverlay(song: DetailedSong, isCorrect: boolean): void {
+	const overlayContent = document.querySelector(".overlay-content")!;
+
+	if (isCorrect) {
+		overlayContent.classList.remove("wrong");
+	} else {
+		overlayContent.classList.add("wrong");
+	}
+
 	document.getElementById("overlay-title")!.textContent = isCorrect
 		? "CORRECT!"
 		: "WRONG!";
@@ -422,35 +441,62 @@ function nextTurn(): void {
 	gameState.currentSong = null;
 	gameState.currentPlayerIndex =
 		(gameState.currentPlayerIndex + 1) % gameState.players.length;
-	if (gameState.currentPlayerIndex === 0) gameState.roundCount++;
+	if (gameState.currentPlayerIndex === 0) {
+		gameState.roundCount++;
+	}
 	gameState.save();
 
-	if (
-		gameState.endCondition.type === "turns" &&
-		gameState.roundCount > gameState.endCondition.value
-	) {
-		endGame();
+	if (endGame()) {
 		return;
 	}
-
 	updateTurn();
 }
 
-function endGame(): void {
+function endGame(): boolean {
+	if (gameState.endCondition.type == "infinite") {
+		return false;
+	}
+	let winners: Player[];
+	let message: string;
+
+	if (gameState.endCondition.type === "correctSongs") {
+		if (gameState.currentPlayerIndex != 0) {
+			// Check only after the last player in the turn
+			return false;
+		}
+		// Players get one song in the timeline for free, so -1
+		winners = gameState.players.filter(
+			(p) => p.timeline.length - 1 >= gameState.endCondition.value,
+		);
+		if (winners.length === 0) {
+			return false;
+		}
+		const correctSongs = winners[0].timeline.length - 1;
+		message =
+			winners.length > 1
+				? `Game Over! Tie between: ${winners.map((w) => w.name).join(", ")} with ${correctSongs} correct songs!`
+				: `Game Over! Winner: ${winners[0].name} with ${correctSongs} correct songs!`;
+	} else {
+		if (gameState.roundCount <= gameState.endCondition.value) {
+			return false;
+		}
+		const maxScore = Math.max(
+			...gameState.players.map((p) => p.timeline.length),
+		);
+		winners = gameState.players.filter((p) => p.timeline.length === maxScore);
+		message =
+			winners.length > 1
+				? `Game Over! Tie between: ${winners.map((w) => w.name).join(", ")} with ${maxScore} cards!`
+				: `Game Over! Winner: ${winners[0].name} with ${maxScore} cards!`;
+	}
+
 	audio.pause();
 	clearTimeout(audioTimeout);
-	const maxScore = Math.max(...gameState.players.map((p) => p.timeline.length));
-	const winners = gameState.players.filter(
-		(p) => p.timeline.length === maxScore,
-	);
-	const message =
-		winners.length > 1
-			? `Game Over! Tie between: ${winners.map((w) => w.name).join(", ")} with ${maxScore} cards!`
-			: `Game Over! Winner: ${winners[0].name} with ${maxScore} cards!`;
 	alert(message);
 	gameState.clear();
 	document.getElementById("game")!.classList.remove("active");
 	document.getElementById("splash")!.classList.add("active");
+	return true;
 }
 
 function resetGame(): void {
