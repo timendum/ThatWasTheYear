@@ -158,10 +158,11 @@ const gameState = new GameState();
 const audio = new Audio();
 let audioTimeout: number;
 
-function addPlayerField(): void {
+function addPlayerField(name = ""): void {
 	const container = document.getElementById("player-inputs")!;
 	const input = document.createElement("input");
 	input.type = "text";
+	input.value = name;
 	input.placeholder = `Player ${document.querySelectorAll(".p-name").length + 1}`;
 	input.className = "p-name";
 	container.appendChild(input);
@@ -511,6 +512,22 @@ function resetGame(): void {
 
 function restoreGame(): void {
 	if (gameState.restore()) {
+		document.getElementById("player-inputs")!.replaceChildren();
+		gameState.players.forEach((p) => addPlayerField(p.name));
+
+		const endType = gameState.endCondition.type;
+		document.querySelector<HTMLInputElement>(
+			`input[name="endCondition"][value="${endType}"]`,
+		)!.checked = true;
+		if (endType === "turns") {
+			(document.getElementById("turnsPerPlayer") as HTMLInputElement).value =
+				String(gameState.endCondition.value);
+		} else if (endType === "correctSongs") {
+			(
+				document.getElementById("correctSongsTarget") as HTMLInputElement
+			).value = String(gameState.endCondition.value);
+		}
+
 		document.getElementById("splash")!.classList.remove("active");
 		document.getElementById("game")!.classList.add("active");
 		updateTurn();
