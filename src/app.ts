@@ -165,7 +165,24 @@ function addPlayerField(name = ""): void {
 	input.value = name;
 	input.placeholder = `Player ${document.querySelectorAll(".p-name").length + 1}`;
 	input.className = "p-name";
+	input.addEventListener("keydown", (e) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			const allInputs = Array.from(
+				document.querySelectorAll<HTMLInputElement>(".p-name"),
+			);
+			const currentIndex = allInputs.indexOf(input);
+			if (currentIndex === allInputs.length - 1) {
+				document
+					.querySelector<HTMLButtonElement>('[onclick="startGame()"]')
+					?.focus();
+			} else {
+				allInputs[currentIndex + 1]?.focus();
+			}
+		}
+	});
 	container.appendChild(input);
+	if (name === "") input.focus();
 }
 
 async function startGame(): Promise<void> {
@@ -257,7 +274,8 @@ function updateTurn(): void {
 	document.getElementById("turn-indicator")!.textContent = `${p.name}'s Turn`;
 	document.getElementById("round-display")!.textContent =
 		`Round ${gameState.roundCount}`;
-	document.getElementById("draw-btn")!.style.display = "inline-block";
+	const drawBtn = document.getElementById("draw-btn")!;
+	drawBtn.style.display = "inline-block";
 	document.getElementById("replay-btn")!.style.display = "none";
 	document.getElementById("current-drag-item")!.replaceChildren();
 	document.getElementById("audio-status")!.textContent = "";
@@ -265,6 +283,7 @@ function updateTurn(): void {
 	renderBoard();
 	audio.pause();
 	clearTimeout(audioTimeout);
+	setTimeout(() => drawBtn.focus(), 100);
 }
 
 async function drawSong(): Promise<void> {
@@ -303,6 +322,15 @@ async function drawSong(): Promise<void> {
 
 	document.getElementById("current-drag-item")!.replaceChildren(mysteryCard);
 	renderBoard();
+	setTimeout(() => {
+		const firstDropZone = document.querySelector<HTMLElement>(
+			".drop-zone.waiting-for-input",
+		);
+		if (firstDropZone) {
+			firstDropZone.focus();
+			focusedDropZoneIndex = 0;
+		}
+	}, 100);
 }
 
 function playPreview(): void {
@@ -317,6 +345,7 @@ function playPreview(): void {
 function renderBoard(): void {
 	const container = document.getElementById("players-container")!;
 	container.replaceChildren();
+	focusedDropZoneIndex = 0;
 
 	gameState.players.forEach((player, pIdx) => {
 		const isCurrent = pIdx === gameState.currentPlayerIndex;
@@ -366,12 +395,31 @@ function renderBoard(): void {
 function createDropZone(pIdx: number, insertIndex: number): HTMLDivElement {
 	const dz = document.createElement("div");
 	dz.className = "drop-zone";
-	if (pIdx === gameState.currentPlayerIndex && gameState.currentSong)
+	const isActive =
+		pIdx === gameState.currentPlayerIndex && gameState.currentSong;
+	if (isActive) {
 		dz.classList.add("waiting-for-input");
+		dz.tabIndex = 0;
+	}
 
-	dz.onclick = () => {
-		if (pIdx !== gameState.currentPlayerIndex || !gameState.currentSong) return;
+	const handleClick = () => {
+		if (pIdx !== gameState.currentPlayerIndex || !gameState.currentSong) {
+			return;
+		}
+		const overlay = document.getElementById("preview-overlay")!;
+		if (overlay.style.display === "flex") {
+			// Answer overlay is showing
+			return;
+		}
 		handleGuess(insertIndex);
+	};
+
+	dz.onclick = handleClick;
+	dz.onkeydown = (e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			handleClick();
+		}
 	};
 	return dz;
 }
@@ -430,6 +478,12 @@ function showOverlay(song: DetailedSong, isCorrect: boolean): void {
 	}
 
 	document.getElementById("preview-overlay")!.style.display = "flex";
+	setTimeout(() => {
+		const continueBtn = document.querySelector<HTMLButtonElement>(
+			".overlay-content button",
+		);
+		if (continueBtn) continueBtn.focus();
+	}, 100);
 }
 
 function closeOverlay(): void {
@@ -533,8 +587,70 @@ function restoreGame(): void {
 	}
 }
 
+let focusedDropZoneIndex = 0;
+
+function setupKeyboardNavigation(): void {
+	document.addEventListener("keydown", (e) => {
+		if (
+			document.getElementById("game")?.classList.contains("active") &&
+			gameState.currentSong
+		) {
+			const dropZones = Array.from(
+				document.querySelectorAll<HTMLElement>(".drop-zone.waiting-for-input"),
+			);
+			if (dropZones.length === 0) return;
+
+			if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+				e.preventDefault();
+				focusedDropZoneIndex = Math.max(0, focusedDropZoneIndex - 1);
+				const dropZone = dropZones[focusedDropZoneIndex];
+				dropZone?.focus();
+				dropZone?.scrollIntoView({
+					behavior: "smooth",
+					block: "center",
+					inline: "center",
+				});
+			} else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+				e.preventDefault();
+				focusedDropZoneIndex = Math.min(
+					dropZones.length - 1,
+					focusedDropZoneIndex + 1,
+				);
+				const dropZone = dropZones[focusedDropZoneIndex];
+				dropZone?.focus();
+				dropZone?.scrollIntoView({
+					behavior: "smooth",
+					block: "center",
+					inline: "center",
+				});
+			}
+		}
+	});
+
+	const addPlayerBtn = document.querySelector<HTMLButtonElement>(
+		'[onclick="addPlayerField()"]',
+	)!;
+	addPlayerBtn.addEventListener("keydown", (e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			addPlayerField();
+		}
+	});
+
+	const startGameBtn = document.querySelector<HTMLButtonElement>(
+		'[onclick="startGame()"]',
+	)!;
+	startGameBtn.addEventListener("keydown", (e) => {
+		if (e.key === "Enter" || e.key === " ") {
+			e.preventDefault();
+			startGame();
+		}
+	});
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 	loadSongs();
+	setupKeyboardNavigation();
 
 	if (gameState.restore()) {
 		restoreGame();

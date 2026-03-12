@@ -38,6 +38,12 @@ input {
   margin: 5px;
   border-radius: 4px;
   width: 200px;
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.3);
 }
 
 button {
@@ -49,10 +55,19 @@ button {
   cursor: pointer;
   transition: 0.1s;
   margin: 5px;
+  outline: none;
+}
+
+button:focus {
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.5);
 }
 
 .overlay-content.wrong button {
   background: var(--error);
+}
+
+.overlay-content.wrong button:focus {
+  box-shadow: 0 0 0 3px rgba(185, 29, 84, 0.5);
 }
 
 button:hover {
@@ -100,12 +115,20 @@ button:hover {
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
+  outline: none;
 }
 
 .drop-zone.waiting-for-input {
   border-color: var(--accent);
   background: rgba(29, 185, 84, 0.1);
   animation: pulse 1.5s infinite;
+}
+
+.drop-zone:focus {
+  background: var(--accent);
+  border-color: var(--accent);
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3);
 }
 
 @keyframes pulse {

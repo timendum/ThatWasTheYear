@@ -15,25 +15,25 @@
     <input type="text" placeholder="Player 1" class="p-name">
     <input type="text" placeholder="Player 2" class="p-name">
   </div>
-  <button onclick="addPlayerField()">+ Add Player</button>
+  <button onclick="addPlayerField()" tabindex="0">+ Add Player</button>
   <div class="end-condition-title">End Condition:</div>
   <div id="end-condition-wrapper">
     <div id="end-condition">
       <label class="end-condition-option">
-        <input type="radio" name="endCondition" value="infinite" checked>
+        <input type="radio" name="endCondition" value="infinite" checked tabindex="0">
         <span>Infinite (until songs run out)</span>
       </label>
       <label class="end-condition-option">
-        <input type="radio" name="endCondition" value="turns">
-        <span>Number of turns per player: <input type="number" id="turnsPerPlayer" min="1" value="10"></span>
+        <input type="radio" name="endCondition" value="turns" tabindex="0">
+        <span>Number of turns per player: <input type="number" id="turnsPerPlayer" min="1" value="10" tabindex="0"></span>
       </label>
       <label class="end-condition-option">
-        <input type="radio" name="endCondition" value="correctSongs">
-        <span>First to reach: <input type="number" id="correctSongsTarget" min="1" value="10"> correct songs</span>
+        <input type="radio" name="endCondition" value="correctSongs" tabindex="0">
+        <span>First to reach: <input type="number" id="correctSongsTarget" min="1" value="10" tabindex="0"> correct songs</span>
       </label>
     </div>
   </div>
-  <button onclick="startGame()">Start Game</button>
+  <button onclick="startGame()" tabindex="0">Start Game</button>
 </div>
 
 <div id="game" class="screen">
@@ -41,12 +41,12 @@
     <div class="controls-header">
       <h2 id="turn-indicator">Player's Turn</h2>
       <div id="round-display">Round 1</div>
-      <button id="reset-btn" onclick="resetGame()" title="Start over" type="reset">↻</button>
+      <button id="reset-btn" onclick="resetGame()" title="Start over" type="reset" tabindex="0">↻</button>
     </div>
     <div id="audio-status"></div>
     <div id="action-bar">
-        <button id="draw-btn" onclick="drawSong()">Play Random Song</button>
-        <button id="replay-btn" style="display:none;" onclick="playPreview()">Replay ♫</button>
+        <button id="draw-btn" onclick="drawSong()" tabindex="0">Play Random Song</button>
+        <button id="replay-btn" style="display:none;" onclick="playPreview()" tabindex="0">Replay ♫</button>
     </div>
     <div id="current-drag-item"></div>
   </div>
@@ -67,7 +67,7 @@
         <p class="reveal-artist" id="reveal-artist"></p>
       </div>
     </div>
-    <button onclick="closeOverlay()">Continue</button>
+    <button onclick="closeOverlay()" tabindex="0">Continue</button>
   </div>
 </div>
 
