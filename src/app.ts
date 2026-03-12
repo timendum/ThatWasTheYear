@@ -169,7 +169,6 @@ function addPlayerField(name = ""): void {
 }
 
 async function startGame(): Promise<void> {
-	await loadSongs();
 	const names = Array.from(
 		document.querySelectorAll<HTMLInputElement>(".p-name"),
 	)
@@ -534,9 +533,14 @@ function restoreGame(): void {
 	}
 }
 
-if (gameState.restore()) {
-	restoreGame();
-}
+document.addEventListener("DOMContentLoaded", () => {
+	loadSongs();
+
+	if (gameState.restore()) {
+		restoreGame();
+	}
+});
+
 declare global {
 	interface Window {
 		addPlayerField: typeof addPlayerField;
