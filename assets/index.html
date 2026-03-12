@@ -51,8 +51,18 @@
 
 <div id="preview-overlay">
   <div class="overlay-content">
-    <h1 class="overlay-title">CORRECT!</h1>
-    <div id="reveal-card"></div>
+    <h1 class="overlay-title" id="overlay-title">CORRECT!</h1>
+    <p id="overlay-message"></p>
+    <div id="reveal-card">
+      <div class="card reveal-card-large">
+        <a id="reveal-link" href="#" target="_blank" class="card-link">
+          <img id="reveal-img" src="" alt="">
+        </a>
+        <div class="year" id="reveal-year"></div>
+        <p><strong id="reveal-title"></strong></p>
+        <p class="reveal-artist" id="reveal-artist"></p>
+      </div>
+    </div>
     <button onclick="closeOverlay()">Continue</button>
   </div>
 </div>

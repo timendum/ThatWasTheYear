@@ -261,7 +261,7 @@ async function drawSong(): Promise<void> {
 	try {
 		gameState.currentSong = await getDetailedSong(rawSong);
 	} catch (e) {
-		console.error(e);
+		console.error("getDetailedSong failed", e);
 		alert("Failed to fetch song details. Try again.");
 		updateTurn();
 		return;
@@ -376,46 +376,37 @@ function handleGuess(index: number): void {
 	) {
 		timeline.splice(index, 0, gameState.currentSong!);
 		gameState.save();
-		showOverlay(gameState.currentSong!);
+		showOverlay(gameState.currentSong!, true);
 	} else {
-		alert(`WRONG! The song might reappear later!`);
 		gameState.deck.push(gameState.currentSong!);
 		shuffleDeck(gameState.deck);
 		gameState.save();
-		nextTurn();
+		showOverlay(gameState.currentSong!, false);
 	}
 }
 
-function showOverlay(song: DetailedSong): void {
-	audio.play();
-	const reveal = document.getElementById("reveal-card")!;
+function showOverlay(song: DetailedSong, isCorrect: boolean): void {
+	document.getElementById("overlay-title")!.textContent = isCorrect
+		? "CORRECT!"
+		: "WRONG!";
+	document.getElementById("overlay-message")!.textContent = isCorrect
+		? ""
+		: "The song might reappear later";
 
-	const card = document.createElement("div");
-	card.className = "card reveal-card-large";
+	const revealCard = document.getElementById("reveal-card")!;
 
-	const link = document.createElement("a");
-	link.href = song.link;
-	link.target = "_blank";
-	link.className = "card-link";
-	const img = document.createElement("img");
-	img.src = song.img;
-	link.appendChild(img);
+	if (isCorrect) {
+		audio.play();
+		document.getElementById("reveal-img")!.setAttribute("src", song.img);
+		document.getElementById("reveal-link")!.setAttribute("href", song.link);
+		document.getElementById("reveal-year")!.textContent = String(song.y);
+		document.getElementById("reveal-title")!.textContent = song.t;
+		document.getElementById("reveal-artist")!.textContent = song.a;
+		revealCard.style.display = "block";
+	} else {
+		revealCard.style.display = "none";
+	}
 
-	const yearDiv = document.createElement("div");
-	yearDiv.className = "year";
-	yearDiv.textContent = String(song.y);
-
-	const titleP = document.createElement("p");
-	const strong = document.createElement("strong");
-	strong.textContent = song.t;
-	titleP.appendChild(strong);
-
-	const artistP = document.createElement("p");
-	artistP.className = "reveal-artist";
-	artistP.textContent = song.a;
-
-	card.append(link, yearDiv, titleP, artistP);
-	reveal.replaceChildren(card);
 	document.getElementById("preview-overlay")!.style.display = "flex";
 }
 
