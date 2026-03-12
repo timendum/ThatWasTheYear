@@ -220,6 +220,9 @@ async function getDetailedSong(song: Song): Promise<DetailedSong> {
 		const resp = await fetch(
 			`https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`,
 		);
+		if (resp.status != 200) {
+			throw new Error("iTunes API error: status = " + resp.status);
+		}
 		data = await resp.json();
 	}
 	const res = data.results?.[0];
@@ -391,7 +394,7 @@ function showOverlay(song: DetailedSong, isCorrect: boolean): void {
 		: "WRONG!";
 	document.getElementById("overlay-message")!.textContent = isCorrect
 		? ""
-		: "The song might reappear later";
+		: "The song might reappear later.";
 
 	const revealCard = document.getElementById("reveal-card")!;
 
