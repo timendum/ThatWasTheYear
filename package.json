@@ -3,13 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "bun build src/app.ts --outdir=dist --target=browser && bun run copy-assets",
+    "build": "bun build src/index.tsx --outdir=dist --target=browser && bun run copy-assets",
     "copy-assets": "bun run scripts/copy-assets.ts",
     "serve": "bun run --hot scripts/server.ts",
     "check-songs": "bun run scripts/check-songs.ts"
   },
+  "dependencies": {
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/react": "^19.2.4",
+    "@types/react-dom": "^19.2.3"
   },
   "module": "index.ts",
   "private": true,

@@ -7,9 +7,9 @@ Bun.serve({
       return new Response(Bun.file('assets/index.html'));
     }
     
-    if (url.pathname === "/app.js") {
+    if (url.pathname === "/index.js") {
       const result = await Bun.build({
-        entrypoints: ["./src/app.ts"],
+        entrypoints: ["./src/index.tsx"],
         target: "browser",
       });
       return new Response(result.outputs[0]);

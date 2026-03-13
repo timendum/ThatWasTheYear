@@ -124,6 +124,13 @@ button:hover {
   animation: pulse 1.5s infinite;
 }
 
+.drop-zone.focused {
+  background: var(--accent);
+  border-color: var(--accent);
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.3);
+}
+
 .drop-zone:focus {
   background: var(--accent);
   border-color: var(--accent);
@@ -261,7 +268,7 @@ button:hover {
 }
 
 #end-condition {
-  display: inline-grid;
+  display: grid;
   grid-template-columns: auto auto;
   gap: 5px 10px;
   justify-items: start;
@@ -281,7 +288,7 @@ button:hover {
   width: auto;
 }
 
-#turnsPerPlayer, #correctSongsTarget {
+.end-condition-value {
   width: 60px;
   margin-left: 5px;
 }
