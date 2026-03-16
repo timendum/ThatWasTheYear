@@ -16,11 +16,28 @@ export interface Player {
   timeline: DetailedSong[];
 }
 
-export interface GameStateData {
+export interface EndCondition {
+  type: "infinite" | "turns" | "correctSongs";
+  value: number;
+}
+
+export interface GameState {
   players: Player[];
   currentPlayerIndex: number;
   roundCount: number;
   currentSong: DetailedSong | null;
   deck: Song[];
-  endCondition: { type: 'infinite' | 'turns' | 'correctSongs'; value: number };
+  allSongs: Song[];
+  endCondition: EndCondition;
+  gameStarted: boolean;
+  gameOver: boolean;
 }
+
+export type GameAction =
+  | { type: "INIT_DECK"; songs: Song[] }
+  | { type: "START_GAME"; players: Player[] }
+  | { type: "SET_END_CONDITION"; endCondition: EndCondition }
+  | { type: "DRAW_SONG"; song: DetailedSong }
+  | { type: "PLACE_SONG"; position: number }
+  | { type: "RESTORE"; state: GameState }
+  | { type: "RESET" };
