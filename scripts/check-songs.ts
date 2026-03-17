@@ -1,18 +1,19 @@
 import songs from "../assets/songs.json";
 import type { Song } from "../src/types";
+import { getDetailedITunesSong } from "../src/gameState";
 
 async function checkSong(song: Song) {
-  const resp = await fetch(
-    `https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`,
-  );
-  const data = await resp.json();
-  const result = data.results?.[0];
+  const result = await getDetailedITunesSong(song);
 
   const found = !!result;
-  const hasPreview = !!result?.previewUrl;
-  const hasArtwork = !!result?.artworkUrl100;
+  const hasPreview = result?.previewUrl?.startsWith("http");
+  const hasArtwork = result?.artworkUrl100?.startsWith("http");
 
-  const titleMatch = found && result.trackName?.toLowerCase() === song.t.toLowerCase();
+  const normalize = (s: string) => s.replace(/\s*\([^)]+\)\s*$/, "").toLowerCase();
+  const titleMatch =
+    found &&
+    (result.trackName?.toLowerCase() === song.t.toLowerCase() ||
+      normalize(result.trackName || "") === normalize(song.t));
   const artistMatch = found && result.artistName?.toLowerCase() === song.a.toLowerCase();
 
   let releaseYear = null;
@@ -22,48 +23,91 @@ async function checkSong(song: Song) {
   const yearMatch = releaseYear === song.y;
 
   return {
-    song,
+    ...song,
+    itunesId: result?.trackId || song.itunesId,
     found,
-    hasPreview,
-    hasArtwork,
-    titleMatch,
-    artistMatch,
-    yearMatch,
-    fetchedTitle: result?.trackName || null,
-    fetchedArtist: result?.artistName || null,
-    fetchedYear: releaseYear,
-    itunesId: result?.trackId || null,
+    mp: hasPreview,
+    mi: hasArtwork,
+    mt: titleMatch,
+    ma: artistMatch,
+    my: yearMatch,
+    ft: result?.trackName || null, // fetchedTitle
+    fa: result?.artistName || null, // fetchedArtist
+    fy: releaseYear, // fetchedYear
   };
 }
 
+type CheckedSong = Awaited<ReturnType<typeof checkSong>>;
+
+async function loadExisting(): Promise<Map<string, CheckedSong>> {
+  const map = new Map();
+  const file = Bun.file("./assets/songs-checked.json");
+  if (await file.exists()) {
+    const data = await file.json();
+    for (const entry of data) {
+      map.set(`${entry.t}|||${entry.a}`, entry);
+    }
+  }
+  return map;
+}
+
+const sortKey = (s: string) => s.replace(/^The /i, "").toLowerCase();
+
+async function saveResults(existing: Map<string, unknown>) {
+  const outputData = [...existing.values()] as { t: string; a: string }[];
+  outputData.sort(
+    (a, b) => sortKey(a.t).localeCompare(sortKey(b.t)) || sortKey(a.a).localeCompare(sortKey(b.a)),
+  );
+  const lines = outputData.map((entry) => `  ${JSON.stringify(entry)}`);
+  await Bun.write("./assets/songs-checked.json", `[\n${lines.join(",\n")}\n]`);
+  console.log(`\nWrote ${outputData.length} results to ./assets/songs-checked.json`);
+}
+
 async function main() {
+  const existing = await loadExisting();
+  console.log(`Found ${existing.size} already-checked songs.`);
   console.log(`Checking ${songs.length} songs...\n`);
 
-  const results = [];
+  process.on("SIGINT", async () => {
+    console.log("\n\nInterrupted, saving progress...");
+    await saveResults(existing);
+    process.exit(0);
+  });
+
+  const results: CheckedSong[] = [];
   for (let i = 0; i < songs.length; i++) {
-    const result = await checkSong(songs[i]);
+    const song = songs[i];
+    const key = `${song.t}|||${song.a}`;
+    if (existing.has(key)) {
+      console.log(`[${i + 1}/${songs.length}] SKIP: ${song.t} - ${song.a}`);
+      continue;
+    }
+
+    const result = await checkSong(song);
     results.push(result);
+
+    existing.set(key, result);
 
     if (!result.found) {
       console.log(
-        `[${i + 1}/${songs.length}] ❌ NOT FOUND: ${result.song.t} - ${result.song.a} (${result.song.y})`,
+        `[${i + 1}/${songs.length}] ❌ NOT FOUND: ${result.t} - ${result.a} (${result.y})`,
       );
-    } else if (!result.titleMatch || !result.artistMatch || !result.yearMatch) {
+    } else if (!result.mt || !result.ma || !result.my) {
       console.log(
-        `[${i + 1}/${songs.length}] ⚠️  MISMATCH: ${result.song.t} - ${result.song.a} (${result.song.y})`,
+        `[${i + 1}/${songs.length}] ⚠️  MISMATCH: ${result.t} - ${result.a} (${result.y})`,
       );
-      if (!result.titleMatch) {
-        console.log(`   Title: "${result.song.t}" vs "${result.fetchedTitle}"`);
+      if (!result.mt) {
+        console.log(`   Title: "${result.t}" vs "${result.ft}"`);
       }
-      if (!result.artistMatch) {
-        console.log(`   Artist: "${result.song.a}" vs "${result.fetchedArtist}"`);
+      if (!result.ma) {
+        console.log(`   Artist: "${result.a}" vs "${result.fa}"`);
       }
-      if (!result.yearMatch) console.log(`   Year: ${result.song.y} vs ${result.fetchedYear}`);
-    } else if (!result.hasPreview || !result.hasArtwork) {
-      console.log(`[${i + 1}/${songs.length}] ⚠️  ${result.song.t} - ${result.song.a}`);
-      console.log(`   Preview: ${result.hasPreview}, Artwork: ${result.hasArtwork}`);
+      if (!result.my) console.log(`   Year: ${result.y} vs ${result.fy}`);
+    } else if (!result.mp || !result.mi) {
+      console.log(`[${i + 1}/${songs.length}] ⚠️  ${result.t} - ${result.a}`);
+      console.log(`   Preview: ${result.mp}, Artwork: ${result.ma}`);
     } else {
-      console.log(`[${i + 1}/${songs.length}] ✓ ${result.song.t} - ${result.song.a}`);
+      console.log(`[${i + 1}/${songs.length}] ✓ ${result.t} - ${result.a}`);
     }
 
     await new Promise((resolve) => {
@@ -71,30 +115,14 @@ async function main() {
     });
   }
 
+  console.log(`\n=== Summary (this run: ${results.length} new) ===`);
   const notFound = results.filter((r) => !r.found);
-  const noPreview = results.filter((r) => r.found && !r.hasPreview);
-  const noArtwork = results.filter((r) => r.found && !r.hasArtwork);
-  const mismatch = results.filter(
-    (r) => r.found && (!r.titleMatch || !r.artistMatch || !r.yearMatch),
-  );
-
-  console.log(`\n=== Summary ===`);
-  console.log(`Total: ${songs.length}`);
-  console.log(`Found: ${results.filter((r) => r.found).length}`);
+  const mismatch = results.filter((r) => r.found && (!r.mt || !r.ma || !r.my));
+  console.log(`Checked: ${results.length}`);
   console.log(`Not found: ${notFound.length}`);
   console.log(`Mismatches: ${mismatch.length}`);
-  console.log(`No preview: ${noPreview.length}`);
-  console.log(`No artwork: ${noArtwork.length}`);
 
-  const outputData = results.map((r) => ({
-    t: r.fetchedTitle || r.song.t,
-    a: r.fetchedArtist || r.song.a,
-    y: r.fetchedYear || r.song.y,
-    itunesId: r.itunesId,
-  }));
-
-  await Bun.write("./assets/songs-checked.json", JSON.stringify(outputData, null, 2));
-  console.log(`\nWrote results to ./assets/songs-checked.json`);
+  await saveResults(existing);
 }
 
 main();

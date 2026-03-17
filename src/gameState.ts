@@ -1,4 +1,11 @@
-import type { Song, DetailedSong, GameState, GameAction } from "./types";
+import type {
+  Song,
+  DetailedSong,
+  GameState,
+  GameAction,
+  ITunesResponse,
+  ITunesTrack,
+} from "./types";
 
 const STORAGE_KEY = "thatWasTheYear_gameState";
 
@@ -23,13 +30,13 @@ export function shuffleDeck(deck: Song[]): Song[] {
   return shuffled;
 }
 
-export async function getDetailedSong(song: Song): Promise<DetailedSong> {
-  let data = undefined;
+export async function getDetailedITunesSong(song: Song): Promise<ITunesTrack | undefined> {
+  let data: ITunesResponse | undefined = undefined;
   if (typeof song.itunesId === "number") {
     try {
       const resp = await fetch(`https://itunes.apple.com/lookup?id=${song.itunesId}`);
       if (resp.status === 200) {
-        data = await resp.json();
+        data = (await resp.json()) as ITunesResponse;
         if (!data.results?.[0]) {
           data = undefined;
         }
@@ -45,9 +52,13 @@ export async function getDetailedSong(song: Song): Promise<DetailedSong> {
     if (resp.status !== 200) {
       throw new Error("iTunes API error: status = " + resp.status);
     }
-    data = await resp.json();
+    data = (await resp.json()) as ITunesResponse;
   }
-  const res = data.results?.[0];
+  return data.results?.[0];
+}
+
+export async function getDetailedSong(song: Song): Promise<DetailedSong> {
+  const res = await getDetailedITunesSong(song);
   return {
     ...song,
     img: res?.artworkUrl100 || "./placeholder-100.png",

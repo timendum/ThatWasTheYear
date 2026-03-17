@@ -5,7 +5,7 @@
     "correctness": "error",
     "pedantic": "warn"
   },
-  "rules": {"max-lines-per-function":"allow"},
+  "rules": {"max-lines-per-function":"allow", "no-inline-comments": "allow"},
   "settings": {
     "react": {
       "formComponents": [],

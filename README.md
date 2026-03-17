@@ -62,6 +62,6 @@ Output in `dist/` directory.
 - `asset/songs.json` - Song library data
 - `src/types.ts` - TypeScript interfaces
 - `src/app.ts` - Main game logic
-- `script/server.ts` - Utility development server
-- `script/check-songs.ts` - Script to check songs data against iTunes data
-- `script/copy-assets.ts` - Script for the build step
+- `scripts/server.ts` - Utility development server
+- `scripts/check-songs.ts` - Script to check songs data against iTunes data
+- `scripts/copy-assets.ts` - Script for the build step
