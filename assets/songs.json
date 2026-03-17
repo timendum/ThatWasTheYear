@@ -1,6 +1,6 @@
 [
   { "t": "(Don't Fear) The Reaper", "a": "Blue Öyster Cult", "y": 1976, "itunesId": 217556132 },
-  { "t": "(I Can't Get No) Satisfaction (Mono)", "a": "The Rolling Stones", "y": 1965, "itunesId": 1440765093 },
+  { "t": "(I Can't Get No) Satisfaction", "a": "The Rolling Stones", "y": 1965, "itunesId": 1440765093 },
   { "t": "(Sittin' On) The Dock of the Bay", "a": "Otis Redding", "y": 1968, "itunesId": 997088846 },
   { "t": "(You Make Me Feel Like) A Natural Woman", "a": "Aretha Franklin", "y": 1967, "itunesId": 933585554 },
   { "t": "...Baby One More Time", "a": "Britney Spears", "y": 1998, "itunesId": 273143820 },
@@ -53,7 +53,6 @@
   { "t": "Believe", "a": "Cher", "y": 1998, "itunesId": 73273491 },
   { "t": "Bennie and the Jets", "a": "Elton John", "y": 1973, "itunesId": 1484998282 },
   { "t": "Big Poppa", "a": "The Notorious B.I.G.", "y": 1994, "itunesId": 217613312 },
-  { "t": "Billie Jean", "a": "Michael Jackson", "y": 1982, "itunesId": 269573364 },
   { "t": "Billie Jean", "a": "Michael Jackson", "y": 1982, "itunesId": 269573364 },
   { "t": "Birds of a Feather", "a": "Billie Eilish", "y": 2024, "itunesId": 1739659142 },
   { "t": "Bizarre Love Triangle", "a": "New Order", "y": 1986, "itunesId": 1040972132 },
