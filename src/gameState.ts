@@ -37,7 +37,7 @@ export async function getDetailedITunesSong(song: Song): Promise<ITunesTrack | u
       const resp = await fetch(`https://itunes.apple.com/lookup?id=${song.itunesId}`);
       if (resp.status === 200) {
         data = (await resp.json()) as ITunesResponse;
-        if (!data.results?.[0]) {
+        if (!data?.results?.[0]) {
           data = undefined;
         }
       }
@@ -54,7 +54,7 @@ export async function getDetailedITunesSong(song: Song): Promise<ITunesTrack | u
     }
     data = (await resp.json()) as ITunesResponse;
   }
-  return data.results?.[0];
+  return data?.results?.[0];
 }
 
 export async function getDetailedSong(song: Song): Promise<DetailedSong> {

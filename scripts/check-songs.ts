@@ -1,39 +1,57 @@
+import type { ITunesTrack, Song } from "../src/types";
 import songs from "../assets/songs.json";
-import type { Song } from "../src/types";
 import { getDetailedITunesSong } from "../src/gameState";
 
-async function checkSong(song: Song) {
-  const result = await getDetailedITunesSong(song);
-
-  const found = !!result;
-  const hasPreview = result?.previewUrl?.startsWith("http");
-  const hasArtwork = result?.artworkUrl100?.startsWith("http");
-
-  const normalize = (s: string) => s.replace(/\s*\([^)]+\)\s*$/, "").toLowerCase();
-  const titleMatch =
-    found &&
-    (result.trackName?.toLowerCase() === song.t.toLowerCase() ||
-      normalize(result.trackName || "") === normalize(song.t));
-  const artistMatch = found && result.artistName?.toLowerCase() === song.a.toLowerCase();
-
-  let releaseYear = null;
-  if (found && result.releaseDate) {
-    releaseYear = new Date(result.releaseDate).getFullYear();
+async function checkSong(song: Song, track: ITunesTrack | undefined) {
+  // If track not found on iTunes, return all-false result
+  if (!track) {
+    return {
+      ...song,
+      check: { found: false, mp: false, mi: false, mt: false, ma: false, my: false },
+      track,
+    };
   }
-  const yearMatch = releaseYear === song.y;
+
+  // Strip ", Pt. N" and "[nnnn Remaster]" unconditionally, then lowercase
+  const tt = (track.trackName || "")
+    .replace(/,\s*Pt\.\s*\d+\s*$/i, "")
+    .replace(/\s*\[\d{4}\s+Remaster\]\s*$/i, "")
+    .toLowerCase();
+  const ta = (track.artistName || "").toLowerCase();
+  const st = song.t.toLowerCase();
+  const sa = song.a.toLowerCase();
+
+  // Strip trailing parenthetical (e.g. "(Remastered 2012)")
+  const normalize = (s: string) => s.replace(/\s*\([^)]+\)\s*$/, "");
+
+  const featMatch = tt.match(/\s*\((feat\.?\s+[^)]+)\)\s*$/);
+  let titleMatch: boolean;
+  let artistMatch: boolean;
+
+  if (featMatch) {
+    titleMatch = normalize(tt) === st;
+    artistMatch = sa === `${ta} ${featMatch[1]}`;
+    titleMatch = titleMatch && artistMatch;
+  } else {
+    titleMatch = tt === st || normalize(tt) === st;
+    artistMatch = ta === sa;
+  }
+
+  // Compare release year
+  const releaseYear = track.releaseDate ? new Date(track.releaseDate).getFullYear() : null;
 
   return {
     ...song,
-    itunesId: result?.trackId || song.itunesId,
-    found,
-    mp: hasPreview,
-    mi: hasArtwork,
-    mt: titleMatch,
-    ma: artistMatch,
-    my: yearMatch,
-    ft: result?.trackName || null, // fetchedTitle
-    fa: result?.artistName || null, // fetchedArtist
-    fy: releaseYear, // fetchedYear
+    itunesId: track.trackId || song.itunesId,
+    check: {
+      found: true,
+      mp: !!track.previewUrl?.startsWith("http"), // has playable preview
+      mi: !!track.artworkUrl100?.startsWith("http"), // has artwork image
+      mt: titleMatch,
+      ma: artistMatch,
+      my: !!(releaseYear && Math.abs(releaseYear - song.y) <= 1),
+    },
+    track,
   };
 }
 
@@ -53,13 +71,12 @@ async function loadExisting(): Promise<Map<string, CheckedSong>> {
 
 const sortKey = (s: string) => s.replace(/^The /i, "").toLowerCase();
 
-async function saveResults(existing: Map<string, unknown>) {
-  const outputData = [...existing.values()] as { t: string; a: string }[];
+async function saveResults(existing: Map<string, CheckedSong>) {
+  const outputData = [...existing.values()];
   outputData.sort(
     (a, b) => sortKey(a.t).localeCompare(sortKey(b.t)) || sortKey(a.a).localeCompare(sortKey(b.a)),
   );
-  const lines = outputData.map((entry) => `  ${JSON.stringify(entry)}`);
-  await Bun.write("./assets/songs-checked.json", `[\n${lines.join(",\n")}\n]`);
+  await Bun.write("./assets/songs-checked.json", JSON.stringify(outputData));
   console.log(`\nWrote ${outputData.length} results to ./assets/songs-checked.json`);
 }
 
@@ -69,55 +86,67 @@ async function main() {
   console.log(`Checking ${songs.length} songs...\n`);
 
   process.on("SIGINT", async () => {
-    console.log("\n\nInterrupted, saving progress...");
-    await saveResults(existing);
+    console.error("\n\nInterrupted, saving progress...");
+    try {
+      await saveResults(existing);
+    } catch (e){
+    console.log("Error while saving results:", e)}
     process.exit(0);
   });
 
   const results: CheckedSong[] = [];
   for (let i = 0; i < songs.length; i++) {
+    let track: ITunesTrack | undefined = undefined;
     const song = songs[i];
     const key = `${song.t}|||${song.a}`;
-    if (existing.has(key)) {
-      console.log(`[${i + 1}/${songs.length}] SKIP: ${song.t} - ${song.a}`);
-      continue;
+    const ex = existing.get(key);
+    if (ex && ex.track && ex.track.trackId == song.itunesId) {
+      track = ex.track;
+    }
+    if (!track) {
+      track = await getDetailedITunesSong(song);
+      // Timeout for throttling iTunes calls
+      await new Promise((resolve) => {
+        setTimeout(resolve, (1000 * 60) / 20);
+      });
     }
 
-    const result = await checkSong(song);
+    const result = await checkSong(song, track);
     results.push(result);
 
     existing.set(key, result);
 
-    if (!result.found) {
+    const idOk = result.itunesId && result.itunesId == song.itunesId ? "🔗" : "🔍";
+
+    if (!result.check.found) {
       console.log(
         `[${i + 1}/${songs.length}] ❌ NOT FOUND: ${result.t} - ${result.a} (${result.y})`,
       );
-    } else if (!result.mt || !result.ma || !result.my) {
+    } else if (!result.check.mt || !result.check.ma || !result.check.my) {
       console.log(
-        `[${i + 1}/${songs.length}] ⚠️  MISMATCH: ${result.t} - ${result.a} (${result.y})`,
+        `[${i + 1}/${songs.length}] ${idOk} MISMATCH: ${result.t} - ${result.a} (${result.y})`,
       );
-      if (!result.mt) {
-        console.log(`   Title: "${result.t}" vs "${result.ft}"`);
+      if (!result.check.mt) {
+        console.log(`   Title: "${result.t}" vs "${result.track?.trackName}"`);
       }
-      if (!result.ma) {
-        console.log(`   Artist: "${result.a}" vs "${result.fa}"`);
+      if (!result.check.ma) {
+        console.log(`   Artist: "${result.a}" vs "${result.track?.artistName}"`);
       }
-      if (!result.my) console.log(`   Year: ${result.y} vs ${result.fy}`);
-    } else if (!result.mp || !result.mi) {
+      if (!result.check.my)
+        console.log(`   Year: ${result.y} vs ${result.track?.releaseDate.substring(0, 4)}`);
+    } else if (!result.check.mp || !result.check.mi) {
       console.log(`[${i + 1}/${songs.length}] ⚠️  ${result.t} - ${result.a}`);
-      console.log(`   Preview: ${result.mp}, Artwork: ${result.ma}`);
+      console.log(`   Preview: ${result.check.mp}, Artwork: ${result.check.ma}`);
     } else {
-      console.log(`[${i + 1}/${songs.length}] ✓ ${result.t} - ${result.a}`);
+      console.log(`[${i + 1}/${songs.length}] ${idOk} ${result.t} - ${result.a}`);
     }
-
-    await new Promise((resolve) => {
-      setTimeout(resolve, (1000 * 60) / 20);
-    });
   }
 
   console.log(`\n=== Summary (this run: ${results.length} new) ===`);
-  const notFound = results.filter((r) => !r.found);
-  const mismatch = results.filter((r) => r.found && (!r.mt || !r.ma || !r.my));
+  const notFound = results.filter((r) => !r.check.found);
+  const mismatch = results.filter(
+    (r) => r.check.found && (!r.check.mt || !r.check.ma || !r.check.my),
+  );
   console.log(`Checked: ${results.length}`);
   console.log(`Not found: ${notFound.length}`);
   console.log(`Mismatches: ${mismatch.length}`);

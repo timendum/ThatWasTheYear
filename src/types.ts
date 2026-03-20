@@ -59,7 +59,7 @@ export interface ITunesTrack {
   previewUrl?: string;
   // artworkUrl30: string;
   // artworkUrl60: string;
-  artworkUrl100: string;
+  artworkUrl100?: string;
   // collectionPrice: number;
   // trackPrice: number;
   releaseDate: string;
