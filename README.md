@@ -29,7 +29,7 @@ The iTunes Search API is used to fetch album artwork and audio previews (No API 
 
 ## Development
 
-Based on [ElLorans's initial work](https://github.com/ElLorans/ThatWasTheYear).
+Thanks to [Timendum's improvements](https://github.com/timendum/ThatWasTheYear).
 
 Now on TypeScript with Bun, no runtime dependencies.
 
