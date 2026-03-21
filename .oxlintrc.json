@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript"],
+  "categories": {
+    "correctness": "error",
+    "pedantic": "warn"
+  },
+  "rules": {"max-lines-per-function":"allow", "no-inline-comments": "allow"},
+  "settings": {
+    "react": {
+      "formComponents": [],
+      "linkComponents": [],
+      "componentWrapperFunctions": []
+    }
+  },
+  "env": {
+    "builtin": true
+  },
+  "globals": {},
+  "ignorePatterns": ["dist/"]
+}
