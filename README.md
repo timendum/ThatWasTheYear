@@ -1,6 +1,6 @@
 # ThatWasTheYear
 
-ThatWasTheYear (hosted at <https://timendum.github.io/ThatWasTheYear/>) is a browser-based multiplayer game where players take turns drawing mystery song cards and placing them into their personal timelines in chronological order.
+ThatWasTheYear (hosted at <https://ellorans.github.io/ThatWasTheYear/>) is a browser-based multiplayer game where players take turns drawing mystery song cards and placing them into their personal timelines in chronological order.
 
 Each round, a song is drawn from a deck (sourced from a local songLibrary).
 
