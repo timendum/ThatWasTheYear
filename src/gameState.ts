@@ -84,7 +84,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         currentPlayerIndex: 0,
         roundCount: 1,
         gameStarted: true,
-        deck: state.deck.slice(0, -action.players.length),
       };
 
     case "DRAW_SONG":
@@ -206,6 +205,12 @@ function isValidGameState(obj: unknown): obj is GameState {
     typeof s.gameStarted === "boolean" &&
     typeof s.gameOver === "boolean"
   );
+}
+
+export function getStartingYear(songs: Song[]): number {
+  const avg = songs.reduce((sum, s) => sum + s.y, 0) / songs.length;
+  const offset = Math.floor(Math.random() * 7) - 3; // -3 to +3
+  return Math.round(avg) + offset;
 }
 
 export function loadGameState(): GameState | null {

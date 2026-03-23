@@ -19,9 +19,18 @@ export default function SongCard({ song, mystery }: SongCardProps) {
 
   return (
     <div className="card">
-      <a href={song.link} target="_blank" rel="noopener noreferrer" className="card-link">
-        <img src={song.img} alt={song.t} />
-      </a>
+      {song.link !== "#" && (
+        <a href={song.link} target="_blank" rel="noopener noreferrer" className="card-link">
+          <img src={song.img} alt={song.t} />
+        </a>
+      )}
+      {song.link === "#" && (
+        <img
+          style={{ visibility: "hidden" }}
+          src={song.img}
+          title="Click Play Random Song for a new song"
+        />
+      )}
       <div className="year">{song.y}</div>
       <p className="card-title">{song.t}</p>
       <p className="card-artist">{song.a}</p>

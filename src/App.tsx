@@ -4,6 +4,7 @@ import {
   initialGameState,
   gameReducer,
   getDetailedSong,
+  getStartingYear,
   saveGameState,
   loadGameState,
 } from "./gameState";
@@ -42,7 +43,7 @@ export default function App() {
     }
   }, [state]);
 
-  async function handleStartGame(
+  function handleStartGame(
     playerNames: string[],
     endCondition: {
       type: "infinite" | "turns" | "correctSongs";
@@ -50,14 +51,18 @@ export default function App() {
     },
   ) {
     dispatch({ type: "SET_END_CONDITION", endCondition });
-    const n = playerNames.length;
-    const initialSongs = state.deck.slice(-n).reverse();
-    const players = await Promise.all(
-      playerNames.map(async (name, i) => ({
-        name,
-        timeline: [await getDetailedSong(initialSongs[i])],
-      })),
-    );
+    const startingSong: DetailedSong = {
+      t: "\u00A0",
+      a: "\u00A0",
+      y: getStartingYear(state.allSongs),
+      img: "./placeholder-100.png",
+      preview: null,
+      link: "#",
+    };
+    const players = playerNames.map((name) => ({
+      name,
+      timeline: [startingSong],
+    }));
     dispatch({ type: "START_GAME", players });
   }
 
