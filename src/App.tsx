@@ -114,9 +114,17 @@ export default function App() {
       }
       const timeline = state.players[state.currentPlayerIndex]?.timeline;
       const song = state.currentSong;
-      const correct =
-        (position === 0 || song.y >= timeline[position - 1].y) &&
-        (position === timeline.length || song.y <= timeline[position]?.y);
+      const fitsAt = (year: number) =>
+        (position === 0 || year >= timeline[position - 1].y) &&
+        (position === timeline.length || year <= timeline[position]?.y);
+
+      let correct = fitsAt(song.y);
+      if (!!song.releaseYear && fitsAt(song.releaseYear)) {
+        console.debug(
+          `Using alternate year for validation: ${song.releaseYear} instead of ${song.y}`,
+        );
+        song.y = song.releaseYear;
+      }
       setResult({ correct, song });
       dispatch({ type: "PLACE_SONG", position });
     },

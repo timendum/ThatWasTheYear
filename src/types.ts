@@ -9,6 +9,7 @@ export interface DetailedSong extends Song {
   img: string;
   preview: string | null;
   link: string;
+  releaseYear?: number;
 }
 
 export interface Player {

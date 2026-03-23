@@ -59,11 +59,21 @@ export async function getDetailedITunesSong(song: Song): Promise<ITunesTrack | u
 
 export async function getDetailedSong(song: Song): Promise<DetailedSong> {
   const res = await getDetailedITunesSong(song);
+  let releaseYear = undefined;
+  if (res) {
+    try {
+      const parsedYear = parseInt(res.releaseDate?.substring(0, 4), 10);
+      if (Math.abs(parsedYear - song.y) === 1) {
+        releaseYear = parsedYear;
+      }
+    } catch (e) {}
+  }
   return {
     ...song,
     img: res?.artworkUrl100 || "./placeholder-100.png",
     preview: res?.previewUrl || null,
     link: res?.trackViewUrl || "#",
+    releaseYear: releaseYear,
   };
 }
 
