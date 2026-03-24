@@ -54,22 +54,25 @@ export default function PlayerLane({
         >
           ▼
         </button>
-        {player.timeline.map((song, i) => (
-          <Fragment key={`${song.t}-${song.y}`}>
-            <SongCard song={song} mystery={false} />
-            <button
-              ref={(el) => {
-                dropZoneRefs.current[i + 1] = el;
-              }}
-              className={`drop-zone waiting-for-input${dropZonesActive && focusedDropZone === i + 1 ? " focused" : ""}`}
-              onClick={() => onPlaceSong(i + 1)}
-              tabIndex={0}
-              disabled={!dropZonesActive}
-            >
-              ▼
-            </button>
-          </Fragment>
-        ))}
+        {player.timeline.map((song, i) => {
+          const sameYear = i + 1 < player.timeline.length && song.y === player.timeline[i + 1].y;
+          return (
+            <Fragment key={`${song.t}-${song.y}`}>
+              <SongCard song={song} mystery={false} />
+              <button
+                ref={(el) => {
+                  dropZoneRefs.current[i + 1] = el;
+                }}
+                className={`drop-zone waiting-for-input${sameYear ? " same-year" : ""}${dropZonesActive && focusedDropZone === i + 1 ? " focused" : ""}`}
+                onClick={() => onPlaceSong(i + 1)}
+                tabIndex={0}
+                disabled={!dropZonesActive}
+              >
+                {sameYear ? "=" : "▼"}
+              </button>
+            </Fragment>
+          );
+        })}
       </div>
     </div>
   );
