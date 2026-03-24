@@ -68,7 +68,7 @@ async function loadExisting(): Promise<Map<string, Song>> {
   return map;
 }
 
-const sortKey = (s: string) => s.replace(/^(?:The,An,A) /i, "").toLowerCase();
+const sortKey = (s: string) => s.replace(/^(?:The|An|A) /i, "").toLowerCase();
 
 async function saveResults(songs: Song[]) {
   const outputData = [...songs];

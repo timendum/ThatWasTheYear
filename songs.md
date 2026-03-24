@@ -23,11 +23,12 @@ For some songs, I've manually changed the data:
 - Ain't Nobody - Rufus and Chaka Khan: [wikipedia](https://en.wikipedia.org/wiki/Ain%27t_Nobody) confirms Band and Singer
 - Because the Night - Patti Smith (1977): Patti Smith Group is not how it's known.
 - Buffalo Stance - Neneh Cherry (1988): confirmed by [wikipedia](https://en.wikipedia.org/wiki/Buffalo_Stance)
+- Breakfast At Tiffany's - Deep Blue Something (1995): using the single release year, the album was from 1993.
 - California Dreamin' - The Mamas & The Papas (1965): confirmed by [wikipedia](https://en.wikipedia.org/wiki/California_Dreamin%27)
 - Crazy - Gnarls Barkley (2006): leaked in 2005, but officially released in 2006, from [wikipedia](https://en.wikipedia.org/wiki/Crazy_\(Gnarls_Barkley_song\))
 - Da Doo Ron Ron - The Crystals (1963): I can not find a version from 1963 on iTunes, only compilations
 - Fortunate Son - Creedence Clearwater Revival (1969): confirmed by [wikipedia](https://en.wikipedia.org/wiki/Fortunate_Son)
-- Get Up I Feel Like Being a Sex Machine - James Brown (1970): "The Original J.B.s" does not add useful info
+- Get Up I Feel Like Being a Sex Machine - James Brown (1970): "The Original J.B.s" does not add useful infos
 - Goodbye Earl - The Chicks (2000): unsolicited airplay in late 1999, but released in 2000, from [wikipedia](https://en.wikipedia.org/wiki/Goodbye_Earl)
 - House of the Rising Sun - The Animals (1964): confirmed by [wikipedia](https://en.wikipedia.org/wiki/The_House_of_the_Rising_Sun#The_Animals'_version)
 - I Can't Stand the Rain - Ann Peebles (1973): confirmed by [wikipedia](https://en.wikipedia.org/wiki/I_Can%27t_Stand_the_Rain_\(song\))
@@ -49,6 +50,7 @@ but in 1992 was released as a single.
 - Butterfly - Crazy Town (2000)
 - Chasing Cars - Snow Patrol (2006)
 - Dynamite - Taio Cruz (2010)
+- Nothing Else Matters - Metallica (1992)
 - One - U2 (1992)
 - The Reason - Hoobastank (2024)
 - Tiny Dancer - Elton John (1972)
