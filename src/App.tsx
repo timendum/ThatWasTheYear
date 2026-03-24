@@ -1,5 +1,4 @@
-import { useReducer, useEffect, useRef, useState, useCallback } from "react";
-import type { DetailedSong } from "./types";
+import { useReducer, useEffect, useRef, useCallback } from "react";
 import {
   initialGameState,
   gameReducer,
@@ -13,13 +12,10 @@ import Controls from "./components/Controls";
 import PlayersContainer from "./components/PlayersContainer";
 import ResultModal from "./components/ResultModal";
 import GameOverScreen from "./components/GameOverScreen";
+import type { DetailedSong } from "./types";
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialGameState);
-  const [result, setResult] = useState<{
-    correct: boolean;
-    song: DetailedSong;
-  } | null>(null);
   const audioRef = useRef(new Audio());
   const audioTimeoutRef = useRef<number>(-1);
 
@@ -96,7 +92,7 @@ export default function App() {
       console.error("Failed to play preview", e);
       if (state.currentSong) {
         dispatch({
-          type: "DRAW_SONG",
+          type: "UPDATE_CURRENT_SONG",
           song: {
             ...state.currentSong,
             preview: null,
@@ -109,38 +105,21 @@ export default function App() {
 
   const handlePlaceSong = useCallback(
     (position: number) => {
-      if (!state.currentSong) {
-        return;
-      }
-      const timeline = state.players[state.currentPlayerIndex]?.timeline;
-      const song = state.currentSong;
-      const fitsAt = (year: number) =>
-        (position === 0 || year >= timeline[position - 1].y) &&
-        (position === timeline.length || year <= timeline[position]?.y);
-
-      let correct = fitsAt(song.y);
-      if (!!song.releaseYear && fitsAt(song.releaseYear)) {
-        console.debug(
-          `Using alternate year for validation: ${song.releaseYear} instead of ${song.y}`,
-        );
-        song.y = song.releaseYear;
-      }
-      setResult({ correct, song });
+      if (!state.currentSong) return;
       dispatch({ type: "PLACE_SONG", position });
     },
-    [state.currentSong, state.players, state.currentPlayerIndex],
+    [state.currentSong],
   );
 
   function handleContinue() {
     stopAudio();
-    setResult(null);
+    dispatch({ type: "CLEAR_RESULT" });
   }
 
   function handleReset(skipConfirm = false) {
     if (skipConfirm || confirm("Start over?")) {
       stopAudio();
       dispatch({ type: "RESET" });
-      setResult(null);
     }
   }
 
@@ -156,7 +135,7 @@ export default function App() {
 
   const currentPlayer = state.players[state.currentPlayerIndex];
 
-  if (state.gameOver && !result) {
+  if (state.gameOver && !state.lastResult) {
     window.scrollTo(0, 0);
     return <GameOverScreen players={state.players} onReset={() => handleReset(true)} />;
   }
@@ -177,12 +156,12 @@ export default function App() {
           players={state.players}
           currentPlayerIndex={state.currentPlayerIndex}
           hasCurrentSong={state.currentSong !== null}
-          disabled={result !== null}
+          disabled={state.lastResult !== null}
           onPlaceSong={handlePlaceSong}
         />
       </div>
-      {result && (
-        <ResultModal isCorrect={result.correct} song={result.song} onContinue={handleContinue} />
+      {state.lastResult && (
+        <ResultModal isCorrect={state.lastResult.correct} song={state.lastResult.song} onContinue={handleContinue} />
       )}
     </>
   );

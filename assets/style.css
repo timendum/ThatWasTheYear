@@ -28,7 +28,7 @@ body {
 .screen {
   display: block;
   width: 95%;
-  max-width: 69rem;
+  max-width: 73rem;
   text-align: center;
   padding: 1.25rem;
 }
@@ -120,12 +120,16 @@ button:hover {
   cursor: pointer;
   transition: 0.2s;
   outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .drop-zone.waiting-for-input {
   border-color: var(--accent);
   background: rgba(29, 185, 84, 0.1);
-  animation: pulse 1.5s infinite;
+  animation: pulse 2s ease-in-out infinite;
 }
 
 .drop-zone.focused {
@@ -146,6 +150,12 @@ button:hover {
   background: var(--accent);
 }
 
+.drop-zone.same-year {
+  width: 30px;
+  opacity: 0.5;
+  animation: none;
+}
+
 .drop-zone:disabled {
   border: 2px solid transparent;
   background: transparent;
@@ -157,7 +167,7 @@ button:hover {
 
   0%,
   100% {
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   50% {
