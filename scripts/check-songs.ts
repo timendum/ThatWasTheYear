@@ -1,3 +1,4 @@
+import { createInterface } from "node:readline/promises";
 import type { ITunesTrack, Song } from "../src/types";
 import songs from "../assets/songs.json";
 import { getDetailedITunesSong } from "../src/gameState";
@@ -7,7 +8,7 @@ async function checkSong(song: Song, track: ITunesTrack | undefined) {
   if (!track) {
     return {
       ...song,
-      check: { found: false, mp: false, mi: false, mt: false, ma: false, my: false },
+      check: { found: false, mp: false, mi: false, mt: false, ma: false, my: 1000 },
       track,
     };
   }
@@ -49,17 +50,15 @@ async function checkSong(song: Song, track: ITunesTrack | undefined) {
       mi: !!track.artworkUrl100?.startsWith("http"), // has artwork image
       mt: titleMatch,
       ma: artistMatch,
-      my: !!(releaseYear && Math.abs(releaseYear - song.y) <= 1),
+      my: !!releaseYear ? Math.abs(releaseYear - song.y) : 100,
     },
     track,
   };
 }
 
-type CheckedSong = Awaited<ReturnType<typeof checkSong>>;
-
-async function loadExisting(): Promise<Map<string, CheckedSong>> {
+async function loadExisting(): Promise<Map<string, Song>> {
   const map = new Map();
-  const file = Bun.file("./assets/songs-checked.json");
+  const file = Bun.file("./assets/ok-songs.json");
   if (await file.exists()) {
     const data = await file.json();
     for (const entry of data) {
@@ -69,89 +68,119 @@ async function loadExisting(): Promise<Map<string, CheckedSong>> {
   return map;
 }
 
-const sortKey = (s: string) => s.replace(/^The /i, "").toLowerCase();
+const sortKey = (s: string) => s.replace(/^(?:The,An,A) /i, "").toLowerCase();
 
-async function saveResults(existing: Map<string, CheckedSong>) {
-  const outputData = [...existing.values()];
+async function saveResults(songs: Song[]) {
+  const outputData = [...songs];
   outputData.sort(
     (a, b) => sortKey(a.t).localeCompare(sortKey(b.t)) || sortKey(a.a).localeCompare(sortKey(b.a)),
   );
-  await Bun.write("./assets/songs-checked.json", JSON.stringify(outputData));
-  console.log(`\nWrote ${outputData.length} results to ./assets/songs-checked.json`);
+  const jsonLines = outputData
+    .map((song) =>
+      JSON.stringify({
+        t: song.t,
+        a: song.a,
+        y: song.y,
+        itunesId: song.itunesId,
+      }),
+    )
+    .join(",\n");
+  await Bun.write("./assets/ok-songs.json", `[\n${jsonLines}\n]`);
+  console.log(`\nWrote ${outputData.length} results to ./assets/ok-checked.json`);
 }
 
 async function main() {
   const existing = await loadExisting();
-  console.log(`Found ${existing.size} already-checked songs.`);
+  console.log(`Found ${existing.size} already-accepted songs.`);
   console.log(`Checking ${songs.length} songs...\n`);
 
-  process.on("SIGINT", async () => {
-    console.error("\n\nInterrupted, saving progress...");
-    try {
-      await saveResults(existing);
-    } catch (e){
-    console.log("Error while saving results:", e)}
-    process.exit(0);
-  });
+  const rl = createInterface({ input: process.stdin, output: process.stdout });
 
-  const results: CheckedSong[] = [];
-  for (let i = 0; i < songs.length; i++) {
-    let track: ITunesTrack | undefined = undefined;
+  let i = 0;
+  const okSongs: Song[] = [];
+  while (i < songs.length) {
     const song = songs[i];
     const key = `${song.t}|||${song.a}`;
-    const ex = existing.get(key);
-    if (ex && ex.track && ex.track.trackId == song.itunesId) {
-      track = ex.track;
+    const fromDB = existing.get(key);
+    if (fromDB) {
+      okSongs.push(fromDB);
+      i++;
+      continue;
     }
-    if (!track) {
-      track = await getDetailedITunesSong(song);
-      // Timeout for throttling iTunes calls
-      await new Promise((resolve) => {
-        setTimeout(resolve, (1000 * 60) / 20);
-      });
+    let track: ITunesTrack | undefined = undefined;
+    track = await getDetailedITunesSong(song);
+    if (track) {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     }
 
     const result = await checkSong(song, track);
-    results.push(result);
 
-    existing.set(key, result);
+    const isFullMatch =
+      result.check.found &&
+      result.check.mp &&
+      result.check.mi &&
+      result.check.mt &&
+      result.check.ma &&
+      result.check.my === 0;
 
-    const idOk = result.itunesId && result.itunesId == song.itunesId ? "🔗" : "🔍";
-
-    if (!result.check.found) {
-      console.log(
-        `[${i + 1}/${songs.length}] ❌ NOT FOUND: ${result.t} - ${result.a} (${result.y})`,
-      );
-    } else if (!result.check.mt || !result.check.ma || !result.check.my) {
-      console.log(
-        `[${i + 1}/${songs.length}] ${idOk} MISMATCH: ${result.t} - ${result.a} (${result.y})`,
-      );
-      if (!result.check.mt) {
-        console.log(`   Title: "${result.t}" vs "${result.track?.trackName}"`);
-      }
-      if (!result.check.ma) {
-        console.log(`   Artist: "${result.a}" vs "${result.track?.artistName}"`);
-      }
-      if (!result.check.my)
-        console.log(`   Year: ${result.y} vs ${result.track?.releaseDate.substring(0, 4)}`);
-    } else if (!result.check.mp || !result.check.mi) {
-      console.log(`[${i + 1}/${songs.length}] ⚠️  ${result.t} - ${result.a}`);
-      console.log(`   Preview: ${result.check.mp}, Artwork: ${result.check.ma}`);
+    if (isFullMatch) {
+      okSongs.push(result);
+      existing.set(key, result);
+      console.log(`[${i + 1}/${songs.length}] ✅ ACCEPTED: ${result.t} - ${result.a}`);
+      i++;
     } else {
-      console.log(`[${i + 1}/${songs.length}] ${idOk} ${result.t} - ${result.a}`);
+      const trackInfo = result.track
+        ? `${result.track.trackName} - ${result.track.artistName} (${result.track.releaseDate?.substring(0, 4)})`
+        : "Not found";
+      console.log(`DB: ${song.t} - ${song.a} (${song.y})`);
+      console.log(`iTunes: ${trackInfo}`);
+      console.log(
+        `Matches: found=${result.check.found ? "✅" : "❌"}, ` +
+          `preview=${result.check.mp ? "✅" : "❌"}, ` +
+          `artwork=${result.check.mi ? "✅" : "❌"}, ` +
+          `title=${result.check.mt ? "✅" : "❌"}, ` +
+          `artist=${result.check.ma ? "✅" : "❌"}, ` +
+          `year=${result.check.my === 0 ? "✅" : result.check.my === 1 ? "⚠️" : "❌"}`,
+      );
+      const answer = await rl.question("Overwrite? (y/n) or provide new iTunes ID or quit: ");
+      if (answer.toLowerCase() === "y") {
+        console.log(`Accepted: ${trackInfo}`);
+        if (result.track && result.itunesId) {
+          okSongs.push({
+            t: result.track.trackName,
+            a: result.track.artistName,
+            y: new Date(result.track.releaseDate).getFullYear(),
+            itunesId: result.track.trackId,
+          });
+          existing.set(key, result);
+          i++;
+        } else {
+          console.log("No iTunes ID, cannot accept. Again.");
+        }
+      } else if (answer.toLowerCase() === "n") {
+        console.log(`Keeping: ${song.t} - ${song.a} (${song.y})`);
+        if (result.itunesId) {
+          okSongs.push(song);
+          existing.set(key, song);
+          i++;
+        } else {
+          console.log("No iTunes ID, cannot accept. Again.");
+        }
+      } else if (/^\d+$/.test(answer.trim())) {
+        song.itunesId = parseInt(answer.trim());
+        console.log(`Set new iTunes ID: ${song.itunesId}, rechecking...`);
+        // don't increment i
+      } else if (answer.toLowerCase() === "q") {
+        i = songs.length;
+      } else {
+        console.log("What? Again.");
+      }
     }
   }
 
-  console.log(`\n=== Summary (this run: ${results.length} new) ===`);
-  const notFound = results.filter((r) => !r.check.found);
-  const mismatch = results.filter(
-    (r) => r.check.found && (!r.check.mt || !r.check.ma || !r.check.my),
-  );
-  console.log(`Checked: ${results.length}`);
-  console.log(`Not found: ${notFound.length}`);
-  console.log(`Mismatches: ${mismatch.length}`);
-
-  await saveResults(existing);
+  rl.close();
+  console.log(`\nAccepted: ${okSongs.length}`);
+  await saveResults(okSongs);
 }
 
 main();
