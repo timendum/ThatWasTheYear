@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "bun build src/index.tsx --outdir=dist --target=browser --sourcemap=external --minify && bun run copy-assets",
+    "build": "bun build src/index.tsx --outdir=dist --target=browser --sourcemap=external --production && bun run copy-assets",
     "copy-assets": "bun run scripts/copy-assets.ts",
     "serve": "bun run --hot scripts/server.ts",
     "check-songs": "bun run scripts/check-songs.ts",
