@@ -161,7 +161,11 @@ export default function App() {
         />
       </div>
       {state.lastResult && (
-        <ResultModal isCorrect={state.lastResult.correct} song={state.lastResult.song} onContinue={handleContinue} />
+        <ResultModal
+          isCorrect={state.lastResult.correct}
+          song={state.lastResult.song}
+          onContinue={handleContinue}
+        />
       )}
     </>
   );

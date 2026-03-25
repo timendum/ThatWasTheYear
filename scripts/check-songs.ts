@@ -3,7 +3,7 @@ import type { ITunesTrack, Song } from "../src/types";
 import songs from "../assets/songs.json";
 import { getDetailedITunesSong } from "../src/gameState";
 
-async function checkSong(song: Song, track: ITunesTrack | undefined) {
+function checkSong(song: Song, track: ITunesTrack | undefined) {
   // If track not found on iTunes, return all-false result
   if (!track) {
     return {
@@ -50,7 +50,7 @@ async function checkSong(song: Song, track: ITunesTrack | undefined) {
       mi: !!track.artworkUrl100?.startsWith("http"), // has artwork image
       mt: titleMatch,
       ma: artistMatch,
-      my: !!releaseYear ? Math.abs(releaseYear - song.y) : 100,
+      my: releaseYear ? Math.abs(releaseYear - song.y) : 100,
     },
     track,
   };
@@ -110,7 +110,7 @@ async function main() {
     let track: ITunesTrack | undefined = undefined;
     track = await getDetailedITunesSong(song);
     if (track) {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await Bun.sleep((60 * 1000) / 20);
     }
 
     const result = await checkSong(song, track);
@@ -167,7 +167,7 @@ async function main() {
           console.log("No iTunes ID, cannot accept. Again.");
         }
       } else if (/^\d+$/.test(answer.trim())) {
-        song.itunesId = parseInt(answer.trim());
+        song.itunesId = parseInt(answer.trim(), 10);
         console.log(`Set new iTunes ID: ${song.itunesId}, rechecking...`);
         // don't increment i
       } else if (answer.toLowerCase() === "q") {

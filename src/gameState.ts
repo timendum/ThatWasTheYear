@@ -59,7 +59,7 @@ export async function getDetailedITunesSong(song: Song): Promise<ITunesTrack | u
         }
       }
     } catch (e) {
-      console.error("Error fetching song by itunesId", e);
+      console.error(`Error fetching song "${song.t} - ${song.a}" by itunesId`, e);
     }
   }
   if (!data) {
@@ -83,7 +83,7 @@ export async function getDetailedSong(song: Song): Promise<DetailedSong> {
       if (Math.abs(parsedYear - song.y) === 1) {
         releaseYear = parsedYear;
       }
-    } catch (e) {}
+    } catch {}
   }
   return {
     ...song,
@@ -165,7 +165,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           gameOver = state.deck.length < state.players.length;
         }
       }
-      
 
       return {
         ...state,
