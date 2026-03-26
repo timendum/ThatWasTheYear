@@ -1,6 +1,6 @@
 # ThatWasTheYear
 
-ThatWasTheYear (hosted at <https://ellorans.github.io/ThatWasTheYear/>) is a browser-based multiplayer game where players take turns drawing mystery song cards and placing them into their personal timelines in chronological order.
+ThatWasTheYear (hosted at <https://timendum.github.io/ThatWasTheYear/>) is a browser-based multiplayer game where players take turns drawing mystery song cards and placing them into their personal timelines in chronological order.
 
 Each round, a song is drawn from a deck (sourced from a local songLibrary).
 
@@ -29,8 +29,6 @@ The iTunes Search API is used to fetch album artwork and audio previews (No API 
 
 ## Development
 
-Thanks to [Timendum's improvements](https://github.com/timendum/ThatWasTheYear).
-
 Now on TypeScript with Bun, no runtime dependencies.
 
 ## Setup
@@ -52,16 +50,3 @@ Visit <http://localhost:3000>
 ```bash
 bun run build
 ```
-
-Output in `dist/` directory.
-
-## Project Structure
-
-- `assets/index.html` - The only HTML page
-- `assets/style.css` - CSS Styling
-- `asset/songs.json` - Song library data
-- `src/types.ts` - TypeScript interfaces
-- `src/app.ts` - Main game logic
-- `scripts/server.ts` - Utility development server
-- `scripts/check-songs.ts` - Script to check songs data against iTunes data
-- `scripts/copy-assets.ts` - Script for the build step
