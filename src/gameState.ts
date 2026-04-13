@@ -38,7 +38,7 @@ export function shuffleDeck(deck: Song[], players: number): Song[] {
   }
   piles.forEach(fisherYatesShuffle);
   const result: Song[] = [];
-  const minLen = piles[piles.length - 1].length;
+  const minLen = piles.at(-1).length;
   for (let i = 0; i < minLen; i++) {
     for (const pile of piles) {
       result.push(pile.pop()!);
@@ -79,7 +79,7 @@ export async function getDetailedSong(song: Song): Promise<DetailedSong> {
   let releaseYear = undefined;
   if (res) {
     try {
-      const parsedYear = parseInt(res.releaseDate?.substring(0, 4), 10);
+      const parsedYear = parseInt(res.releaseDate?.slice(0, 4), 10);
       if (Math.abs(parsedYear - song.y) === 1) {
         releaseYear = parsedYear;
       }

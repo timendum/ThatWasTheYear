@@ -12,7 +12,7 @@ export default function SetupScreen({
   initialPlayers,
   initialEndCondition,
 }: SetupScreenProps) {
-  const [players, setPlayers] = useState(initialPlayers.length ? initialPlayers : ["", ""]);
+  const [players, setPlayers] = useState(initialPlayers.length > 0 ? initialPlayers : ["", ""]);
   const [endType, setEndType] = useState<EndCondition["type"]>(initialEndCondition.type);
   const [turnsValue, setTurnsValue] = useState(initialEndCondition.value);
   const [correctSongsValue, setCorrectSongsValue] = useState(initialEndCondition.value);
@@ -148,12 +148,8 @@ export default function SetupScreen({
       </button>
       <p className="cookie-notice">
         This game uses Apple Music data to provide song previews and metadata. By clicking
-        "Start Game", you agree to Apple's{" "}
-        <a
-          href="https://www.apple.com/legal/privacy/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        &quot;Start Game&quot;, you agree to Apple&apos;s{" "}
+        <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener noreferrer">
           Privacy Policy
         </a>{" "}
         and the use of necessary cookies for playback functionality.

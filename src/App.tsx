@@ -64,7 +64,7 @@ export default function App() {
 
   async function handleDrawSong() {
     if (state.deck.length === 0) return;
-    const rawSong = state.deck[state.deck.length - 1];
+    const rawSong = state.deck.at(-1);
     try {
       const song = await getDetailedSong(rawSong);
       dispatch({ type: "DRAW_SONG", song });

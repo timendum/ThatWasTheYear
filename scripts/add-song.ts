@@ -31,7 +31,7 @@ async function main() {
 
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
-    const year = r.releaseDate?.substring(0, 4) ?? "????";
+    const year = r.releaseDate?.slice(0, 4) ?? "????";
     console.log(`  ${i + 1}) ${r.trackName} - ${r.artistName} (${year}) [${r.trackId}]`);
   }
 
@@ -63,4 +63,4 @@ async function main() {
   console.log(`✅ Added: ${newSong.t} - ${newSong.a} (${newSong.y})`);
 }
 
-main();
+await main();

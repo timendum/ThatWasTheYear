@@ -107,7 +107,7 @@ async function main() {
       i++;
       continue;
     }
-    let track: ITunesTrack | undefined = undefined;
+    let track;
     track = await getDetailedITunesSong(song);
     if (track) {
       await Bun.sleep((60 * 1000) / 20);
@@ -130,7 +130,7 @@ async function main() {
       i++;
     } else {
       const trackInfo = result.track
-        ? `${result.track.trackName} - ${result.track.artistName} (${result.track.releaseDate?.substring(0, 4)})`
+        ? `${result.track.trackName} - ${result.track.artistName} (${result.track.releaseDate?.slice(0, 4)})`
         : "Not found";
       console.log(`DB: ${song.t} - ${song.a} (${song.y})`);
       console.log(`iTunes: ${trackInfo}`);
@@ -183,4 +183,4 @@ async function main() {
   await saveResults(okSongs);
 }
 
-main();
+await main();
