@@ -40,7 +40,7 @@ export default function PlayerLane({
   return (
     <div ref={laneRef} className={`player-area${isActive ? " active-player-border" : ""}`}>
       <h3>
-        {player.name} ({player.timeline.length} Cards)
+        {player.name} ({player.timeline.length - 1} Songs)
       </h3>
       <div className="timeline">
         <button
