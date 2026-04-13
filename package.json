@@ -8,6 +8,7 @@
     "serve": "bun run --hot scripts/server.ts",
     "check-songs": "bun run scripts/check-songs.ts",
     "add-song": "bun run scripts/add-song.ts",
+    "tc": "bun run tsc --noEmit -p .",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
