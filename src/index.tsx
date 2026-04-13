@@ -1,4 +1,9 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
+import ErrorBoundary from "./components/ErrorBoundary";
 
-createRoot(document.querySelector("#root")!).render(<App />);
+createRoot(document.querySelector("#root")!).render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>,
+);
