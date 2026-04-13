@@ -7,6 +7,7 @@
     "copy-assets": "bun run scripts/copy-assets.ts",
     "serve": "bun run --hot scripts/server.ts",
     "check-songs": "bun run scripts/check-songs.ts",
+    "validate-songs": "bun run scripts/validate-songs.ts",
     "add-song": "bun run scripts/add-song.ts",
     "tc": "bun run tsc --noEmit -p .",
     "lint": "oxlint",
