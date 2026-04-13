@@ -13,7 +13,9 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check"
+    "fmt:check": "oxfmt --check",
+    "test": "bun test",
+    "checks": "bun run tc && bun run lint && bun run fmt:check && bun run test"
   },
   "dependencies": {
     "react": "^19.2.4",

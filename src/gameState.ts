@@ -202,6 +202,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       };
 
     default:
+      console.error("unknown action", action);
       return state;
   }
 }
