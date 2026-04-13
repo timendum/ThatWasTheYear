@@ -1,11 +1,12 @@
 import { useEffect, useRef, Fragment } from "react";
-import type { Player } from "../types";
+import type { Player, EndCondition } from "../types";
 import SongCard from "./SongCard";
 
 interface PlayerLaneProps {
   player: Player;
   isActive: boolean;
   hasCurrentSong: boolean;
+  endCondition: EndCondition;
   onPlaceSong: (position: number) => void;
   focusedDropZone: number | null;
 }
@@ -14,6 +15,7 @@ export default function PlayerLane({
   player,
   isActive,
   hasCurrentSong,
+  endCondition,
   onPlaceSong,
   focusedDropZone,
 }: PlayerLaneProps) {
@@ -41,6 +43,12 @@ export default function PlayerLane({
     <div ref={laneRef} className={`player-area${isActive ? " active-player-border" : ""}`}>
       <h3>
         {player.name} ({player.timeline.length - 1} Songs)
+        {endCondition.type === "correctSongs" && (
+          <span className="win-progress">
+            {" — "}
+            {Math.max(0, endCondition.value - (player.timeline.length - 1))} to win
+          </span>
+        )}
       </h3>
       <div className="timeline">
         <button

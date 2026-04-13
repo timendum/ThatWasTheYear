@@ -1,10 +1,13 @@
 import type { DetailedSong } from "../types";
 import SongCard from "./SongCard";
 
+import type { EndCondition } from "../types";
+
 interface ControlsProps {
   currentPlayer: string;
   roundCount: number;
   currentSong: DetailedSong | null;
+  endCondition: EndCondition;
   onDrawSong: () => void;
   onReplay: () => void;
   onReset: () => void;
@@ -15,16 +18,21 @@ export default function Controls({
   currentPlayer,
   roundCount,
   currentSong,
+  endCondition,
   onDrawSong,
   onReplay,
   onReset,
   showReplay,
 }: ControlsProps) {
+  const roundLabel =
+    endCondition.type === "turns"
+      ? `Round ${roundCount}/${endCondition.value}`
+      : `Round ${roundCount}`;
   return (
     <div id="controls">
       <div className="controls-header">
         <h2 id="turn-indicator">{currentPlayer}&apos;s Turn</h2>
-        <div id="round-display">Round {roundCount}</div>
+        <div id="round-display">{roundLabel}</div>
         <button
           id="reset-btn"
           onClick={(_) => onReset()}

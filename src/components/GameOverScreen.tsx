@@ -36,6 +36,7 @@ export default function GameOverScreen({ players, onReset }: GameOverScreenProps
         players={players}
         currentPlayerIndex={-1}
         hasCurrentSong={false}
+        endCondition={{ type: "infinite", value: 0 }}
         onPlaceSong={() => {}}
         disabled={true}
       />

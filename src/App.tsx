@@ -147,6 +147,7 @@ export default function App() {
           currentPlayer={currentPlayer.name}
           roundCount={state.roundCount}
           currentSong={state.currentSong}
+          endCondition={state.endCondition}
           onDrawSong={handleDrawSong}
           onReplay={playPreview}
           onReset={handleReset}
@@ -156,6 +157,7 @@ export default function App() {
           players={state.players}
           currentPlayerIndex={state.currentPlayerIndex}
           hasCurrentSong={state.currentSong !== null}
+          endCondition={state.endCondition}
           disabled={state.lastResult !== null}
           onPlaceSong={handlePlaceSong}
         />

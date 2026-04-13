@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import type { Player } from "../types";
+import type { Player, EndCondition } from "../types";
 import PlayerLane from "./PlayerLane";
 
 interface PlayersContainerProps {
   players: Player[];
   currentPlayerIndex: number;
   hasCurrentSong: boolean;
+  endCondition: EndCondition;
   disabled: boolean;
   onPlaceSong: (position: number) => void;
 }
@@ -14,6 +15,7 @@ export default function PlayersContainer({
   players,
   currentPlayerIndex,
   hasCurrentSong,
+  endCondition,
   disabled,
   onPlaceSong,
 }: PlayersContainerProps) {
@@ -53,6 +55,7 @@ export default function PlayersContainer({
           player={player}
           isActive={i === currentPlayerIndex}
           hasCurrentSong={hasCurrentSong}
+          endCondition={endCondition}
           onPlaceSong={onPlaceSong}
           focusedDropZone={focusedDropZone}
         />
