@@ -65,6 +65,10 @@ export default function App() {
   async function handleDrawSong() {
     if (state.deck.length === 0) return;
     const rawSong = state.deck.at(-1);
+    if (!rawSong) {
+      console.error("Deck is empty in handleDrawSong");
+      return;
+    }
     try {
       const song = await getDetailedSong(rawSong);
       dispatch({ type: "DRAW_SONG", song });

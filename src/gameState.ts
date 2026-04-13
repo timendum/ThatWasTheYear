@@ -36,9 +36,13 @@ export function shuffleDeck(deck: Song[], players: number): Song[] {
   for (let i = 0; i < sorted.length; i++) {
     piles[i % players].push(sorted[i]);
   }
-  piles.forEach(fisherYatesShuffle);
+  piles.forEach((s) => fisherYatesShuffle(s));
   const result: Song[] = [];
-  const minLen = piles.at(-1).length;
+  const minLen = piles.at(-1)?.length;
+  if (minLen === undefined) {
+    console.error("Empty piles!");
+    return result;
+  }
   for (let i = 0; i < minLen; i++) {
     for (const pile of piles) {
       result.push(pile.pop()!);
