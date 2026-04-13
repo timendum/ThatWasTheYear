@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent } from "react";
+import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import type { EndCondition } from "../types";
 
 interface SetupScreenProps {
@@ -17,9 +17,25 @@ export default function SetupScreen({
   const [turnsValue, setTurnsValue] = useState(initialEndCondition.value);
   const [correctSongsValue, setCorrectSongsValue] = useState(initialEndCondition.value);
 
+  const justAddedRef = useRef(false);
+
   function addPlayer() {
     setPlayers([...players, ""]);
+    justAddedRef.current = true;
   }
+
+  useEffect(() => {
+    if (justAddedRef.current) {
+      justAddedRef.current = false;
+      const inputs = document.querySelectorAll<HTMLInputElement>(".p-name");
+      for (const input of inputs) {
+        if (input.value === "") {
+          input.focus();
+          break;
+        }
+      }
+    }
+  }, [players.length]);
 
   function updatePlayer(index: number, value: string) {
     const updated = [...players];
@@ -130,6 +146,18 @@ export default function SetupScreen({
       <button className="start-btn" onClick={handleStart} tabIndex={0}>
         Start Game
       </button>
+      <p className="cookie-notice">
+        This game uses Apple Music data to provide song previews and metadata. By clicking
+        "Start Game", you agree to Apple's{" "}
+        <a
+          href="https://www.apple.com/legal/privacy/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Privacy Policy
+        </a>{" "}
+        and the use of necessary cookies for playback functionality.
+      </p>
     </div>
   );
 }

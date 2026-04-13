@@ -401,3 +401,20 @@ button:hover {
   margin-left: auto;
   padding-left: 0.75rem;
 }
+
+.cookie-notice {
+  max-width: 28rem;
+  margin: 1.25rem auto 0.25rem;
+  font-size: 0.75rem;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+.cookie-notice a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.cookie-notice a:hover {
+  color: color-mix(in srgb, var(--accent) 70%, white);
+}
