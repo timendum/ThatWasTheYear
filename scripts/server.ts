@@ -1,3 +1,4 @@
+/// Utility http server to serve updated resources without a build step.
 Bun.serve({
   port: 3000,
   async fetch(req) {

@@ -1,10 +1,12 @@
-import songs from "../assets/songs.json";
+import { loadSongsFromArgs } from "./lib/load-songs";
+
+const allSongs = await loadSongsFromArgs();
 
 // "1960s | ██ 99" → prefix is 10 chars, suffix " 99" is up to 4 chars → 76 chars for bar
 const maxBar = 76;
 
 const counts = new Map<number, number>();
-for (const { y } of songs) {
+for (const { y } of allSongs) {
   counts.set(y, (counts.get(y) ?? 0) + 1);
 }
 
@@ -18,7 +20,7 @@ for (const [year, count] of sorted) {
   console.log(`${year} | ${bar} ${count}`);
 }
 console.log("-----|" + "-".repeat(maxBar + 5));
-console.log(`Total: ${songs.length} songs across ${sorted.length} years`);
+console.log(`Total: ${allSongs.length} songs across ${sorted.length} years`);
 
 const decades = new Map<number, number>();
 for (const [year, count] of sorted) {

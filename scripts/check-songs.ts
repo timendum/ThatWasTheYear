@@ -1,7 +1,7 @@
 import { createInterface } from "node:readline/promises";
 import type { ITunesTrack, Song } from "../src/types";
-import songs from "../assets/songs.json";
 import { getDetailedITunesSong } from "../src/gameState";
+import { loadSongsFromArgs } from "./lib/load-songs";
 
 function checkSong(song: Song, track: ITunesTrack | undefined) {
   // If track not found on iTunes, return all-false result
@@ -92,6 +92,7 @@ async function saveResults(songs: Song[]) {
 async function main() {
   const existing = await loadExisting();
   console.log(`Found ${existing.size} already-accepted songs.`);
+  const songs = await loadSongsFromArgs();
   console.log(`Checking ${songs.length} songs...\n`);
 
   const rl = createInterface({ input: process.stdin, output: process.stdout });

@@ -1,7 +1,6 @@
 import { createInterface } from "node:readline/promises";
 import type { ITunesResponse, ITunesTrack, Song } from "../src/types";
-
-const SONGS_PATH = "./assets/songs.json";
+import { loadSongsFromArgs, DEFAULT_FILES } from "./lib/load-songs";
 
 async function searchItunes(query: string): Promise<ITunesTrack[]> {
   const resp = await fetch(
@@ -51,15 +50,16 @@ async function main() {
     y: new Date(track.releaseDate).getFullYear(),
     itunesId: track.trackId,
   };
+  const filename = (process.argv.slice(2, 3) || DEFAULT_FILES)[0];
 
-  const songs: Song[] = await Bun.file(SONGS_PATH).json();
+  const songs: Song[] = await loadSongsFromArgs([filename]);
   songs.push(newSong);
   songs.sort(
     (a, b) => sortKey(a.t).localeCompare(sortKey(b.t)) || sortKey(a.a).localeCompare(sortKey(b.a)),
   );
 
   const jsonLines = songs.map((s) => JSON.stringify(s)).join(",\n");
-  await Bun.write(SONGS_PATH, `[\n${jsonLines}\n]\n`);
+  await Bun.write(filename, `[\n${jsonLines}\n]\n`);
   console.log(`✅ Added: ${newSong.t} - ${newSong.a} (${newSong.y})`);
 }
 
