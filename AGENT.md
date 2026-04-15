@@ -24,10 +24,9 @@ Hosted at: <https://timendum.github.io/ThatWasTheYear/>
 | `bun run serve` | Dev server at <http://localhost:3000> (hot reload) |
 | `bun run build` | Production build → `dist/` |
 | `bun run check-songs` | Validate songs.json against iTunes data |
-| `bun run lint` | Lint with oxlint |
-| `bun run lint:fix` | Lint and auto-fix with oxlint |
-| `bun run fmt` | Format with oxfmt |
-| `bun run fmt:check` | Check formatting with oxfmt |
+| `bun run validate-songs` | Validate songs.json structure |
+| `bun run add-song` | Add a new song to songs.json |
+| `bun run checks` | Run type-check + lint + format check + test |
 
 ## Project Structure
 
@@ -37,13 +36,13 @@ assets/              Static files (copied to dist/ on build)
   style.css          All styling
   songs.json         Song library: array of {t, a, y, itunesId?}
   placeholder-100.png Fallback album art
-  favicon.ico        Favicon
   icon.png           App icon (PNG)
   icon.svg           App icon (SVG)
 src/
   index.tsx          Entry point, renders <App /> into #root
   App.tsx            Root component, orchestrates game flow and audio
   gameState.ts       gameReducer, initialGameState, utility functions (shuffleDeck, getDetailedSong, save/load)
+  gameState.test.ts  Tests for gameState (Bun test runner)
   types.ts           Shared interfaces: Song, DetailedSong, Player, PlacementResult, GameState, GameAction, EndCondition
   components/
     SetupScreen.tsx  Player name inputs + end condition selection
@@ -53,10 +52,14 @@ src/
     SongCard.tsx     Renders a song card (revealed or mystery)
     ResultModal.tsx  Correct/wrong overlay after placement
     GameOverScreen.tsx  End-of-game summary screen
+    ErrorBoundary.tsx  Class-based error boundary (React requires class for error boundaries)
 scripts/
   server.ts          Bun dev server (builds src/index.tsx on-the-fly)
   copy-assets.ts     Copies assets/ → dist/ during build
   check-songs.ts     Validates song data against iTunes API
+  validate-songs.ts  Validates songs.json structure
+  add-song.ts        Adds a new song to songs.json
+  songs-per-year.ts  Reports song count per year
 ```
 
 ## Architecture
@@ -87,9 +90,9 @@ scripts/
 
 ## Conventions
 
-- Functional React components only, no class components
+- Functional React components only, except ErrorBoundary (React requires a class component for error boundaries)
 - Space for indentation
-- No test framework currently configured
+- Tests use Bun's built-in test runner (`bun test`)
 - Linting via oxlint (`.oxlintrc.json`), formatting via oxfmt (`.oxfmtrc.json`)
 - No CSS framework — plain CSS in `assets/style.css`
 - Build output is a single `index.js` bundle + copied assets
