@@ -1,5 +1,12 @@
+/* oxlint-disable eslint/max-lines */
 import { beforeAll, describe, expect, test } from "bun:test";
-import { gameReducer, initialGameState, shuffleDeck } from "./gameState";
+import {
+  gameReducer,
+  initialGameState,
+  shuffleDeck,
+  saveGameState,
+  loadGameState,
+} from "./gameState";
 import type { DetailedSong, GameState, Player, Song } from "./types";
 
 beforeAll(() => {
@@ -59,21 +66,43 @@ function makeStandardGame(): GameState {
   return state;
 }
 
+function checkRestore(gs: GameState) {
+  const before = gs;
+  saveGameState(gs);
+  const state = loadGameState();
+  expect(state).not.toEqual(undefined);
+  if (state) {
+    const after = gameReducer(initialGameState, { type: "RESTORE", state: state });
+    const { allSongs: _a, lastResult: _b, ...expectedFields } = before;
+    const { allSongs: _c, lastResult: _d, ...actualFields } = after;
+
+    expect(actualFields).toEqual(expectedFields);
+  }
+}
+
 describe("gameReducer", () => {
   describe("INIT_DECK", () => {
     test("sets allSongs and clears deck", () => {
       const songs = [makeSong(2000), makeSong(2001)];
+
       const result = gameReducer(initialGameState, { type: "INIT_DECK", songs });
+
       expect(result.allSongs).toEqual(songs);
       expect(result.deck).toEqual([]);
+
+      checkRestore(result);
     });
   });
 
   describe("SET_END_CONDITION", () => {
     test("updates end condition", () => {
       const endCondition = { type: "turns" as const, value: 5 };
+
       const result = gameReducer(initialGameState, { type: "SET_END_CONDITION", endCondition });
+
       expect(result.endCondition).toEqual(endCondition);
+
+      checkRestore(result);
     });
   });
 
@@ -89,6 +118,8 @@ describe("gameReducer", () => {
       expect(result.currentPlayerIndex).toBe(0);
       expect(result.roundCount).toBe(1);
       expect(result.deck.length).toBeGreaterThan(0);
+
+      checkRestore(result);
     });
   });
 
@@ -102,6 +133,8 @@ describe("gameReducer", () => {
 
       expect(result.currentSong).toEqual(drawn);
       expect(result.deck.length).toEqual(sbase.deck.length - 1);
+
+      checkRestore(result);
     });
   });
 
@@ -111,7 +144,10 @@ describe("gameReducer", () => {
       const updated = makeDetailedSong(2002);
 
       const result = gameReducer(sbase, { type: "UPDATE_CURRENT_SONG", song: updated });
+
       expect(result.currentSong).toEqual(updated);
+
+      checkRestore(result);
     });
   });
 
@@ -130,6 +166,8 @@ describe("gameReducer", () => {
       expect(result.players[0].timeline).toHaveLength(3);
       expect(result.players[0].timeline[1].y).toBe(year);
       expect(result.currentSong).toBeNull();
+
+      checkRestore(result);
     });
 
     test("incorrect placement does not modify timeline", () => {
@@ -143,6 +181,8 @@ describe("gameReducer", () => {
 
       expect(result.lastResult?.correct).toBe(false);
       expect(result.players[0].timeline).toHaveLength(2);
+
+      checkRestore(result);
     });
 
     test("advances to next player", () => {
@@ -151,7 +191,10 @@ describe("gameReducer", () => {
       });
 
       const result = gameReducer(state, { type: "PLACE_SONG", position: 1 });
+
       expect(result.currentPlayerIndex).toBe(1);
+
+      checkRestore(result);
     });
 
     test("wraps around to first player and increments round", () => {
@@ -161,8 +204,11 @@ describe("gameReducer", () => {
       });
 
       const result = gameReducer(state, { type: "PLACE_SONG", position: 1 });
+
       expect(result.currentPlayerIndex).toBe(0);
       expect(result.roundCount).toBe(2);
+
+      checkRestore(result);
     });
 
     test("game over when turns limit reached", () => {
@@ -175,8 +221,11 @@ describe("gameReducer", () => {
       });
 
       const result = gameReducer(state, { type: "PLACE_SONG", position: 1 });
+
       expect(result.lastResult?.correct).toBe(true);
       expect(result.gameOver).toBe(true);
+
+      checkRestore(result);
     });
 
     test("game over when correctSongs limit reached", () => {
@@ -190,8 +239,11 @@ describe("gameReducer", () => {
       });
 
       const result = gameReducer(state, { type: "PLACE_SONG", position: 1 });
+
       expect(result.lastResult?.correct).toBe(true);
       expect(result.gameOver).toBe(true);
+
+      checkRestore(result);
     });
 
     test("game over when deck runs out", () => {
@@ -205,8 +257,11 @@ describe("gameReducer", () => {
       });
 
       const result = gameReducer(state, { type: "PLACE_SONG", position: 1 });
+
       expect(result.lastResult?.correct).toBe(true);
       expect(result.gameOver).toBe(true);
+
+      checkRestore(result);
     });
 
     test("uses releaseYear when it fits but original year does not", () => {
@@ -220,8 +275,11 @@ describe("gameReducer", () => {
       });
 
       const result = gameReducer(state, { type: "PLACE_SONG", position: 1 });
+
       expect(result.lastResult?.correct).toBe(true);
       expect(result.players[0].timeline[1].y).toBe(1995);
+
+      checkRestore(result);
     });
   });
 
@@ -230,8 +288,12 @@ describe("gameReducer", () => {
       const state = startWith({
         lastResult: { correct: true, song: makeDetailedSong(2000) },
       });
+
       const result = gameReducer(state, { type: "CLEAR_RESULT" });
+
       expect(result.lastResult).toBeNull();
+
+      checkRestore(result);
     });
   });
 
@@ -243,10 +305,14 @@ describe("gameReducer", () => {
         gameStarted: true,
         roundCount: 3,
       };
+
       const result = gameReducer(initialGameState, { type: "RESTORE", state: saved });
+
       expect(result.players[0].name).toBe("Alice");
       expect(result.roundCount).toBe(3);
       expect(result.lastResult).toBeNull();
+
+      checkRestore(result);
     });
 
     test("throws on invalid state", () => {
@@ -275,6 +341,8 @@ describe("gameReducer", () => {
       expect(result.endCondition).toEqual(state.endCondition);
       expect(result.allSongs).toEqual(songs);
       expect(result.lastResult).toBeNull();
+
+      checkRestore(result);
     });
   });
 
