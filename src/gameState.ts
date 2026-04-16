@@ -7,7 +7,7 @@ import type {
   ITunesTrack,
 } from "./types";
 
-const STORAGE_KEY = "thatWasTheYear_gameState";
+export const STORAGE_KEY = "thatWasTheYear_gameState";
 
 export const initialGameState: GameState = {
   players: [],
