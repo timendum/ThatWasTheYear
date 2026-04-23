@@ -10,10 +10,11 @@
     "tc": "bun run tsc --noEmit -p .",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "slint": "stylelint assets/*.css",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "test": "bun test",
-    "checks": "bun run tc && bun run lint && bun run fmt:check && bun run test"
+    "checks": "bun run tc && bun run lint && bun run fmt:check && bun run test && bun run slint"
   },
   "dependencies": {
     "react": "^19.2.4",
@@ -25,7 +26,9 @@
     "@types/react-dom": "^19.2.3",
     "oxfmt": "^0.41.0",
     "oxlint": "^1.56.0",
-    "oxlint-tsgolint": "^0.17.0"
+    "oxlint-tsgolint": "^0.17.0",
+    "stylelint": "^17.9.0",
+    "stylelint-config-standard": "^40.0.0"
   },
   "module": "index.ts",
   "private": true,
