@@ -1,6 +1,9 @@
 :root {
   --bg: #121212;
   --card-bg: #181818;
+  --surface: #282828;
+  --border: #444;
+  --text-muted: #aaa;
   --accent: #1DB954;
   --text: #FFFFFF;
   --error: #e91e63;
@@ -34,8 +37,8 @@ body {
 }
 
 input {
-  background: #282828;
-  border: 1px solid #333;
+  background: var(--surface);
+  border: 1px solid var(--border);
   color: white;
   padding: 0.75rem;
   margin: 0.25rem;
@@ -84,7 +87,7 @@ button:hover {
   padding: 1rem;
   width: 100%;
   z-index: 10;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -115,7 +118,7 @@ button:hover {
   width: 40px;
   height: 130px;
   flex-shrink: 1;
-  border: 2px dashed #444;
+  border: 2px dashed var(--border);
   border-radius: 0.5rem;
   cursor: pointer;
   transition: 0.2s;
@@ -128,7 +131,7 @@ button:hover {
 
 .drop-zone.waiting-for-input {
   border-color: var(--accent);
-  background: rgba(29, 185, 84, 0.1);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
   animation: pulse 2s ease-in-out infinite;
 }
 
@@ -179,7 +182,7 @@ button:hover {
 .card {
   width: 100px;
   min-height: 140px;
-  background: #282828;
+  background: var(--surface);
   border-radius: 0.5rem;
   padding: 0.5rem;
   box-sizing: border-box;
@@ -202,12 +205,15 @@ button:hover {
 }
 
 .card.mystery {
-  background: linear-gradient(135deg, #1DB954 0%, #121212 100%);
+  background:
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 40%, transparent) 0%, transparent 60%),
+    linear-gradient(135deg, var(--accent) 0%, var(--surface) 40%, var(--bg) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
   border: 2px solid var(--accent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 #preview-overlay {
@@ -303,12 +309,6 @@ button:hover {
   margin: 0 auto;
 }
 
-.end-condition-title {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-}
-
 .end-condition-option {
   display: contents;
 }
@@ -348,7 +348,7 @@ button:hover {
 }
 
 #replay-btn {
-  background: #444;
+  background: var(--border);
 }
 
 #current-drag-item {
@@ -391,7 +391,7 @@ button:hover {
 
 .game-over-winner {
   border-color: var(--accent);
-  background: rgba(29, 185, 84, 0.1);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .game-over-player-score {
@@ -406,7 +406,7 @@ button:hover {
   max-width: 28rem;
   margin: 1.25rem auto 0.25rem;
   font-size: 0.75rem;
-  color: #aaa;
+  color: var(--text-muted);
   line-height: 1.4;
 }
 
