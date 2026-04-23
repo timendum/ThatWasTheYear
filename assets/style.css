@@ -418,3 +418,49 @@ button:hover {
 .cookie-notice a:hover {
   color: color-mix(in srgb, var(--accent) 70%, white);
 }
+
+.song-packs-title, .end-condition-title {
+  display: block;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.song-packs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.song-pack-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.4rem 1rem;
+  border-radius: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s;
+  margin: 0;
+}
+
+.song-pack-pill:hover {
+  border-color: var(--accent);
+  transform: none;
+}
+
+.song-pack-pill-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+
+.song-pack-pill-active:hover {
+  background: color-mix(in srgb, var(--accent) 85%, white);
+  border-color: color-mix(in srgb, var(--accent) 85%, white);
+}
+
+.song-pack-pill:focus {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 50%, transparent);
+}

@@ -1,5 +1,6 @@
 import type {
   Song,
+  SongPack,
   DetailedSong,
   GameState,
   GameAction,
@@ -16,11 +17,28 @@ export const initialGameState: GameState = {
   currentSong: null,
   deck: [],
   allSongs: [],
+  songPacks: ["base"],
   endCondition: { type: "infinite", value: 10 },
   gameStarted: false,
   gameOver: false,
   lastResult: null,
 };
+
+const SONG_PACK_FILES: Record<SongPack, string> = {
+  base: "./songs.json",
+  it: "./songs-it.json",
+};
+
+export async function loadSongPacks(packs: SongPack[]): Promise<Song[]> {
+  const results = await Promise.all(
+    packs.map((pack) =>
+      fetch(SONG_PACK_FILES[pack])
+        .then((r) => r.json())
+        .then((songs: Song[]) => songs),
+    ),
+  );
+  return results.flat();
+}
 
 function fisherYatesShuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -106,6 +124,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case "SET_END_CONDITION":
       return { ...state, endCondition: action.endCondition };
+
+    case "SET_SONG_PACKS":
+      return { ...state, songPacks: action.songPacks };
 
     case "START_GAME":
       return {
@@ -196,6 +217,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ...initialGameState,
         players: state.players,
         endCondition: state.endCondition,
+        songPacks: state.songPacks,
         deck: [],
         allSongs: state.allSongs,
         lastResult: null,
@@ -252,6 +274,8 @@ function isValidGameState(obj: unknown): obj is GameState {
     s.endCondition !== null &&
     ["infinite", "turns", "correctSongs"].includes(s.endCondition.type) &&
     typeof s.endCondition.value === "number" &&
+    Array.isArray(s.songPacks) &&
+    s.songPacks.every((p: string) => ["base", "it"].includes(p)) &&
     typeof s.gameStarted === "boolean" &&
     typeof s.gameOver === "boolean"
   );

@@ -1,21 +1,24 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
-import type { EndCondition } from "../types";
+import type { EndCondition, SongPack } from "../types";
 
 interface SetupScreenProps {
-  onStartGame: (playerNames: string[], endCondition: EndCondition) => void;
+  onStartGame: (playerNames: string[], endCondition: EndCondition, songPacks: SongPack[]) => void;
   initialPlayers: string[];
   initialEndCondition: EndCondition;
+  initialSongPacks: SongPack[];
 }
 
 export default function SetupScreen({
   onStartGame,
   initialPlayers,
   initialEndCondition,
+  initialSongPacks,
 }: SetupScreenProps) {
   const [players, setPlayers] = useState(initialPlayers.length > 0 ? initialPlayers : ["", ""]);
   const [endType, setEndType] = useState<EndCondition["type"]>(initialEndCondition.type);
   const [turnsValue, setTurnsValue] = useState(initialEndCondition.value);
   const [correctSongsValue, setCorrectSongsValue] = useState(initialEndCondition.value);
+  const [songPacks, setSongPacks] = useState<Set<SongPack>>(new Set(initialSongPacks));
 
   const justAddedRef = useRef(false);
 
@@ -54,6 +57,20 @@ export default function SetupScreen({
     }
   }
 
+  function togglePack(pack: SongPack) {
+    setSongPacks((prev) => {
+      const next = new Set(prev);
+      if (next.has(pack)) {
+        if (next.size > 1) {
+          next.delete(pack);
+        }
+      } else {
+        next.add(pack);
+      }
+      return next;
+    });
+  }
+
   function handleStart() {
     const names = players.map((p) => p.trim()).filter((n) => n !== "");
     if (names.length === 0) {
@@ -62,12 +79,13 @@ export default function SetupScreen({
     }
     const value =
       endType === "turns" ? turnsValue : endType === "correctSongs" ? correctSongsValue : 0;
-    onStartGame(names, { type: endType, value });
+    onStartGame(names, { type: endType, value }, [...songPacks]);
   }
 
   return (
     <div className="screen">
       <h1 className="splash-title">That Was The Year</h1>
+
       <div className="player-inputs-title">Players:</div>
       <div id="player-inputs">
         {players.map((name, i) => (
@@ -86,6 +104,27 @@ export default function SetupScreen({
       <button onClick={addPlayer} tabIndex={0}>
         + Add Player
       </button>
+
+      <div className="song-packs-title">Include songs from:</div>
+      <div className="song-packs">
+        <button
+          type="button"
+          className={`song-pack-pill${songPacks.has("base") ? " song-pack-pill-active" : ""}`}
+          onClick={() => togglePack("base")}
+          tabIndex={0}
+        >
+          All-Time Hits
+        </button>
+        <button
+          type="button"
+          className={`song-pack-pill${songPacks.has("it") ? " song-pack-pill-active" : ""}`}
+          onClick={() => togglePack("it")}
+          tabIndex={0}
+        >
+          Italian
+        </button>
+      </div>
+
       <div className="end-condition-title">End Condition:</div>
       <div id="end-condition">
         <label className="end-condition-option">
@@ -143,9 +182,11 @@ export default function SetupScreen({
           </span>
         </label>
       </div>
+
       <button className="start-btn" onClick={handleStart} tabIndex={0}>
         Start Game
       </button>
+
       <p className="cookie-notice">
         This game uses Apple Music data to provide song previews and metadata. By clicking
         &quot;Start Game&quot;, you agree to Apple&apos;s{" "}

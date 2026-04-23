@@ -17,6 +17,8 @@ export interface Player {
   timeline: DetailedSong[];
 }
 
+export type SongPack = "base" | "it";
+
 export interface EndCondition {
   type: "infinite" | "turns" | "correctSongs";
   value: number;
@@ -34,6 +36,7 @@ export interface GameState {
   currentSong: DetailedSong | null;
   deck: Song[];
   allSongs: Song[];
+  songPacks: SongPack[];
   endCondition: EndCondition;
   gameStarted: boolean;
   gameOver: boolean;
@@ -44,6 +47,7 @@ export type GameAction =
   | { type: "INIT_DECK"; songs: Song[] }
   | { type: "START_GAME"; players: Player[] }
   | { type: "SET_END_CONDITION"; endCondition: EndCondition }
+  | { type: "SET_SONG_PACKS"; songPacks: SongPack[] }
   | { type: "DRAW_SONG"; song: DetailedSong }
   | { type: "PLACE_SONG"; position: number }
   | { type: "UPDATE_CURRENT_SONG"; song: DetailedSong }

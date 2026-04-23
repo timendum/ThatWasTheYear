@@ -6,8 +6,9 @@ import {
   shuffleDeck,
   saveGameState,
   loadGameState,
+  loadSongPacks,
 } from "./gameState";
-import type { DetailedSong, GameState, Player, Song } from "./types";
+import type { DetailedSong, GameState, Player, Song, SongPack } from "./types";
 
 beforeAll(() => {
   // Stub localStorage for RESET action
@@ -101,6 +102,28 @@ describe("gameReducer", () => {
       const result = gameReducer(initialGameState, { type: "SET_END_CONDITION", endCondition });
 
       expect(result.endCondition).toEqual(endCondition);
+
+      checkRestore(result);
+    });
+  });
+
+  describe("SET_SONG_PACKS", () => {
+    test("updates song packs", () => {
+      const songPacks: SongPack[] = ["base", "it"];
+
+      const result = gameReducer(initialGameState, { type: "SET_SONG_PACKS", songPacks });
+
+      expect(result.songPacks).toEqual(["base", "it"]);
+
+      checkRestore(result);
+    });
+
+    test("can set a single pack", () => {
+      const state = startWith({ songPacks: ["base", "it"] });
+
+      const result = gameReducer(state, { type: "SET_SONG_PACKS", songPacks: ["it"] });
+
+      expect(result.songPacks).toEqual(["it"]);
 
       checkRestore(result);
     });
@@ -322,11 +345,12 @@ describe("gameReducer", () => {
   });
 
   describe("RESET", () => {
-    test("resets game but keeps players, endCondition, and allSongs", () => {
+    test("resets game but keeps players, endCondition, songPacks, and allSongs", () => {
       const songs = [makeSong(2000)];
       const state = startWith({
         players: [makePlayer("Alice", [2000])],
         allSongs: songs,
+        songPacks: ["base", "it"],
         endCondition: { type: "turns", value: 5 },
         gameStarted: true,
         roundCount: 5,
@@ -339,6 +363,7 @@ describe("gameReducer", () => {
       expect(result.roundCount).toBe(1);
       expect(result.players).toEqual(state.players);
       expect(result.endCondition).toEqual(state.endCondition);
+      expect(result.songPacks).toEqual(["base", "it"]);
       expect(result.allSongs).toEqual(songs);
       expect(result.lastResult).toBeNull();
 
@@ -362,5 +387,37 @@ describe("shuffleDeck", () => {
     expect(songs.length).toBe(10);
     const result = shuffleDeck(songs, 2);
     expect(result.length).toBe(10);
+  });
+});
+
+describe("loadSongPacks", () => {
+  const baseSongs = [makeSong(2000), makeSong(2001)];
+  const itSongs = [makeSong(1990), makeSong(1991)];
+
+  beforeAll(() => {
+    globalThis.fetch = ((url: string) => {
+      if (url === "./songs.json") {
+        return Promise.resolve({ json: () => Promise.resolve(baseSongs) } as Response);
+      }
+      if (url === "./songs-it.json") {
+        return Promise.resolve({ json: () => Promise.resolve(itSongs) } as Response);
+      }
+      return Promise.reject(new Error(`Unexpected fetch: ${url}`));
+    }) as typeof fetch;
+  });
+
+  test("loads a single pack", async () => {
+    const songs = await loadSongPacks(["base"]);
+    expect(songs).toEqual(baseSongs);
+  });
+
+  test("loads and merges multiple packs", async () => {
+    const songs = await loadSongPacks(["base", "it"]);
+    expect(songs).toEqual([...baseSongs, ...itSongs]);
+  });
+
+  test("loads only the italian pack", async () => {
+    const songs = await loadSongPacks(["it"]);
+    expect(songs).toEqual(itSongs);
   });
 });

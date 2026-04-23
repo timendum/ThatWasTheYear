@@ -6,13 +6,14 @@ import {
   getStartingYear,
   saveGameState,
   loadGameState,
+  loadSongPacks,
 } from "./gameState";
 import SetupScreen from "./components/SetupScreen";
 import Controls from "./components/Controls";
 import PlayersContainer from "./components/PlayersContainer";
 import ResultModal from "./components/ResultModal";
 import GameOverScreen from "./components/GameOverScreen";
-import type { DetailedSong } from "./types";
+import type { DetailedSong, Song, SongPack } from "./types";
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialGameState);
@@ -20,17 +21,14 @@ export default function App() {
   const audioTimeoutRef = useRef<number>(-1);
 
   useEffect(() => {
-    fetch("./songs.json")
-      .then((r) => r.json())
-      .then((songs) => {
-        const saved = loadGameState();
-        if (saved) {
+    const saved = loadGameState();
+    if (saved) {
+      loadSongPacks(saved.songPacks)
+        .then((songs) => {
           dispatch({ type: "RESTORE", state: { ...saved, allSongs: songs } });
-        } else {
-          dispatch({ type: "INIT_DECK", songs });
-        }
-      })
-      .catch((e) => console.error("Failed to load songs", e));
+        })
+        .catch((e) => console.error("Failed to load songs", e));
+    }
   }, []);
 
   useEffect(() => {
@@ -39,18 +37,30 @@ export default function App() {
     }
   }, [state]);
 
-  function handleStartGame(
+  async function handleStartGame(
     playerNames: string[],
     endCondition: {
       type: "infinite" | "turns" | "correctSongs";
       value: number;
     },
+    songPacks: SongPack[],
   ) {
     dispatch({ type: "SET_END_CONDITION", endCondition });
+    dispatch({ type: "SET_SONG_PACKS", songPacks });
+
+    let allSongs: Song[];
+    try {
+      allSongs = await loadSongPacks(songPacks);
+      dispatch({ type: "INIT_DECK", songs: allSongs });
+    } catch (e) {
+      console.error("Failed to load song packs", e);
+      return;
+    }
+
     const startingSong: DetailedSong = {
       t: "\u00A0",
       a: "\u00A0",
-      y: getStartingYear(state.allSongs),
+      y: getStartingYear(allSongs),
       img: "./placeholder-100.png",
       preview: null,
       link: "#",
@@ -133,6 +143,7 @@ export default function App() {
         onStartGame={handleStartGame}
         initialPlayers={state.players.map((p) => p.name)}
         initialEndCondition={state.endCondition}
+        initialSongPacks={state.songPacks}
       />
     );
   }
