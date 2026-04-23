@@ -12,7 +12,7 @@ Hosted at: <https://timendum.github.io/ThatWasTheYear/>
 - **Framework**: React 19 (functional components, hooks only)
 - **Language**: TypeScript (strict mode)
 - **Dependencies**: react, react-dom (zero runtime deps beyond React)
-- **Linting/Formatting**: oxlint + oxfmt (config in `.oxlintrc.json` / `.oxfmtrc.json`)
+- **Linting/Formatting**: oxlint + oxfmt (config in `.oxlintrc.json` / `.oxfmtrc.json`); stylelint with `stylelint-config-standard` for CSS (config in `stylelint.config.mjs`)
 - **External API**: iTunes Search/Lookup API (no key required)
 - **Deployment**: GitHub Pages via GitHub Actions
 
@@ -26,33 +26,35 @@ Hosted at: <https://timendum.github.io/ThatWasTheYear/>
 | `bun run check-songs` | Validate songs.json against iTunes data |
 | `bun run validate-songs` | Validate songs.json structure |
 | `bun run add-song` | Add a new song to songs.json |
-| `bun run checks` | Run type-check + lint + format check + test |
+| `bun run checks` | Run type-check + lint + format check + test + CSS lint |
 
 ## Project Structure
 
 ```
-assets/              Static files (copied to dist/ on build)
-  index.html         Single HTML page, mounts #root
-  style.css          All styling
-  songs.json         Song library: array of {t, a, y, itunesId?}
+assets/               Static files (copied to dist/ on build)
+  index.html          Single HTML page, mounts #root
+  style.css           All styling
+  songs.json          Song library: array of {t, a, y, itunesId?}
   placeholder-100.png Fallback album art
-  icon.png           App icon (PNG)
-  icon.svg           App icon (SVG)
+  icon.png            App icon (PNG)
+  icon.svg            App icon (SVG)
 src/
-  index.tsx          Entry point, renders <App /> into #root
-  App.tsx            Root component, orchestrates game flow and audio
-  gameState.ts       gameReducer, initialGameState, utility functions (shuffleDeck, getDetailedSong, save/load)
-  gameState.test.ts  Tests for gameState (Bun test runner)
-  types.ts           Shared interfaces: Song, DetailedSong, Player, PlacementResult, GameState, GameAction, EndCondition
+  index.tsx             Entry point, renders <App /> into #root
+  App.tsx               Root component, orchestrates game flow and audio
+  gameState.ts          gameReducer, initialGameState, utility functions (shuffleDeck, save/load, getStartingYear)
+  gameState.test.ts     Tests for gameState (Bun test runner)
+  songService.ts        Song loading (fetch from JSON packs) and iTunes API lookups (getDetailedSong)
+  songService.test.ts   Tests for songService (Bun test runner)
+  types.ts              Shared interfaces: Song, DetailedSong, Player, PlacementResult, GameState, GameAction, EndCondition
   components/
-    SetupScreen.tsx  Player name inputs + end condition selection
-    Controls.tsx     Turn indicator, draw/replay buttons, mystery card display
+    SetupScreen.tsx       Player name inputs + end condition selection
+    Controls.tsx          Turn indicator, draw/replay buttons, mystery card display
     PlayersContainer.tsx  Renders all PlayerLane components
-    PlayerLane.tsx   Single player's timeline with drop zones for placement
-    SongCard.tsx     Renders a song card (revealed or mystery)
-    ResultModal.tsx  Correct/wrong overlay after placement
-    GameOverScreen.tsx  End-of-game summary screen
-    ErrorBoundary.tsx  Class-based error boundary (React requires class for error boundaries)
+    PlayerLane.tsx        Single player's timeline with drop zones for placement
+    SongCard.tsx          Renders a song card (revealed or mystery)
+    ResultModal.tsx       Correct/wrong overlay after placement
+    GameOverScreen.tsx    End-of-game summary screen
+    ErrorBoundary.tsx     Class-based error boundary (React requires class for error boundaries)
 scripts/
   server.ts          Bun dev server (builds src/index.tsx on-the-fly)
   copy-assets.ts     Copies assets/ → dist/ during build
@@ -64,12 +66,20 @@ scripts/
 
 ## Architecture
 
+### Song Loading
+
+Songs are loaded differently depending on context:
+
+- **Browser (runtime)**: `songService.ts` defines a `SONG_PACK_FILES` map (`base` → `./songs.json`, `it` → `./songs-it.json`). `loadSongPacks(packs)` fetches the selected packs via `fetch()` and merges them into a flat `Song[]`. The `SongPack` type (`"base" | "it"`) is defined in `types.ts`.
+- **CLI scripts**: `scripts/lib/load-songs.ts` exports `loadSongsFromArgs()`, which reads JSON files via `Bun.file()`. Defaults to `assets/songs.json`; accepts file paths as CLI arguments.
+- **iTunes enrichment**: `songService.ts` also handles iTunes API lookups (`getDetailedSong`, `getDetailedITunesSong`) — first tries lookup by `itunesId`, falls back to search by artist + title. Returns artwork, preview URL, and a `releaseYear` when it differs from `song.y` by exactly 1.
+
 ### State Management
 
 - Game state is a plain `GameState` object managed via `useReducer(gameReducer, initialGameState)` in App.tsx
-- All state transitions are handled by dispatching `GameAction` objects to the pure `gameReducer` function in `gameState.ts`
+- All state transitions are handled by dispatching `GameAction` objects to the pure `gameReducer` function in `gameState.ts`; song loading and iTunes API logic live separately in `songService.ts`
 - Placement correctness (including `releaseYear` fallback) is computed solely in the reducer's `PLACE_SONG` case; the result is stored in `GameState.lastResult`
-- Async side effects (iTunes API fetches) happen in event handlers; results are dispatched into the reducer
+- Async side effects (iTunes API fetches via `songService`) happen in event handlers; results are dispatched into the reducer
 - UI-only state (`focusedDropZone`) lives in separate `useState` hooks in App.tsx
 - Game state is persisted to localStorage via a `useEffect` that watches the reducer state (`lastResult` and `allSongs` are excluded from persistence)
 
