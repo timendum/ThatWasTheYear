@@ -2,12 +2,11 @@ import { useReducer, useEffect, useRef, useCallback } from "react";
 import {
   initialGameState,
   gameReducer,
-  getDetailedSong,
   getStartingYear,
   saveGameState,
   loadGameState,
-  loadSongPacks,
 } from "./gameState";
+import { getDetailedSong, loadSongPacks } from "./songService";
 import SetupScreen from "./components/SetupScreen";
 import Controls from "./components/Controls";
 import PlayersContainer from "./components/PlayersContainer";

@@ -1,6 +1,6 @@
 import { createInterface } from "node:readline/promises";
 import type { ITunesTrack, Song } from "../src/types";
-import { getDetailedITunesSong } from "../src/gameState";
+import { getDetailedITunesSong } from "../src/songService";
 import { loadSongsFromArgs } from "./lib/load-songs";
 
 function checkSong(song: Song, track: ITunesTrack | undefined) {
