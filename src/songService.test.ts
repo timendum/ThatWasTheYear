@@ -36,4 +36,23 @@ describe("loadSongPacks", () => {
     const songs = await loadSongPacks(["it"]);
     expect(songs).toEqual(itSongs);
   });
+
+  test("deduplicates songs across packs ignoring case, punctuation and year", async () => {
+    const shared: Song = { t: "Don't Stop Me Now", a: "Queen", y: 1979 };
+    const variant: Song = { t: "Dont stop me now", a: "queen", y: 1978 };
+    const unique: Song = { t: "Bohemian Rhapsody", a: "Queen", y: 1975 };
+
+    globalThis.fetch = ((url: string) => {
+      if (url === "./songs.json") {
+        return Promise.resolve({ json: () => Promise.resolve([shared, unique]) } as Response);
+      }
+      if (url === "./songs-it.json") {
+        return Promise.resolve({ json: () => Promise.resolve([variant]) } as Response);
+      }
+      return Promise.reject(new Error(`Unexpected fetch: ${url}`));
+    }) as typeof fetch;
+
+    const songs = await loadSongPacks(["base", "it"]);
+    expect(songs).toEqual([shared, unique]);
+  });
 });

@@ -13,7 +13,16 @@ export async function loadSongPacks(packs: SongPack[]): Promise<Song[]> {
         .then((songs: Song[]) => songs),
     ),
   );
-  return results.flat();
+  const all = results.flat();
+  const seen = new Set<string>();
+  return all.filter((song) => {
+    const key = `${song.t}${song.a}`.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 }
 
 export async function getDetailedITunesSong(song: Song): Promise<ITunesTrack | undefined> {
