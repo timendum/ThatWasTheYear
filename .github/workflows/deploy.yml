@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Build
 
 on:
   push:
@@ -36,11 +36,22 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Publish
-        uses: netlify/actions/cli@master
-        with:
-          args: deploy --prod --dir=dist
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun run build
+      - name: Prepare zip
+        run: cd dist && zip -r ../site.zip .
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Deploy to Netlify
         env:
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-    
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          uvx --with netlify-python python -c "
+          import os
+          from netlify import NetlifyClient
+          client = NetlifyClient(access_token=os.environ['NETLIFY_AUTH_TOKEN'])
+          client.create_site_deploy(os.environ['NETLIFY_SITE_ID'], 'site.zip')
+          "
