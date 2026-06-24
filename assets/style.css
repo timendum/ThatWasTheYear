@@ -463,3 +463,98 @@ button:hover {
 .song-pack-pill:focus {
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 50%, transparent);
 }
+
+.missed-songs-section {
+  max-width: 30rem;
+  margin: 1.25rem auto;
+  text-align: left;
+}
+
+.missed-songs-summary {
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--text-muted);
+  padding: 0.5rem 0;
+  text-align: center;
+  list-style: none;
+}
+
+.missed-songs-summary::marker {
+  content: "";
+}
+
+.missed-songs-summary::before {
+  content: "▶ ";
+  font-size: 0.75rem;
+}
+
+.missed-songs-section[open] .missed-songs-summary::before {
+  content: "▼ ";
+}
+
+.missed-songs-content {
+  margin-top: 0.75rem;
+}
+
+.missed-songs-player-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: 0.75rem 0 0.25rem;
+  color: var(--text);
+}
+
+.missed-songs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.missed-song-item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.missed-song-item:nth-child(odd) {
+  background: rgb(255 255 255 / 3%);
+}
+
+.missed-song-year {
+  font-weight: bold;
+  color: var(--error);
+  min-width: 2.5rem;
+  flex-shrink: 0;
+}
+
+.missed-song-title {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.missed-song-artist {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: auto;
+}
+
+.missed-song-link {
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.missed-song-link:hover .missed-song-title {
+  color: var(--accent);
+  text-decoration: underline;
+}

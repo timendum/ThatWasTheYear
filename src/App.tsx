@@ -67,6 +67,7 @@ export default function App() {
     const players = playerNames.map((name) => ({
       name,
       timeline: [startingSong],
+      missedSongs: [] as DetailedSong[],
     }));
     dispatch({ type: "START_GAME", players });
   }

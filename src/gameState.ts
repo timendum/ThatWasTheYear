@@ -95,7 +95,9 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
       const newPlayers = state.players.map((p, i) => {
         if (i !== state.currentPlayerIndex) return p;
-        if (!isCorrect) return p;
+        if (!isCorrect) {
+          return { ...p, missedSongs: [...p.missedSongs, song] };
+        }
         const newTimeline = [...p.timeline];
         newTimeline.splice(pos, 0, song);
         return { ...p, timeline: newTimeline };
@@ -138,7 +140,14 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
       if (!isValidGameState(action.state)) {
         throw new Error("Invalid game state received in RESTORE action");
       }
-      return { ...action.state, lastResult: null };
+      return {
+        ...action.state,
+        players: action.state.players.map((p) => ({
+          ...p,
+          missedSongs: p.missedSongs ?? [],
+        })),
+        lastResult: null,
+      };
 
     case "RESET":
       localStorage.removeItem(STORAGE_KEY);
@@ -192,7 +201,9 @@ function isValidGameState(obj: unknown): obj is GameState {
       (p) =>
         typeof p.name === "string" &&
         Array.isArray(p.timeline) &&
-        p.timeline.every(isValidDetailedSong),
+        p.timeline.every(isValidDetailedSong) &&
+        (!("missedSongs" in p) ||
+          (Array.isArray(p.missedSongs) && p.missedSongs.every(isValidDetailedSong))),
     ) &&
     typeof s.currentPlayerIndex === "number" &&
     typeof s.roundCount === "number" &&

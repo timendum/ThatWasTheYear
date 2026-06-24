@@ -41,7 +41,7 @@ function makeDetailedSong(year: number, title = `Song ${year}`): DetailedSong {
 }
 
 function makePlayer(name: string, timelineYears: number[] = []): Player {
-  return { name, timeline: timelineYears.map((y) => makeDetailedSong(y)) };
+  return { name, timeline: timelineYears.map((y) => makeDetailedSong(y)), missedSongs: [] };
 }
 
 function startWith(overrides: Partial<GameState>): GameState {

@@ -12,6 +12,8 @@ export default function GameOverScreen({ players, onReset }: GameOverScreenProps
     players.filter((p) => p.timeline.length - 1 === maxScore).map((p) => p.name),
   );
 
+  const totalMissed = players.reduce((sum, p) => sum + p.missedSongs.length, 0);
+
   return (
     <div id="game" className="screen">
       <h2 className="splash-title">Game Over!</h2>
@@ -31,6 +33,42 @@ export default function GameOverScreen({ players, onReset }: GameOverScreenProps
             </div>
           ))}
       </div>
+      {totalMissed > 0 && (
+        <details className="missed-songs-section">
+          <summary className="missed-songs-summary">Missed Songs ({totalMissed})</summary>
+          <div className="missed-songs-content">
+            {players.map((p) =>
+              p.missedSongs.length > 0 ? (
+                <div key={p.name} className="missed-songs-player">
+                  <p className="missed-songs-player-name">
+                    {p.name} ({p.missedSongs.length})
+                  </p>
+                  <ul className="missed-songs-list">
+                    {p.missedSongs.map((song, i) => (
+                      <li key={i} className="missed-song-item">
+                        <span className="missed-song-year">{song.y}</span>
+                        {song.link === "#" ? (
+                          <span className="missed-song-title">{song.t}</span>
+                        ) : (
+                          <a
+                            href={song.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="missed-song-link"
+                          >
+                            <span className="missed-song-title">{song.t}</span>
+                          </a>
+                        )}
+                        <span className="missed-song-artist">{song.a}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null,
+            )}
+          </div>
+        </details>
+      )}
       <button onClick={onReset}>Play Again</button>
       <PlayersContainer
         players={players}

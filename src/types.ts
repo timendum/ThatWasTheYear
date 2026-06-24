@@ -15,6 +15,7 @@ export interface DetailedSong extends Song {
 export interface Player {
   name: string;
   timeline: DetailedSong[];
+  missedSongs: DetailedSong[];
 }
 
 export type SongPack = "base" | "it";
