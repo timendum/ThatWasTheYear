@@ -558,3 +558,152 @@ button:hover {
   color: var(--accent);
   text-decoration: underline;
 }
+
+
+/* ===== Mobile Carousel for PlayerLane ===== */
+@media (width <= 600px) {
+  .player-area {
+    padding: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
+  .player-area h3 {
+    font-size: 0.9rem;
+  }
+
+  .timeline-carousel-wrapper {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .timeline-carousel-wrapper::before,
+  .timeline-carousel-wrapper::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2rem;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .timeline-carousel-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, rgb(0 0 0 / 60%), transparent);
+  }
+
+  .timeline-carousel-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, rgb(0 0 0 / 60%), transparent);
+  }
+
+  .timeline-carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 0;
+    padding: 0.75rem 0;
+    background: rgb(0 0 0 / 20%);
+    border-radius: 0.5rem;
+  }
+
+  .carousel-spacer {
+    flex-shrink: 0;
+    width: 20vw;
+  }
+
+  .carousel-card {
+    flex-shrink: 0;
+    width: 30vw;
+    scroll-snap-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-card .card {
+    width: 100%;
+    min-height: 120px;
+    font-size: 0.6rem;
+  }
+
+  .carousel-card .card .year {
+    font-size: 0.85rem;
+  }
+
+  .drop-zone-mobile {
+    flex-shrink: 0;
+    width: 20vw;
+    min-height: 120px;
+    scroll-snap-align: center;
+    border: 2px dashed var(--accent);
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    cursor: pointer;
+    transition: 0.2s;
+    padding: 0.5rem 0.25rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .drop-zone-mobile-label {
+    font-size: 1.25rem;
+    color: var(--text);
+  }
+
+  .drop-zone-mobile-hint {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .drop-zone-mobile.disabled {
+    border-color: transparent;
+    background: transparent;
+    animation: none;
+    cursor: default;
+  }
+
+  .drop-zone-mobile.disabled .drop-zone-mobile-label,
+  .drop-zone-mobile.disabled .drop-zone-mobile-hint {
+    display: none;
+  }
+
+  .drop-zone-mobile.selected {
+    background: var(--accent);
+    border-style: solid;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
+    animation: none;
+  }
+
+  .drop-zone-mobile.selected .drop-zone-mobile-label,
+  .drop-zone-mobile.selected .drop-zone-mobile-hint {
+    color: #000;
+  }
+
+  .drop-zone-mobile.same-year {
+    width: 14vw;
+    opacity: 0.6;
+    animation: none;
+  }
+
+  .confirm-placement-btn {
+    display: block;
+    width: 80%;
+    margin: 0.75rem auto 0.25rem;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background: var(--accent);
+    border: none;
+    border-radius: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+}
