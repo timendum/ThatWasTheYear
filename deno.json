@@ -1,7 +1,7 @@
 {
   "nodeModulesDir": "auto",
   "compilerOptions": {
-    "lib": ["es2023", "DOM", "DOM.Iterable", "deno.ns"],
+    "lib": ["es2023", "DOM", "DOM.Iterable"],
     "jsx": "react-jsx",
     "strict": true,
     "skipLibCheck": true,

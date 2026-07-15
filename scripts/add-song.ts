@@ -1,4 +1,7 @@
+/// <reference lib="deno.ns" />
+
 import { createInterface } from "node:readline/promises";
+import { stdin, stdout } from 'node:process';
 import type { ITunesResponse, ITunesTrack, Song } from "../src/types.ts";
 import { DEFAULT_FILES, loadSongsFromArgs } from "./lib/load-songs.ts";
 
@@ -19,7 +22,7 @@ async function main() {
   const newSongs: Song[] = [];
 
   while (true) {
-    const rl = createInterface({ input: Deno.stdin, output: Deno.stdout });
+    const rl = createInterface({ input: stdin, output: stdout });
     const query = await rl.question("Search query: ");
     if (!query.trim()) {
       rl.close();
@@ -58,8 +61,8 @@ async function main() {
 
     // Ask for optional overrides
     const rlOverride = createInterface({
-      input: Deno.stdins,
-      output: Deno.stdout,
+      input: stdin,
+      output: stdout,
     });
 
     const overrideTitle = await rlOverride.question(`Title [${song.t}]: `);

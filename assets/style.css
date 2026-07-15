@@ -10,7 +10,7 @@
 }
 
 body {
-  font-family: Inter, system-ui, sans-serif;;
+  font-family: Inter, system-ui, sans-serif;
   background-color: var(--bg);
   color: var(--text);
   margin: 0;
@@ -205,8 +205,10 @@ button:hover {
 
 .card.mystery {
   background:
-    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 40%, transparent) 0%, transparent 60%),
-    linear-gradient(135deg, var(--accent) 0%, var(--surface) 40%, var(--bg) 100%);
+    radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--accent) 40%,
+    transparent) 0%, transparent 60%),
+    linear-gradient(135deg, var(--accent) 0%, var(--surface) 40%, var(--bg)
+    100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -259,7 +261,6 @@ button:hover {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-
 
 .reveal-card-large {
   width: 180px;
@@ -319,7 +320,7 @@ button:hover {
 .end-condition-value {
   width: 4rem;
   margin-left: 0.25rem;
-  padding: 0.25rem 1px
+  padding: 0.25rem 1px;
 }
 
 .splash-title {
@@ -370,7 +371,6 @@ button:hover {
   color: var(--error);
 }
 
-
 .game-over-scores {
   max-width: 25rem;
   margin: 1.25rem auto;
@@ -418,7 +418,8 @@ button:hover {
   color: color-mix(in srgb, var(--accent) 70%, white);
 }
 
-.song-packs-title, .end-condition-title {
+.song-packs-title,
+.end-condition-title {
   display: block;
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
@@ -558,7 +559,6 @@ button:hover {
   color: var(--accent);
   text-decoration: underline;
 }
-
 
 /* ===== Mobile Carousel for PlayerLane ===== */
 @media (width <= 600px) {

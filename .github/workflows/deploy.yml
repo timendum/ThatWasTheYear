@@ -24,7 +24,7 @@ jobs:
         with:
           path: dist
   ghpages:
-    name: 'Deploy to Github Pages'
+    name: "Deploy to Github Pages"
     needs: build
     runs-on: ubuntu-latest
     environment:
@@ -34,7 +34,7 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@v5
   netlify:
-    name: 'Deploy to Netlify'
+    name: "Deploy to Netlify"
     needs: build
     runs-on: ubuntu-latest
     steps:
