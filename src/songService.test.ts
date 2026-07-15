@@ -1,6 +1,7 @@
-import { beforeAll, describe, expect, test } from "bun:test";
-import { loadSongPacks } from "./songService";
-import type { Song } from "./types";
+import { beforeAll, describe, it as test } from "@std/testing/bdd";
+import { expect } from "@std/expect";
+import { loadSongPacks } from "./songService.ts";
+import type { Song } from "./types.ts";
 
 function makeSong(year: number, title = `Song ${year}`): Song {
   return { t: title, a: `Artist ${year}`, y: year };

@@ -1,5 +1,5 @@
-import { useEffect, useRef, KeyboardEvent } from "react";
-import type { DetailedSong } from "../types";
+import { KeyboardEvent, useEffect, useRef } from "react";
+import type { DetailedSong } from "../types.ts";
 
 interface ResultModalProps {
   isCorrect: boolean;
@@ -37,7 +37,13 @@ export default function ResultModal({ isCorrect, song, onContinue }: ResultModal
             <p className="reveal-artist">{song.a}</p>
           </div>
         </div>
-        <button ref={buttonRef} onClick={onContinue} onKeyDown={handleKeyDown} tabIndex={0}>
+        <button
+          ref={buttonRef}
+          type="submit"
+          onClick={onContinue}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
+        >
           Continue
         </button>
       </div>

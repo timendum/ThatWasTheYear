@@ -2,13 +2,13 @@
 
 ## Project Overview
 
-ThatWasTheYear is a browser-based multiplayer music timeline game built with React 19 + TypeScript, bundled with Bun. Players take turns guessing the chronological position of mystery songs on their personal timelines. Song data and audio previews come from a local JSON library and the iTunes Search API.
+ThatWasTheYear is a browser-based multiplayer music timeline game built with React 19 + TypeScript, bundled with Deno and esbuild. Players take turns guessing the chronological position of mystery songs on their personal timelines. Song data and audio previews come from a local JSON library and the iTunes Search API.
 
 Hosted at: <https://timendum.github.io/ThatWasTheYear/>
 
 ## Tech Stack
 
-- **Runtime/Bundler**: Bun (no Webpack/Vite)
+- **Runtime/Bundler**: Deno 2.x + esbuild (no Webpack/Vite)
 - **Framework**: React 19 (functional components, hooks only)
 - **Language**: TypeScript (strict mode)
 - **Dependencies**: react, react-dom (zero runtime deps beyond React)
@@ -20,13 +20,13 @@ Hosted at: <https://timendum.github.io/ThatWasTheYear/>
 
 | Command | Description |
 | --- | --- |
-| `bun install` | Install dependencies |
-| `bun run serve` | Dev server at <http://localhost:3000> (hot reload) |
-| `bun run build` | Production build → `dist/` |
-| `bun run check-songs` | Validate songs.json against iTunes data |
-| `bun run validate-songs` | Validate songs.json structure |
-| `bun run add-song` | Add a new song to songs.json |
-| `bun run checks` | Run type-check + lint + format check + test + CSS lint |
+| `deno install` | Install dependencies |
+| `deno task serve` | Dev server at <http://localhost:3000> (watch mode) |
+| `deno task build` | Production build → `dist/` |
+| `deno task check-songs` | Validate songs.json against iTunes data |
+| `deno task validate-songs` | Validate songs.json structure |
+| `deno task add-song` | Add a new song to songs.json |
+| `deno task checks` | Run type-check + lint + format check + test + CSS lint |
 
 ## Project Structure
 
@@ -42,9 +42,9 @@ src/
   index.tsx             Entry point, renders <App /> into #root
   App.tsx               Root component, orchestrates game flow and audio
   gameState.ts          gameReducer, initialGameState, utility functions (shuffleDeck, save/load, getStartingYear)
-  gameState.test.ts     Tests for gameState (Bun test runner)
+  gameState.test.ts     Tests for gameState (Deno test runner)
   songService.ts        Song loading (fetch from JSON packs) and iTunes API lookups (getDetailedSong)
-  songService.test.ts   Tests for songService (Bun test runner)
+  songService.test.ts   Tests for songService (Deno test runner)
   types.ts              Shared interfaces: Song, DetailedSong, Player, PlacementResult, GameState, GameAction, EndCondition
   components/
     SetupScreen.tsx       Player name inputs + end condition selection
@@ -56,7 +56,8 @@ src/
     GameOverScreen.tsx    End-of-game summary screen
     ErrorBoundary.tsx     Class-based error boundary (React requires class for error boundaries)
 scripts/
-  server.ts          Bun dev server (builds src/index.tsx on-the-fly)
+  build.ts           Production build using esbuild + asset copy
+  server.ts          Deno dev server (builds src/index.tsx on-the-fly via esbuild)
   copy-assets.ts     Copies assets/ → dist/ during build
   check-songs.ts     Validates song data against iTunes API
   validate-songs.ts  Validates songs.json structure
@@ -71,7 +72,7 @@ scripts/
 Songs are loaded differently depending on context:
 
 - **Browser (runtime)**: `songService.ts` defines a `SONG_PACK_FILES` map (`base` → `./songs.json`, `it` → `./songs-it.json`). `loadSongPacks(packs)` fetches the selected packs via `fetch()` and merges them into a flat `Song[]`. The `SongPack` type (`"base" | "it"`) is defined in `types.ts`.
-- **CLI scripts**: `scripts/lib/load-songs.ts` exports `loadSongsFromArgs()`, which reads JSON files via `Bun.file()`. Defaults to `assets/songs.json`; accepts file paths as CLI arguments.
+- **CLI scripts**: `scripts/lib/load-songs.ts` exports `loadSongsFromArgs()`, which reads JSON files via `Deno.readTextFile()`. Defaults to `assets/songs.json`; accepts file paths as CLI arguments.
 - **iTunes enrichment**: `songService.ts` also handles iTunes API lookups (`getDetailedSong`, `getDetailedITunesSong`) — first tries lookup by `itunesId`, falls back to search by artist + title. Returns artwork, preview URL, and a `releaseYear` when it differs from `song.y` by exactly 1.
 
 ### State Management
@@ -102,7 +103,7 @@ Songs are loaded differently depending on context:
 
 - Functional React components only, except ErrorBoundary (React requires a class component for error boundaries)
 - Space for indentation
-- Tests use Bun's built-in test runner (`bun test`)
+- Tests use Deno's built-in test runner (`deno test`)
 - Linting via oxlint (`.oxlintrc.json`), formatting via oxfmt (`.oxfmtrc.json`)
 - No CSS framework — plain CSS in `assets/style.css`
 - Build output is a single `index.js` bundle + copied assets

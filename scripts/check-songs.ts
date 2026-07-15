@@ -1,31 +1,43 @@
-import { createInterface } from "node:readline/promises";
-import type { ITunesTrack, Song } from "../src/types";
-import { getDetailedITunesSong } from "../src/songService";
-import { loadSongsFromArgs } from "./lib/load-songs";
+import type { ITunesTrack, Song } from "../src/types.ts";
+import { getDetailedITunesSong } from "../src/songService.ts";
+import { loadSongsFromArgs } from "./lib/load-songs.ts";
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 function checkSong(song: Song, track: ITunesTrack | undefined) {
   // If track not found on iTunes, return all-false result
   if (!track) {
     return {
       ...song,
-      check: { found: false, mp: false, mi: false, mt: false, ma: false, my: 1000 },
+      check: {
+        found: false,
+        mp: false,
+        mi: false,
+        mt: false,
+        ma: false,
+        my: 1000,
+      },
       track,
     };
   }
 
   // Strip ", Pt. N" and "[nnnn Remaster]" unconditionally, then lowercase
   const tt = (track.trackName || "")
-    .replace(/,\s*Pt\.\s*\d+\s*$/i, "")
-    .replace(/\s*\[\d{4}\s+Remaster\]\s*$/i, "")
+    .replace(/,\s*Pt\.\s*\d+\s*$/iu, "")
+    .replace(/\s*\[\d{4}\s+Remaster\]\s*$/iu, "")
     .toLowerCase();
   const ta = (track.artistName || "").toLowerCase();
   const st = song.t.toLowerCase();
   const sa = song.a.toLowerCase();
 
   // Strip trailing parenthetical (e.g. "(Remastered 2012)")
-  const normalize = (s: string) => s.replace(/\s*\([^)]+\)\s*$/, "");
+  const normalize = (s: string) => s.replace(/\s*\([^)]+\)\s*$/u, "");
 
-  const featMatch = tt.match(/\s*\((feat\.?\s+[^)]+)\)\s*$/);
+  const featMatch = tt.match(/\s*\((feat\.?\s+[^)]+)\)\s*$/u);
   let titleMatch: boolean;
   let artistMatch: boolean;
 
@@ -58,17 +70,19 @@ function checkSong(song: Song, track: ITunesTrack | undefined) {
 
 async function loadExisting(): Promise<Map<string, Song>> {
   const map = new Map();
-  const file = Bun.file("./assets/ok-songs.json");
-  if (await file.exists()) {
-    const data = await file.json();
+  try {
+    const text = await Deno.readTextFile("./assets/ok-songs.json");
+    const data = JSON.parse(text);
     for (const entry of data) {
       map.set(`${entry.t}|||${entry.a}`, entry);
     }
+  } catch {
+    // File doesn't exist or can't be parsed — start fresh
   }
   return map;
 }
 
-const sortKey = (s: string) => s.replace(/^(?:The|An|A) /i, "").toLowerCase();
+const sortKey = (s: string) => s.replace(/^(?:The|An|A) /iu, "").toLowerCase();
 
 async function saveResults(songs: Song[]) {
   const outputData = [...songs];
@@ -85,8 +99,8 @@ async function saveResults(songs: Song[]) {
       }),
     )
     .join(",\n");
-  await Bun.write("./assets/ok-songs.json", `[\n${jsonLines}\n]`);
-  console.log(`\nWrote ${outputData.length} results to ./assets/ok-checked.json`);
+  await Deno.writeTextFile("./assets/ok-songs.json", `[\n${jsonLines}\n]`);
+  console.log(`\nWrote ${outputData.length} results to ./assets/ok-songs.json`);
 }
 
 async function main() {
@@ -95,7 +109,7 @@ async function main() {
   const songs = await loadSongsFromArgs();
   console.log(`Checking ${songs.length} songs...\n`);
 
-  const rl = createInterface({ input: process.stdin, output: process.stdout });
+  const ask = (question: string): string | null => prompt(question);
 
   let i = 0;
   const okSongs: Song[] = [];
@@ -108,13 +122,12 @@ async function main() {
       i++;
       continue;
     }
-    let track;
-    track = await getDetailedITunesSong(song);
+    const track = await getDetailedITunesSong(song);
     if (track) {
-      await Bun.sleep((60 * 1000) / 20);
+      await delay((60 * 1000) / 20);
     }
 
-    const result = await checkSong(song, track);
+    const result = checkSong(song, track);
 
     const isFullMatch =
       result.check.found &&
@@ -131,7 +144,10 @@ async function main() {
       i++;
     } else {
       const trackInfo = result.track
-        ? `${result.track.trackName} - ${result.track.artistName} (${result.track.releaseDate?.slice(0, 4)})`
+        ? `${result.track.trackName} - ${result.track.artistName} (${result.track.releaseDate?.slice(
+            0,
+            4,
+          )})`
         : "Not found";
       console.log(`DB: ${song.t} - ${song.a} (${song.y})`);
       console.log(`iTunes: ${trackInfo}`);
@@ -143,7 +159,7 @@ async function main() {
           `artist=${result.check.ma ? "✅" : "❌"}, ` +
           `year=${result.check.my === 0 ? "✅" : result.check.my === 1 ? "⚠️" : "❌"}`,
       );
-      const answer = await rl.question("Overwrite? (y/n) or provide new iTunes ID or quit: ");
+      const answer = ask("Overwrite? (y/n) or provide new iTunes ID or quit: ") ?? "";
       if (answer.toLowerCase() === "y") {
         console.log(`Accepted: ${trackInfo}`);
         if (result.track && result.itunesId) {
@@ -167,8 +183,8 @@ async function main() {
         } else {
           console.log("No iTunes ID, cannot accept. Again.");
         }
-      } else if (/^\d+$/.test(answer.trim())) {
-        song.itunesId = parseInt(answer.trim(), 10);
+      } else if (/^\d+$/u.test(answer.trim())) {
+        song.itunesId = Math.trunc(Number(answer.trim()));
         console.log(`Set new iTunes ID: ${song.itunesId}, rechecking...`);
         // don't increment i
       } else if (answer.toLowerCase() === "q") {
@@ -179,7 +195,6 @@ async function main() {
     }
   }
 
-  rl.close();
   console.log(`\nAccepted: ${okSongs.length}`);
   await saveResults(okSongs);
 }

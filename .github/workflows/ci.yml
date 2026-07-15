@@ -11,20 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.x"
+      - run: deno install
       - name: Type check
         if: always()
-        run: bun run tc
+        run: deno task tc
       - name: Lint
         if: always()
-        run: bun run lint
+        run: deno task lint
       - name: Format check
         if: always()
-        run: bun run fmt:check
+        run: deno task fmt:check
       - name: Validate songs.json
         if: always()
-        run: bun run validate-songs
+        run: deno task validate-songs
       - name: Run tests
         if: always()
-        run: bun test
+        run: deno task test

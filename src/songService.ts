@@ -1,4 +1,4 @@
-import type { Song, SongPack, DetailedSong, ITunesResponse, ITunesTrack } from "./types";
+import type { DetailedSong, ITunesResponse, ITunesTrack, Song, SongPack } from "./types.ts";
 
 const SONG_PACK_FILES: Record<SongPack, string> = {
   base: "./songs.json",
@@ -16,7 +16,7 @@ export async function loadSongPacks(packs: SongPack[]): Promise<Song[]> {
   const all = results.flat();
   const seen = new Set<string>();
   return all.filter((song) => {
-    const key = `${song.t}${song.a}`.toLowerCase().replaceAll(/[^a-z0-9]/g, "");
+    const key = `${song.t}${song.a}`.toLowerCase().replaceAll(/[^a-z0-9]/gu, "");
     if (seen.has(key)) {
       return false;
     }
@@ -42,7 +42,9 @@ export async function getDetailedITunesSong(song: Song): Promise<ITunesTrack | u
   }
   if (!data) {
     const resp = await fetch(
-      `https://itunes.apple.com/search?term=${encodeURIComponent(song.a + " " + song.t)}&limit=1&entity=song`,
+      `https://itunes.apple.com/search?term=${encodeURIComponent(
+        song.a + " " + song.t,
+      )}&limit=1&entity=song`,
     );
     if (resp.status !== 200) {
       throw new Error("iTunes API error: status = " + resp.status);
@@ -57,11 +59,13 @@ export async function getDetailedSong(song: Song): Promise<DetailedSong> {
   let releaseYear = undefined;
   if (res) {
     try {
-      const parsedYear = parseInt(res.releaseDate?.slice(0, 4), 10);
+      const parsedYear = Math.trunc(Number(res.releaseDate?.slice(0, 4)));
       if (Math.abs(parsedYear - song.y) === 1) {
         releaseYear = parsedYear;
       }
-    } catch {}
+    } catch {
+      // keep releaseYear as undefined
+    }
   }
   return {
     ...song,

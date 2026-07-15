@@ -1,4 +1,5 @@
 // To copy static assets in the build phase.
-import { cpSync } from "fs";
+import { cpSync } from "node:fs";
+import { resolve } from "node:path";
 
-cpSync("assets", "dist/", { recursive: true });
+cpSync(resolve("assets"), resolve("dist"), { recursive: true });

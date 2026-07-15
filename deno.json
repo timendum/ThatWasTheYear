@@ -1,0 +1,42 @@
+{
+  "nodeModulesDir": "auto",
+  "compilerOptions": {
+    "lib": ["es2023", "DOM", "DOM.Iterable", "deno.ns"],
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noUnusedLocals": true
+  },
+  "tasks": {
+    "build": "deno run -A scripts/build.ts",
+    "copy-assets": "deno run --allow-read --allow-write scripts/copy-assets.ts",
+    "serve": "deno run -A --watch scripts/server.ts",
+    "validate-songs": "deno run --allow-read scripts/validate-songs.ts",
+    "check-songs": "deno run --allow-read --allow-net scripts/check-songs.ts",
+    "add-song": "deno run -A scripts/add-song.ts",
+    "songs-per-year": "deno run --allow-read scripts/songs-per-year.ts",
+    "tc": "deno check src/**/*.ts src/**/*.tsx",
+    "lint": "deno run -A npm:oxlint",
+    "lint:fix": "deno run -A npm:oxlint --fix",
+    "slint": "deno run -A npm:stylelint assets/*.css",
+    "fmt": "deno run -A npm:oxfmt",
+    "fmt:check": "deno run -A npm:oxfmt --check",
+    "test": "deno test src/",
+    "checks": "deno task tc && deno task lint && deno task fmt:check && deno task test && deno task slint"
+  },
+  "imports": {
+    "@std/expect": "jsr:@std/expect@^1.0.20",
+    "@std/testing": "jsr:@std/testing@^1.0.19",
+    "esbuild": "npm:esbuild@^0.28.1",
+    "react": "npm:react@^19.2.4",
+    "react-dom": "npm:react-dom@^19.2.4",
+    "react/jsx-runtime": "npm:react@^19.2.4/jsx-runtime",
+    "react-dom/client": "npm:react-dom@^19.2.4/client",
+    "@types/react": "npm:@types/react@^19.2.4",
+    "@types/react-dom": "npm:@types/react-dom@^19.2.3",
+    "stylelint": "npm:stylelint@^17.14.0",
+    "stylelint-config-standard": "npm:stylelint-config-standard@^40.0.0"
+  }
+}

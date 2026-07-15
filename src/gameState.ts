@@ -1,4 +1,4 @@
-import type { Song, DetailedSong, GameState, GameAction } from "./types";
+import type { DetailedSong, GameAction, GameState, Song } from "./types.ts";
 
 export const STORAGE_KEY = "thatWasTheYear_gameState";
 

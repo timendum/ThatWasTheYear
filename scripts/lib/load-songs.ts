@@ -2,19 +2,21 @@ import type { Song } from "../../src/types";
 
 export const DEFAULT_FILES = ["assets/songs.json"];
 
-export async function loadSongsFromArgs(args: string[] = process.argv.slice(2)): Promise<Song[]> {
+export async function loadSongsFromArgs(args: string[] = Deno.args): Promise<Song[]> {
   const files = args.length > 0 ? args : DEFAULT_FILES;
   const allSongs: Song[] = [];
 
   for (const file of files) {
-    const handle = Bun.file(file);
-    if (!(await handle.exists())) {
+    let text: string;
+    try {
+      text = await Deno.readTextFile(file);
+    } catch {
       console.warn(`Skipping ${file}: file not found`);
       continue;
     }
     let content: unknown;
     try {
-      content = await handle.json();
+      content = JSON.parse(text);
     } catch {
       console.warn(`Skipping ${file}: invalid JSON`);
       continue;

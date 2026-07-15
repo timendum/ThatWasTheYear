@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, useCallback, Fragment } from "react";
-import type { Player, EndCondition } from "../types";
-import SongCard from "./SongCard";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import type { EndCondition, Player } from "../types.ts";
+import SongCard from "./SongCard.tsx";
 
 interface PlayerLaneProps {
   player: Player;
@@ -13,10 +13,10 @@ interface PlayerLaneProps {
 
 function useIsMobile(breakpoint = 600) {
   const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" && window.innerWidth <= breakpoint,
+    typeof window !== "undefined" && globalThis.innerWidth <= breakpoint,
   );
   useEffect(() => {
-    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    const mq = globalThis.matchMedia(`(max-width: ${breakpoint}px)`);
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mq.addEventListener("change", handler);
     setIsMobile(mq.matches);
@@ -48,10 +48,10 @@ export default function PlayerLane({
   }, [hasCurrentSong]);
 
   useEffect(() => {
-    if (dropZonesActive && laneRef.current) {
-      laneRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (isActive && laneRef.current) {
+      laneRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
-  }, [dropZonesActive]);
+  }, [isActive]);
 
   useEffect(() => {
     if (dropZonesActive && focusedDropZone !== null && dropZoneRefs.current[focusedDropZone]) {
@@ -121,7 +121,10 @@ export default function PlayerLane({
               ref={(el) => {
                 dropZoneRefs.current[0] = el;
               }}
-              className={`drop-zone-mobile${dropZonesActive && selectedDropZone === 0 ? " selected" : ""}${dropZonesActive ? "" : " disabled"}`}
+              type="button"
+              className={`drop-zone-mobile${
+                dropZonesActive && selectedDropZone === 0 ? " selected" : ""
+              }${dropZonesActive ? "" : " disabled"}`}
               onClick={() => dropZonesActive && setSelectedDropZone(0)}
               disabled={!dropZonesActive}
               aria-label="Place before first song"
@@ -138,10 +141,13 @@ export default function PlayerLane({
                     <SongCard song={song} mystery={false} />
                   </div>
                   <button
+                    type="button"
                     ref={(el) => {
                       dropZoneRefs.current[i + 1] = el;
                     }}
-                    className={`drop-zone-mobile${sameYear ? " same-year" : ""}${dropZonesActive && selectedDropZone === i + 1 ? " selected" : ""}${dropZonesActive ? "" : " disabled"}`}
+                    className={`drop-zone-mobile${sameYear ? " same-year" : ""}${
+                      dropZonesActive && selectedDropZone === i + 1 ? " selected" : ""
+                    }${dropZonesActive ? "" : " disabled"}`}
                     onClick={() => dropZonesActive && setSelectedDropZone(i + 1)}
                     disabled={!dropZonesActive}
                     aria-label={`Place after song ${i + 1}`}
@@ -164,7 +170,7 @@ export default function PlayerLane({
     );
   }
 
-  // Desktop layout (unchanged)
+  // Desktop layout
   return (
     <div ref={laneRef} className={`player-area${isActive ? " active-player-border" : ""}`}>
       <h3>
@@ -178,10 +184,13 @@ export default function PlayerLane({
       </h3>
       <div className="timeline">
         <button
+          type="button"
           ref={(el) => {
             dropZoneRefs.current[0] = el;
           }}
-          className={`drop-zone waiting-for-input${dropZonesActive && focusedDropZone === 0 ? " focused" : ""}`}
+          className={`drop-zone waiting-for-input${
+            dropZonesActive && focusedDropZone === 0 ? " focused" : ""
+          }`}
           onClick={() => onPlaceSong(0)}
           tabIndex={0}
           disabled={!dropZonesActive}
@@ -194,10 +203,13 @@ export default function PlayerLane({
             <Fragment key={`${song.t}-${song.y}`}>
               <SongCard song={song} mystery={false} />
               <button
+                type="button"
                 ref={(el) => {
                   dropZoneRefs.current[i + 1] = el;
                 }}
-                className={`drop-zone waiting-for-input${sameYear ? " same-year" : ""}${dropZonesActive && focusedDropZone === i + 1 ? " focused" : ""}`}
+                className={`drop-zone waiting-for-input${sameYear ? " same-year" : ""}${
+                  dropZonesActive && focusedDropZone === i + 1 ? " focused" : ""
+                }`}
                 onClick={() => onPlaceSong(i + 1)}
                 tabIndex={0}
                 disabled={!dropZonesActive}

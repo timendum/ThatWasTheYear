@@ -1,13 +1,14 @@
 /* oxlint-disable eslint/max-lines */
-import { beforeAll, describe, expect, test } from "bun:test";
+import { beforeAll, describe, it as test } from "@std/testing/bdd";
+import { expect } from "@std/expect";
 import {
   gameReducer,
   initialGameState,
-  shuffleDeck,
-  saveGameState,
   loadGameState,
-} from "./gameState";
-import type { DetailedSong, GameState, Player, Song, SongPack } from "./types";
+  saveGameState,
+  shuffleDeck,
+} from "./gameState.ts";
+import type { DetailedSong, GameState, Player, Song, SongPack } from "./types.ts";
 
 beforeAll(() => {
   // Stub localStorage for RESET action
@@ -37,11 +38,22 @@ function makeSong(year: number, title = `Song ${year}`): Song {
 }
 
 function makeDetailedSong(year: number, title = `Song ${year}`): DetailedSong {
-  return { t: title, a: `Artist ${year}`, y: year, img: "img.png", preview: null, link: "#" };
+  return {
+    t: title,
+    a: `Artist ${year}`,
+    y: year,
+    img: "img.png",
+    preview: null,
+    link: "#",
+  };
 }
 
 function makePlayer(name: string, timelineYears: number[] = []): Player {
-  return { name, timeline: timelineYears.map((y) => makeDetailedSong(y)), missedSongs: [] };
+  return {
+    name,
+    timeline: timelineYears.map((y) => makeDetailedSong(y)),
+    missedSongs: [],
+  };
 }
 
 function startWith(overrides: Partial<GameState>): GameState {
@@ -72,7 +84,10 @@ function checkRestore(gs: GameState) {
   const state = loadGameState();
   expect(state).not.toEqual(undefined);
   if (state) {
-    const after = gameReducer(initialGameState, { type: "RESTORE", state: state });
+    const after = gameReducer(initialGameState, {
+      type: "RESTORE",
+      state: state,
+    });
     const { allSongs: _a, lastResult: _b, ...expectedFields } = before;
     const { allSongs: _c, lastResult: _d, ...actualFields } = after;
 
@@ -85,7 +100,10 @@ describe("gameReducer", () => {
     test("sets allSongs and clears deck", () => {
       const songs = [makeSong(2000), makeSong(2001)];
 
-      const result = gameReducer(initialGameState, { type: "INIT_DECK", songs });
+      const result = gameReducer(initialGameState, {
+        type: "INIT_DECK",
+        songs,
+      });
 
       expect(result.allSongs).toEqual(songs);
       expect(result.deck).toEqual([]);
@@ -98,7 +116,10 @@ describe("gameReducer", () => {
     test("updates end condition", () => {
       const endCondition = { type: "turns" as const, value: 5 };
 
-      const result = gameReducer(initialGameState, { type: "SET_END_CONDITION", endCondition });
+      const result = gameReducer(initialGameState, {
+        type: "SET_END_CONDITION",
+        endCondition,
+      });
 
       expect(result.endCondition).toEqual(endCondition);
 
@@ -110,7 +131,10 @@ describe("gameReducer", () => {
     test("updates song packs", () => {
       const songPacks: SongPack[] = ["base", "it"];
 
-      const result = gameReducer(initialGameState, { type: "SET_SONG_PACKS", songPacks });
+      const result = gameReducer(initialGameState, {
+        type: "SET_SONG_PACKS",
+        songPacks,
+      });
 
       expect(result.songPacks).toEqual(["base", "it"]);
 
@@ -120,7 +144,10 @@ describe("gameReducer", () => {
     test("can set a single pack", () => {
       const state = startWith({ songPacks: ["base", "it"] });
 
-      const result = gameReducer(state, { type: "SET_SONG_PACKS", songPacks: ["it"] });
+      const result = gameReducer(state, {
+        type: "SET_SONG_PACKS",
+        songPacks: ["it"],
+      });
 
       expect(result.songPacks).toEqual(["it"]);
 
@@ -133,7 +160,10 @@ describe("gameReducer", () => {
       const sbase = makeStandardGame();
       const state = startWith({ allSongs: sbase.allSongs });
 
-      const result = gameReducer(state, { type: "START_GAME", players: sbase.players });
+      const result = gameReducer(state, {
+        type: "START_GAME",
+        players: sbase.players,
+      });
 
       expect(result.gameStarted).toBe(true);
       expect(result.players).toEqual(sbase.players);
@@ -165,7 +195,10 @@ describe("gameReducer", () => {
       const sbase = makeStandardGame();
       const updated = makeDetailedSong(2002);
 
-      const result = gameReducer(sbase, { type: "UPDATE_CURRENT_SONG", song: updated });
+      const result = gameReducer(sbase, {
+        type: "UPDATE_CURRENT_SONG",
+        song: updated,
+      });
 
       expect(result.currentSong).toEqual(updated);
 
@@ -328,7 +361,10 @@ describe("gameReducer", () => {
         roundCount: 3,
       };
 
-      const result = gameReducer(initialGameState, { type: "RESTORE", state: saved });
+      const result = gameReducer(initialGameState, {
+        type: "RESTORE",
+        state: saved,
+      });
 
       expect(result.players[0].name).toBe("Alice");
       expect(result.roundCount).toBe(3);

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, KeyboardEvent } from "react";
-import type { EndCondition, SongPack } from "../types";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import type { EndCondition, SongPack } from "../types.ts";
 
 interface SetupScreenProps {
   onStartGame: (playerNames: string[], endCondition: EndCondition, songPacks: SongPack[]) => void;
@@ -183,7 +183,7 @@ export default function SetupScreen({
         </label>
       </div>
 
-      <button className="start-btn" onClick={handleStart} tabIndex={0}>
+      <button className="start-btn" onClick={handleStart} tabIndex={0} type="submit">
         Start Game
       </button>
 

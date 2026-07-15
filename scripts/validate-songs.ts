@@ -1,4 +1,4 @@
-import { loadSongsFromArgs } from "./lib/load-songs";
+import { loadSongsFromArgs } from "./lib/load-songs.ts";
 
 const allSongs = await loadSongsFromArgs();
 
@@ -45,7 +45,7 @@ for (let i = 0; i < allSongs.length; i++) {
 
 if (errors > 0) {
   console.error(`\n${errors} error(s) found in songs.json`);
-  process.exit(1);
+  Deno.exit(1);
 } else {
   console.log(`✓ songs.json valid (${allSongs.length} songs)`);
 }

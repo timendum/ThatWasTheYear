@@ -29,18 +29,18 @@ The iTunes Search API is used to fetch album artwork and audio previews (No API 
 
 ## Development
 
-Now on TypeScript with Bun, no runtime dependencies.
+TypeScript with Deno, no runtime dependencies beyond React.
 
 ## Setup
 
 ```bash
-bun install
+deno install
 ```
 
 ## Test
 
 ```bash
-bun run serve
+deno task serve
 ```
 
 Visit <http://localhost:3000>
@@ -48,5 +48,5 @@ Visit <http://localhost:3000>
 ## Build
 
 ```bash
-bun run build
+deno task build
 ```

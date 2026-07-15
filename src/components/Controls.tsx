@@ -1,7 +1,5 @@
-import type { DetailedSong } from "../types";
-import SongCard from "./SongCard";
-
-import type { EndCondition } from "../types";
+import type { DetailedSong, EndCondition } from "../types.ts";
+import SongCard from "./SongCard.tsx";
 
 interface ControlsProps {
   currentPlayer: string;

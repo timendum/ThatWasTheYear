@@ -1,4 +1,4 @@
-import type { DetailedSong } from "../types";
+import type { DetailedSong } from "../types.ts";
 
 interface SongCardProps {
   song: DetailedSong;

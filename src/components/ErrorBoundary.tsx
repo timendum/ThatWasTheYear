@@ -1,6 +1,6 @@
 import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
-import { STORAGE_KEY } from "../gameState";
+import { STORAGE_KEY } from "../gameState.ts";
 
 interface Props {
   children: ReactNode;
@@ -23,9 +23,9 @@ export default class ErrorBoundary extends Component<Props, State> {
   }
 
   handleReset = () => {
-    if (window.confirm("Are you sure you want to reset the game? All progress will be lost.")) {
+    if (globalThis.confirm("Are you sure you want to reset the game? All progress will be lost.")) {
       localStorage.removeItem(STORAGE_KEY);
-      window.location.reload();
+      globalThis.location.reload();
     }
   };
 
@@ -36,10 +36,19 @@ export default class ErrorBoundary extends Component<Props, State> {
           <h1>Something went wrong</h1>
           <p>An unexpected error occurred. Try reloading the page or reset the game.</p>
           <div
-            style={{ display: "flex", gap: "1rem", justifyContent: "center", marginTop: "1rem" }}
+            style={{
+              display: "flex",
+              gap: "1rem",
+              justifyContent: "center",
+              marginTop: "1rem",
+            }}
           >
-            <button onClick={() => window.location.reload()}>Reload</button>
-            <button onClick={this.handleReset}>Reset Game</button>
+            <button type="button" onClick={() => globalThis.location.reload()}>
+              Reload
+            </button>
+            <button type="reset" onClick={this.handleReset}>
+              Reset Game
+            </button>
           </div>
         </div>
       );

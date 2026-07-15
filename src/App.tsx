@@ -1,18 +1,18 @@
-import { useReducer, useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import {
-  initialGameState,
   gameReducer,
   getStartingYear,
-  saveGameState,
+  initialGameState,
   loadGameState,
-} from "./gameState";
-import { getDetailedSong, loadSongPacks } from "./songService";
-import SetupScreen from "./components/SetupScreen";
-import Controls from "./components/Controls";
-import PlayersContainer from "./components/PlayersContainer";
-import ResultModal from "./components/ResultModal";
-import GameOverScreen from "./components/GameOverScreen";
-import type { DetailedSong, Song, SongPack } from "./types";
+  saveGameState,
+} from "./gameState.ts";
+import { getDetailedSong, loadSongPacks } from "./songService.ts";
+import SetupScreen from "./components/SetupScreen.tsx";
+import Controls from "./components/Controls.tsx";
+import PlayersContainer from "./components/PlayersContainer.tsx";
+import ResultModal from "./components/ResultModal.tsx";
+import GameOverScreen from "./components/GameOverScreen.tsx";
+import type { DetailedSong, Song, SongPack } from "./types.ts";
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialGameState);
@@ -114,7 +114,7 @@ export default function App() {
         });
       }
     });
-    audioTimeoutRef.current = window.setTimeout(() => audioRef.current.pause(), 10000);
+    audioTimeoutRef.current = globalThis.setTimeout(() => audioRef.current.pause(), 10000);
   }
 
   const handlePlaceSong = useCallback(
@@ -151,7 +151,7 @@ export default function App() {
   const currentPlayer = state.players[state.currentPlayerIndex];
 
   if (state.gameOver && !state.lastResult) {
-    window.scrollTo(0, 0);
+    globalThis.scrollTo(0, 0);
     return <GameOverScreen players={state.players} onReset={() => handleReset(true)} />;
   }
 

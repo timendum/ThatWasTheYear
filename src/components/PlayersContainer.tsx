@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import type { Player, EndCondition } from "../types";
-import PlayerLane from "./PlayerLane";
+import { useEffect, useState } from "react";
+import type { EndCondition, Player } from "../types.ts";
+import PlayerLane from "./PlayerLane.tsx";
 
 interface PlayersContainerProps {
   players: Player[];
@@ -43,8 +43,8 @@ export default function PlayersContainer({
       }
     }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    globalThis.addEventListener("keydown", handleKeyDown);
+    return () => globalThis.removeEventListener("keydown", handleKeyDown);
   }, [hasCurrentSong, disabled, focusedDropZone, players, currentPlayerIndex, onPlaceSong]);
 
   return (

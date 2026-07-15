@@ -15,9 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install
-      - run: bun run build
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.x"
+      - run: deno install
+      - run: deno task build
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
@@ -37,9 +39,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: oven-sh/setup-bun@v2
-      - run: bun install
-      - run: bun run build
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.x"
+      - run: deno install
+      - run: deno task build
       - name: Prepare zip
         run: cd dist && zip -r ../site.zip .
       - name: Install uv

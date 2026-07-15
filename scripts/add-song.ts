@@ -1,23 +1,25 @@
 import { createInterface } from "node:readline/promises";
-import type { ITunesResponse, ITunesTrack, Song } from "../src/types";
-import { loadSongsFromArgs, DEFAULT_FILES } from "./lib/load-songs";
+import type { ITunesResponse, ITunesTrack, Song } from "../src/types.ts";
+import { DEFAULT_FILES, loadSongsFromArgs } from "./lib/load-songs.ts";
 
 async function searchItunes(query: string): Promise<ITunesTrack[]> {
   const resp = await fetch(
     `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=5&entity=song`,
   );
-  if (resp.status !== 200) throw new Error("iTunes API error: status = " + resp.status);
+  if (resp.status !== 200) {
+    throw new Error("iTunes API error: status = " + resp.status);
+  }
   const data = (await resp.json()) as ITunesResponse;
   return data.results;
 }
 
-const sortKey = (s: string) => s.replace(/^(?:The|An|A) /i, "").toLowerCase();
+const sortKey = (s: string) => s.replace(/^(?:The|An|A) /iu, "").toLowerCase();
 
 async function main() {
   const newSongs: Song[] = [];
 
   while (true) {
-    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    const rl = createInterface({ input: Deno.stdin, output: Deno.stdout });
     const query = await rl.question("Search query: ");
     if (!query.trim()) {
       rl.close();
@@ -40,7 +42,7 @@ async function main() {
     const pick = await rl.question("Pick a number (or empty to cancel): ");
     rl.close();
 
-    const idx = parseInt(pick, 10) - 1;
+    const idx = Math.trunc(Number(pick)) - 1;
     if (isNaN(idx) || idx < 0 || idx >= results.length) {
       console.log("Cancelled.");
       break;
@@ -55,7 +57,10 @@ async function main() {
     };
 
     // Ask for optional overrides
-    const rlOverride = createInterface({ input: process.stdin, output: process.stdout });
+    const rlOverride = createInterface({
+      input: Deno.stdins,
+      output: Deno.stdout,
+    });
 
     const overrideTitle = await rlOverride.question(`Title [${song.t}]: `);
     if (overrideTitle.trim()) {
@@ -69,7 +74,7 @@ async function main() {
 
     const overrideYear = await rlOverride.question(`Year [${song.y}]: `);
     if (overrideYear.trim()) {
-      const parsed = parseInt(overrideYear.trim(), 10);
+      const parsed = Math.trunc(Number(overrideYear.trim()));
       if (!isNaN(parsed)) {
         song.y = parsed;
       }
@@ -81,7 +86,7 @@ async function main() {
     newSongs.push(song);
   }
   if (newSongs.length > 0) {
-    const filename = (process.argv.slice(2, 3) || DEFAULT_FILES)[0];
+    const filename = (Deno.args.slice(0, 1).length > 0 ? Deno.args.slice(0, 1) : DEFAULT_FILES)[0];
     const songs: Song[] = await loadSongsFromArgs([filename]);
     songs.push(...newSongs);
     songs.sort(
@@ -90,7 +95,7 @@ async function main() {
     );
 
     const jsonLines = songs.map((s) => JSON.stringify(s)).join(",\n");
-    await Bun.write(filename, `[\n${jsonLines}\n]\n`);
+    await Deno.writeTextFile(filename, `[\n${jsonLines}\n]\n`);
     console.log(`✅ Saved: ${newSongs.length} new songs - total ${songs.length} songs`);
   }
 }

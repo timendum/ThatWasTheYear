@@ -1,5 +1,5 @@
-import type { Player } from "../types";
-import PlayersContainer from "./PlayersContainer";
+import type { Player } from "../types.ts";
+import PlayersContainer from "./PlayersContainer.tsx";
 
 interface GameOverScreenProps {
   players: Player[];
@@ -27,7 +27,7 @@ export default function GameOverScreen({ players, onReset }: GameOverScreenProps
               key={p.name}
               className={`game-over-player${winnerSet.has(p.name) ? " game-over-winner" : ""}`}
             >
-              {winnerSet.has(p.name) && <span>🏆 </span>}
+              {winnerSet.has(p.name) && <span>🏆</span>}
               <span>{p.name}</span>
               <span className="game-over-player-score">{p.timeline.length - 1}</span>
             </div>
@@ -69,14 +69,16 @@ export default function GameOverScreen({ players, onReset }: GameOverScreenProps
           </div>
         </details>
       )}
-      <button onClick={onReset}>Play Again</button>
+      <button type="reset" onClick={onReset}>
+        Play Again
+      </button>
       <PlayersContainer
         players={players}
         currentPlayerIndex={-1}
         hasCurrentSong={false}
         endCondition={{ type: "infinite", value: 0 }}
         onPlaceSong={() => {}}
-        disabled={true}
+        disabled
       />
     </div>
   );

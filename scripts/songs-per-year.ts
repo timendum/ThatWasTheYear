@@ -1,4 +1,4 @@
-import { loadSongsFromArgs } from "./lib/load-songs";
+import { loadSongsFromArgs } from "./lib/load-songs.ts";
 
 const allSongs = await loadSongsFromArgs();
 
