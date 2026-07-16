@@ -84,7 +84,7 @@ button:hover {
   position: sticky;
   top: 0;
   background: var(--bg);
-  padding: 1rem;
+  padding: 1rem 0;
   width: 100%;
   z-index: 10;
   border-bottom: 1px solid var(--border);
@@ -343,8 +343,62 @@ button:hover {
   min-width: auto;
 }
 
+.controls-body {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  height: 220px;
+}
+
+.controls-main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.controls-scores {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-flow: column wrap;
+  height: 100%;
+  align-content: flex-start;
+  gap: 0.5rem;
+}
+
+.player-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.player-pill-active {
+  border-color: var(--accent);
+}
+
+.player-pill-name {
+  font-weight: 600;
+}
+
+.player-pill-score {
+  font-weight: bold;
+  color: var(--accent);
+  margin-left: auto;
+}
+
 #audio-status {
   margin-top: 0.25rem;
+  text-wrap: balance;
+  text-align: center;
 }
 
 #replay-btn {
@@ -352,10 +406,9 @@ button:hover {
 }
 
 #current-drag-item {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   display: flex;
   justify-content: center;
-  height: 150px;
 }
 
 #round-display {
@@ -560,8 +613,37 @@ button:hover {
   text-decoration: underline;
 }
 
-/* ===== Mobile Carousel for PlayerLane ===== */
+/* ===== Narrow desktop ===== */
+@media (width <= 900px) {
+  .controls-body {
+    height: 250px;
+  }
+
+  .controls-main {
+    width: 60%;
+  }
+
+  .controls-scores {
+    position: static;
+    width: 40%;
+  }
+
+  #audio-status {
+    max-width: 100%;
+  }
+}
+
+
+/* ===== Mobile ===== */
 @media (width <= 600px) {
+  .controls-scores {
+    display: none;
+  }
+
+  .controls-main {
+    width: 100%;
+  }
+
   .player-area {
     padding: 0.75rem;
     margin: 0.75rem 0;

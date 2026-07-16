@@ -1,7 +1,7 @@
 /// <reference lib="deno.ns" />
 
 import { createInterface } from "node:readline/promises";
-import { stdin, stdout } from 'node:process';
+import { stdin, stdout } from "node:process";
 import type { ITunesResponse, ITunesTrack, Song } from "../src/types.ts";
 import { DEFAULT_FILES, loadSongsFromArgs } from "./lib/load-songs.ts";
 

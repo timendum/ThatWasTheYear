@@ -101,7 +101,7 @@ export default function SetupScreen({
           />
         ))}
       </div>
-      <button onClick={addPlayer} tabIndex={0}>
+      <button onClick={addPlayer} tabIndex={0} type="button">
         + Add Player
       </button>
 

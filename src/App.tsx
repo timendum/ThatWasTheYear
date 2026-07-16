@@ -160,6 +160,8 @@ export default function App() {
       <div id="game" className="screen">
         <Controls
           currentPlayer={currentPlayer.name}
+          players={state.players}
+          currentPlayerIndex={state.currentPlayerIndex}
           roundCount={state.roundCount}
           currentSong={state.currentSong}
           endCondition={state.endCondition}
