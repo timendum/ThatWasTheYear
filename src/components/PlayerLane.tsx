@@ -47,9 +47,14 @@ export default function PlayerLane({
     setSelectedDropZone(null);
   }, [hasCurrentSong]);
 
+  // Scroll the active player's lane into view, accounting for the sticky #controls header.
+  // We measure controls height dynamically so the offset stays correct at any viewport size.
   useEffect(() => {
     if (isActive && laneRef.current) {
-      laneRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      const controls = document.querySelector("#controls");
+      const offset = controls ? controls.getBoundingClientRect().bottom : 0;
+      const laneTop = laneRef.current.getBoundingClientRect().top + globalThis.scrollY;
+      globalThis.scrollTo({ top: laneTop - offset, behavior: "smooth" });
     }
   }, [isActive]);
 
@@ -57,8 +62,7 @@ export default function PlayerLane({
     if (dropZonesActive && focusedDropZone !== null && dropZoneRefs.current[focusedDropZone]) {
       dropZoneRefs.current[focusedDropZone]?.scrollIntoView({
         behavior: "smooth",
-        block: "center",
-        inline: "center",
+        block: "nearest",
       });
     }
   }, [focusedDropZone, dropZonesActive]);
