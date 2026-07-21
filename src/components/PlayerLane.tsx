@@ -165,8 +165,13 @@ export default function PlayerLane({
             <div className="carousel-spacer" />
           </div>
         </div>
-        {dropZonesActive && selectedDropZone !== null && (
-          <button className="confirm-placement-btn" onClick={handleConfirmPlacement} type="button">
+        {dropZonesActive && (
+          <button
+            className="confirm-placement-btn"
+            onClick={handleConfirmPlacement}
+            type="button"
+            disabled={selectedDropZone === null}
+          >
             Confirm placement
           </button>
         )}
