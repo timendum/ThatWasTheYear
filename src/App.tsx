@@ -17,7 +17,20 @@ import type { DetailedSong, Song, SongPack } from "./types.ts";
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialGameState);
   const audioRef = useRef(new Audio());
-  const audioTimeoutRef = useRef<number>(-1);
+  const audioTimeoutRef = useRef<ReturnType<typeof globalThis.setTimeout> | null>(null);
+  const skipRef = useRef(0);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    function onLoadedMetadata() {
+      if (skipRef.current > 0) {
+        audio.currentTime = skipRef.current;
+      }
+      audio.play().catch((e) => console.error("Failed to play preview", e));
+    }
+    audio.addEventListener("loadedmetadata", onLoadedMetadata);
+    return () => audio.removeEventListener("loadedmetadata", onLoadedMetadata);
+  }, []);
 
   useEffect(() => {
     const saved = loadGameState();
@@ -82,7 +95,7 @@ export default function App() {
     try {
       const song = await getDetailedSong(rawSong);
       dispatch({ type: "DRAW_SONG", song });
-      if (song.preview) playPreview(song.preview);
+      if (song.preview) playPreview(song.preview, song);
     } catch (e) {
       console.error("Failed to fetch song", e);
     }
@@ -95,26 +108,18 @@ export default function App() {
     }
   }
 
-  function playPreview(url?: string) {
-    const src = url ?? state.currentSong?.preview;
+  function playPreview(url?: string, song?: DetailedSong) {
+    const target = song ?? state.currentSong;
+    const src = url ?? target?.preview;
     if (!src) {
       return;
     }
     stopAudio();
-    audioRef.current.src = src;
-    audioRef.current.play().catch((e) => {
-      console.error("Failed to play preview", e);
-      if (state.currentSong) {
-        dispatch({
-          type: "UPDATE_CURRENT_SONG",
-          song: {
-            ...state.currentSong,
-            preview: null,
-          },
-        });
-      }
-    });
-    audioTimeoutRef.current = globalThis.setTimeout(() => audioRef.current.pause(), 10000);
+    const audio = audioRef.current;
+    skipRef.current = target?.skip ?? 0;
+    audio.src = src;
+    audio.load();
+    audioTimeoutRef.current = globalThis.setTimeout(() => audio.pause(), 10000);
   }
 
   const handlePlaceSong = useCallback(

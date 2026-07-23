@@ -3,6 +3,7 @@ export interface Song {
   a: string;
   y: number;
   itunesId?: number;
+  skip?: number;
 }
 
 export interface DetailedSong extends Song {
