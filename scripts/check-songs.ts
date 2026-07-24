@@ -1,6 +1,18 @@
+// Validates each song in the library against the iTunes API.
+// For every song, it checks whether a matching track exists on iTunes and compares
+// title, artist, year, preview URL, and artwork availability.
+// Songs that pass all checks are auto-accepted; mismatches are shown interactively
+// so the operator can accept, reject, or supply a corrected iTunes ID.
+// Accepted results are saved to assets/ok-songs.json for future runs (cache).
+
 import type { ITunesTrack, Song } from "../src/types.ts";
 import { getDetailedITunesSong } from "../src/songService.ts";
 import { loadSongsFromArgs } from "./lib/load-songs.ts";
+import {
+  extractFeat,
+  normalizeTrackTitle,
+  stripTrailingParen,
+} from "./lib/normalize.ts";
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
@@ -26,27 +38,22 @@ function checkSong(song: Song, track: ITunesTrack | undefined) {
   }
 
   // Strip ", Pt. N" and "[nnnn Remaster]" unconditionally, then lowercase
-  const tt = (track.trackName || "")
-    .replace(/,\s*Pt\.\s*\d+\s*$/iu, "")
-    .replace(/\s*\[\d{4}\s+Remaster\]\s*$/iu, "")
-    .toLowerCase();
+  const tt = normalizeTrackTitle(track.trackName || "");
   const ta = (track.artistName || "").toLowerCase();
   const st = song.t.toLowerCase();
   const sa = song.a.toLowerCase();
 
   // Strip trailing parenthetical (e.g. "(Remastered 2012)")
-  const normalize = (s: string) => s.replace(/\s*\([^)]+\)\s*$/u, "");
-
-  const featMatch = tt.match(/\s*\((feat\.?\s+[^)]+)\)\s*$/u);
+  const featMatch = extractFeat(tt);
   let titleMatch: boolean;
   let artistMatch: boolean;
 
   if (featMatch) {
-    titleMatch = normalize(tt) === st;
+    titleMatch = stripTrailingParen(tt) === st;
     artistMatch = sa === `${ta} ${featMatch[1]}`;
     titleMatch = titleMatch && artistMatch;
   } else {
-    titleMatch = tt === st || normalize(tt) === st;
+    titleMatch = tt === st || stripTrailingParen(tt) === st;
     artistMatch = ta === sa;
   }
 

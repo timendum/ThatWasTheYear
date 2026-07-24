@@ -1,4 +1,9 @@
-import type { Song } from "../../src/types";
+/**
+ * Shared helper for CLI scripts: loads song JSON files from disk.
+ * Reads file paths from command-line arguments (defaults to assets/songs.json)
+ * and returns the merged array of Song objects.
+ */
+import type { Song } from "../../src/types.ts";
 
 export const DEFAULT_FILES = ["assets/songs.json"];
 
