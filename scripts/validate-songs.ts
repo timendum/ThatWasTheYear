@@ -29,7 +29,7 @@ for (let i = 0; i < allSongs.length; i++) {
     console.error(`${prefix} missing or invalid itunesId: ${JSON.stringify(song)}`);
     errors++;
   }
-  if (typeof song.skip !== "undefined" && !Number.isInteger(song.skip)) {
+  if (song.skip !== undefined && !Number.isInteger(song.skip)) {
     console.error(`${prefix} invalid skip: ${JSON.stringify(song)}`);
     errors++;
   }

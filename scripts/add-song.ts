@@ -15,8 +15,14 @@
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import type { ITunesResponse, ITunesTrack, Song } from "../src/types.ts";
-import { DEFAULT_FILES, loadSongsFromArgs } from "./lib/load-songs.ts";
-import { normalizeTitle } from "./lib/normalize.ts";
+import { DEFAULT_FILES, loadSongsFromArgs, loadSongsLibs } from "./lib/load-songs.ts";
+import { normalizeAuthor, normalizeTitle } from "./lib/normalize.ts";
+
+/** Count songs in the library by the same (normalized) author. */
+function countByAuthor(author: string, existingSongs: Song[]): number {
+  const normalized = normalizeAuthor(author);
+  return existingSongs.filter((s) => normalizeAuthor(s.a) === normalized).length;
+}
 
 /** Check if a title is similar to any song already in the library. */
 function findSimilarSongs(title: string, existingSongs: Song[]): Song[] {
@@ -79,12 +85,7 @@ async function main() {
   const targetFile = songFile ?? DEFAULT_FILES[0];
   const newSongs: Song[] = [];
 
-  // Load existing songs from target file and songs.json (if different) for duplicate detection
-  const filesToCheck = [targetFile];
-  if (targetFile !== DEFAULT_FILES[0]) {
-    filesToCheck.push(DEFAULT_FILES[0]);
-  }
-  const existingSongs: Song[] = await loadSongsFromArgs(filesToCheck);
+  const existingSongs: Song[] = await loadSongsLibs();
 
   for await (const query of querySource(txtFile)) {
     if (txtFile) {
@@ -97,12 +98,32 @@ async function main() {
     }
 
     console.log("  0) skip");
+    let dupCount = 0;
     for (let i = 0; i < results.length; i++) {
       const r = results[i];
       const year = r.releaseDate?.slice(0, 4) ?? "????";
       const dup = findSimilarSongs(r.trackName, existingSongs);
       const dupTag = dup.length > 0 ? " ⚠️ DUP" : "";
       console.log(`  ${i + 1}) ${r.trackName} - ${r.artistName} (${year}) [${r.trackId}]${dupTag}`);
+      if (dup.length > 0) {
+        dupCount += 1;
+      }
+    }
+    if (dupCount >= 3) {
+      console.log("Duplicated song");
+      continue;
+    }
+
+    // Show author count once per unique author if 3+ songs already in library
+    const seenAuthors = new Set<string>();
+    for (const r of results) {
+      const key = normalizeAuthor(r.artistName);
+      if (seenAuthors.has(key)) continue;
+      seenAuthors.add(key);
+      const authorCount = countByAuthor(r.artistName, existingSongs);
+      if (authorCount >= 3) {
+        console.log(`  ℹ️ ${r.artistName}: ${authorCount} song(s) already in library`);
+      }
     }
 
     const rl = createInterface({
@@ -112,7 +133,7 @@ async function main() {
     });
     const pick = await rl.question("Pick a number (or q to quit): ");
     rl.close();
-    if (pick.trim().toLowerCase() == "q") {
+    if (pick.trim().toLowerCase() === "q") {
       console.log("Cancelled.");
       break;
     }

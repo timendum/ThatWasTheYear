@@ -325,7 +325,7 @@ button:hover {
 .end-condition-value {
   width: 4rem;
   margin-left: 0.25rem;
-  padding: 0.25rem 1px 0.25rem 0.25rem ;
+  padding: 0.25rem 1px 0.25rem 0.25rem;
 }
 
 .splash-title {
@@ -638,7 +638,6 @@ button:hover {
   }
 }
 
-
 /* ===== Mobile ===== */
 @media (width <= 600px) {
   .controls-scores {
@@ -780,9 +779,7 @@ button:hover {
     opacity: 0.6;
     animation: none;
   }
-
 }
-
 
 /* ===== Confirm Placement Button ===== */
 .confirm-placement-btn {

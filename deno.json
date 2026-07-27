@@ -28,6 +28,7 @@
   },
   "imports": {
     "@std/expect": "jsr:@std/expect@^1.0.20",
+    "@std/fs": "jsr:@std/fs@^1.0.24",
     "@std/testing": "jsr:@std/testing@^1.0.19",
     "esbuild": "npm:esbuild@^0.28.1",
     "react": "npm:react@^19.2.4",

@@ -15,6 +15,9 @@ const RE_TRAILING_PAREN = /\s*\([^)]+\)\s*$/u;
 /** Detect feat. inside trailing parenthetical */
 const RE_FEAT = /\s*\((feat\.?\s+[^)]+)\)\s*$/u;
 
+/** Strip trailing " feat ..." without parentheses */
+const RE_FEAT_SUFFIX = /\s+feat\.?\s+.*$/iu;
+
 /** Normalize a title for similarity comparison. */
 export function normalizeTitle(s: string): string {
   return s
@@ -41,4 +44,9 @@ export function extractFeat(s: string): RegExpMatchArray | null {
 /** Remove trailing parenthetical from a string (lowercased). */
 export function stripTrailingParen(s: string): string {
   return s.replace(RE_TRAILING_PAREN, "");
+}
+
+/** Normalize an author for comparison: lowercase and strip trailing " feat ..." */
+export function normalizeAuthor(s: string): string {
+  return s.toLowerCase().replace(RE_FEAT_SUFFIX, "");
 }
