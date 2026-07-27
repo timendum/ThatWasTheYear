@@ -26,9 +26,7 @@ function findSimilarSongs(title: string, existingSongs: Song[]): Song[] {
 
 async function searchItunes(query: string): Promise<ITunesTrack[]> {
   const resp = await fetch(
-    `https://itunes.apple.com/search?term=${
-      encodeURIComponent(query)
-    }&limit=5&entity=song`,
+    `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=5&entity=song`,
   );
   if (resp.status !== 200) {
     throw new Error("iTunes API error: status = " + resp.status);
@@ -104,11 +102,7 @@ async function main() {
       const year = r.releaseDate?.slice(0, 4) ?? "????";
       const dup = findSimilarSongs(r.trackName, existingSongs);
       const dupTag = dup.length > 0 ? " ⚠️ DUP" : "";
-      console.log(
-        `  ${
-          i + 1
-        }) ${r.trackName} - ${r.artistName} (${year}) [${r.trackId}]${dupTag}`,
-      );
+      console.log(`  ${i + 1}) ${r.trackName} - ${r.artistName} (${year}) [${r.trackId}]${dupTag}`);
     }
 
     const rl = createInterface({
@@ -201,15 +195,12 @@ async function main() {
     songs.push(...newSongs);
     songs.sort(
       (a, b) =>
-        sortKey(a.t).localeCompare(sortKey(b.t)) ||
-        sortKey(a.a).localeCompare(sortKey(b.a)),
+        sortKey(a.t).localeCompare(sortKey(b.t)) || sortKey(a.a).localeCompare(sortKey(b.a)),
     );
 
     const jsonLines = songs.map((s) => JSON.stringify(s)).join(",\n");
     await Deno.writeTextFile(filename, `[\n${jsonLines}\n]\n`);
-    console.log(
-      `✅ Saved: ${newSongs.length} new songs - total ${songs.length} songs`,
-    );
+    console.log(`✅ Saved: ${newSongs.length} new songs - total ${songs.length} songs`);
   }
 }
 

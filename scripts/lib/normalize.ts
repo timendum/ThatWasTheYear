@@ -30,10 +30,7 @@ export function normalizeTitle(s: string): string {
  * (that's handled separately when feat. matching is needed).
  */
 export function normalizeTrackTitle(s: string): string {
-  return s
-    .replace(RE_PT, "")
-    .replace(RE_REMASTER_BRACKET, "")
-    .toLowerCase();
+  return s.replace(RE_PT, "").replace(RE_REMASTER_BRACKET, "").toLowerCase();
 }
 
 /** Extract feat. info from a track title's trailing parenthetical, if present. */

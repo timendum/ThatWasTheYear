@@ -8,11 +8,7 @@
 import type { ITunesTrack, Song } from "../src/types.ts";
 import { getDetailedITunesSong } from "../src/songService.ts";
 import { loadSongsFromArgs } from "./lib/load-songs.ts";
-import {
-  extractFeat,
-  normalizeTrackTitle,
-  stripTrailingParen,
-} from "./lib/normalize.ts";
+import { extractFeat, normalizeTrackTitle, stripTrailingParen } from "./lib/normalize.ts";
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {

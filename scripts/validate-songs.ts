@@ -14,30 +14,19 @@ for (let i = 0; i < allSongs.length; i++) {
   const prefix = `[${i}]`;
 
   if (typeof song.t !== "string" || song.t.length === 0) {
-    console.error(
-      `${prefix} missing or invalid title "t": ${JSON.stringify(song)}`,
-    );
+    console.error(`${prefix} missing or invalid title "t": ${JSON.stringify(song)}`);
     errors++;
   }
   if (typeof song.a !== "string" || song.a.length === 0) {
-    console.error(
-      `${prefix} missing or invalid artist "a": ${JSON.stringify(song)}`,
-    );
+    console.error(`${prefix} missing or invalid artist "a": ${JSON.stringify(song)}`);
     errors++;
   }
-  if (
-    typeof song.y !== "number" || !Number.isInteger(song.y) || song.y < 1900 ||
-    song.y > 2100
-  ) {
-    console.error(
-      `${prefix} missing or invalid year "y": ${JSON.stringify(song)}`,
-    );
+  if (typeof song.y !== "number" || !Number.isInteger(song.y) || song.y < 1900 || song.y > 2100) {
+    console.error(`${prefix} missing or invalid year "y": ${JSON.stringify(song)}`);
     errors++;
   }
   if (typeof song.itunesId !== "number" || !Number.isInteger(song.itunesId)) {
-    console.error(
-      `${prefix} missing or invalid itunesId: ${JSON.stringify(song)}`,
-    );
+    console.error(`${prefix} missing or invalid itunesId: ${JSON.stringify(song)}`);
     errors++;
   }
   if (typeof song.skip !== "undefined" && !Number.isInteger(song.skip)) {
@@ -45,15 +34,9 @@ for (let i = 0; i < allSongs.length; i++) {
     errors++;
   }
 
-  const extra = Object.keys(song).filter((k) =>
-    !["t", "a", "y", "itunesId", "skip"].includes(k)
-  );
+  const extra = Object.keys(song).filter((k) => !["t", "a", "y", "itunesId", "skip"].includes(k));
   if (extra.length > 0) {
-    console.error(
-      `${prefix} unexpected keys: ${extra.join(", ")} in : ${
-        JSON.stringify(song)
-      }`,
-    );
+    console.error(`${prefix} unexpected keys: ${extra.join(", ")} in : ${JSON.stringify(song)}`);
     errors++;
   }
 }
@@ -61,9 +44,7 @@ for (let i = 0; i < allSongs.length; i++) {
 // Check for duplicates (same title + artist)
 const seen = new Set<string>();
 for (let i = 0; i < allSongs.length; i++) {
-  const key = `${allSongs[i].t?.toLowerCase()}|||${
-    allSongs[i].a?.toLowerCase()
-  }`;
+  const key = `${allSongs[i].t?.toLowerCase()}|||${allSongs[i].a?.toLowerCase()}`;
   if (seen.has(key)) {
     console.error(`[${i}] duplicate: "${allSongs[i].t}" by "${allSongs[i].a}"`);
     errors++;
