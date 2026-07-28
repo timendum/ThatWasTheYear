@@ -10,6 +10,7 @@
     "node",
     "promise"
   ],
+  "jsPlugins": ["eslint-plugin-react-you-might-not-need-an-effect"],
   "categories": {
     "correctness": "error",
     "pedantic": "warn"

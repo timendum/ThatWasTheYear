@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { EndCondition, Player } from "../types.ts";
 import SongCard from "./SongCard.tsx";
 
@@ -12,17 +12,21 @@ interface PlayerLaneProps {
 }
 
 function useIsMobile(breakpoint = 600) {
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" && globalThis.innerWidth <= breakpoint,
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const mq = globalThis.matchMedia(`(max-width: ${breakpoint}px)`);
+      mq.addEventListener("change", callback);
+      return () => mq.removeEventListener("change", callback);
+    },
+    [breakpoint],
   );
-  useEffect(() => {
-    const mq = globalThis.matchMedia(`(max-width: ${breakpoint}px)`);
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    setIsMobile(mq.matches);
-    return () => mq.removeEventListener("change", handler);
-  }, [breakpoint]);
-  return isMobile;
+
+  const getSnapshot = useCallback(
+    () => globalThis.matchMedia(`(max-width: ${breakpoint}px)`).matches,
+    [breakpoint],
+  );
+
+  return useSyncExternalStore(subscribe, getSnapshot);
 }
 
 export default function PlayerLane({
@@ -41,14 +45,19 @@ export default function PlayerLane({
 
   // Track which drop zone is currently centered in the carousel
   const [selectedDropZone, setSelectedDropZone] = useState<number | null>(null);
+  const prevHasCurrentSongRef = useRef(hasCurrentSong);
 
-  // Reset selection when a new song is drawn
-  useEffect(() => {
+  // Reset selection during render when hasCurrentSong changes
+  if (prevHasCurrentSongRef.current !== hasCurrentSong) {
+    prevHasCurrentSongRef.current = hasCurrentSong;
     setSelectedDropZone(null);
-  }, [hasCurrentSong]);
+  }
 
   // Scroll the active player's lane into view, accounting for the sticky #controls header.
   // We measure controls height dynamically so the offset stays correct at any viewport size.
+  // This reacts to the isActive prop transition rather than a discrete event in the parent,
+  // but there's no single call-site in App.tsx where "active player changed" is an event
+  // we can hook into, because state is managed via useReducer in the parent.
   useEffect(() => {
     if (isActive && laneRef.current) {
       const controls = document.querySelector("#controls");
