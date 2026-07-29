@@ -25,12 +25,24 @@ function fisherYatesShuffle<T>(arr: T[]): T[] {
 }
 
 export function shuffleDeck(deck: Song[], players: number): Song[] {
+  // Sort chronologically so we can distribute across eras
   const sorted = [...deck].sort((a, b) => a.y - b.y);
+
+  // Deal songs round-robin into N piles (one per player).
+  // Because songs are sorted by year, each pile gets an evenly-spaced slice
+  // of the full timeline (e.g. pile 0 gets songs at indices 0, N, 2N, …).
   const piles: Song[][] = Array.from({ length: players }, () => []);
   for (let i = 0; i < sorted.length; i++) {
     piles[i % players].push(sorted[i]);
   }
+
+  // Randomise within each pile so the order within an era is unpredictable
   piles.forEach((s) => fisherYatesShuffle(s));
+
+  // Interleave: take one song from each pile per iteration.
+  // This guarantees that each "round" of N draws spans different eras.
+  // We use the smallest pile length to avoid index-out-of-bounds
+  // (the last pile may have one fewer song if deck size isn't divisible by N).
   const result: Song[] = [];
   const minLen = piles.at(-1)?.length;
   if (minLen === undefined) {

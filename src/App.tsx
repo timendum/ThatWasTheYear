@@ -23,7 +23,11 @@ export default function App() {
   useEffect(() => {
     const audio = audioRef.current;
     function onLoadedMetadata() {
-      if (skipRef.current > 0) {
+      if (
+        skipRef.current > 0 &&
+        Number.isFinite(audio.duration) &&
+        audio.duration - skipRef.current >= 10
+      ) {
         audio.currentTime = skipRef.current;
       }
       audio.play().catch((e) => console.error("Failed to play preview", e));
