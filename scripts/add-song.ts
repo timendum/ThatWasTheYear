@@ -14,34 +14,17 @@
 
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
-import type { ITunesResponse, ITunesTrack, Song } from "../src/types.ts";
+import type { Song } from "../src/types.ts";
 import { DEFAULT_FILES, loadSongsFromArgs, loadSongsLibs } from "./lib/load-songs.ts";
-import { normalizeAuthor, normalizeTitle } from "./lib/normalize.ts";
-
-/** Count songs in the library by the same (normalized) author. */
-function countByAuthor(author: string, existingSongs: Song[]): number {
-  const normalized = normalizeAuthor(author);
-  return existingSongs.filter((s) => normalizeAuthor(s.a) === normalized).length;
-}
-
-/** Check if a title is similar to any song already in the library. */
-function findSimilarSongs(title: string, existingSongs: Song[]): Song[] {
-  const normalized = normalizeTitle(title);
-  return existingSongs.filter((s) => normalizeTitle(s.t) === normalized);
-}
-
-async function searchItunes(query: string): Promise<ITunesTrack[]> {
-  const resp = await fetch(
-    `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&limit=5&entity=song`,
-  );
-  if (resp.status !== 200) {
-    throw new Error("iTunes API error: status = " + resp.status);
-  }
-  const data = (await resp.json()) as ITunesResponse;
-  return data.results;
-}
-
-const sortKey = (s: string) => s.replace(/^(?:The|An|A) /iu, "").toLowerCase();
+import {
+  countByAuthor,
+  findSimilarSongs,
+  formatSongsJson,
+  normalizeAuthor,
+  searchItunes,
+  sortSongs,
+  trackToSong,
+} from "./lib/add-song-shared.ts";
 
 function parseArgs(): { txtFile: string | null; songFile: string | null } {
   let txtFile: string | null = null;
@@ -121,7 +104,7 @@ async function main() {
       if (seenAuthors.has(key)) continue;
       seenAuthors.add(key);
       const authorCount = countByAuthor(r.artistName, existingSongs);
-      if (authorCount >= 3) {
+      if (authorCount > 0) {
         console.log(`  ℹ️ ${r.artistName}: ${authorCount} song(s) already in library`);
       }
     }
@@ -145,12 +128,7 @@ async function main() {
     }
 
     const track = results[idx];
-    const song: Song = {
-      t: track.trackName,
-      a: track.artistName,
-      y: new Date(track.releaseDate).getFullYear(),
-      itunesId: track.trackId,
-    };
+    const song: Song = trackToSong(track);
 
     // Check for duplicate by actual track title (may differ from search query)
     const similarByTrack = findSimilarSongs(song.t, existingSongs);
@@ -214,13 +192,9 @@ async function main() {
     const filename = targetFile;
     const songs: Song[] = await loadSongsFromArgs([filename]);
     songs.push(...newSongs);
-    songs.sort(
-      (a, b) =>
-        sortKey(a.t).localeCompare(sortKey(b.t)) || sortKey(a.a).localeCompare(sortKey(b.a)),
-    );
+    sortSongs(songs);
 
-    const jsonLines = songs.map((s) => JSON.stringify(s)).join(",\n");
-    await Deno.writeTextFile(filename, `[\n${jsonLines}\n]\n`);
+    await Deno.writeTextFile(filename, formatSongsJson(songs));
     console.log(`✅ Saved: ${newSongs.length} new songs - total ${songs.length} songs`);
   }
 }

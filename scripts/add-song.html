@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Song - That Was The Year</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", system-ui, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        padding: 1.5rem;
+        line-height: 1.5;
+      }
+      h1 {
+        margin-bottom: 1rem;
+        color: #fff;
+        font-size: 1.5rem;
+      }
+      .top-bar {
+        display: flex;
+        gap: 1rem;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #333;
+      }
+      .top-bar label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+        font-size: 0.85rem;
+        color: #aaa;
+      }
+      select,
+      textarea,
+      button,
+      input {
+        font-family: inherit;
+        font-size: 0.9rem;
+        border-radius: 6px;
+        border: 1px solid #444;
+        background: #2a2a4a;
+        color: #e0e0e0;
+        padding: 0.5rem 0.75rem;
+      }
+      select:focus,
+      textarea:focus,
+      input:focus {
+        outline: 2px solid #6c63ff;
+        border-color: #6c63ff;
+      }
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        resize: vertical;
+      }
+      button {
+        cursor: pointer;
+        background: #6c63ff;
+        border-color: #6c63ff;
+        color: #fff;
+        font-weight: 600;
+        padding: 0.5rem 1.2rem;
+        transition: background 0.2s;
+      }
+      button:hover {
+        background: #5a52d5;
+      }
+      button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      button.secondary {
+        background: #444;
+        border-color: #555;
+      }
+      button.secondary:hover {
+        background: #555;
+      }
+      button.danger {
+        background: #c0392b;
+        border-color: #c0392b;
+      }
+      button.danger:hover {
+        background: #a93226;
+      }
+      .layout {
+        display: flex;
+        gap: 1.5rem;
+      }
+      .left-panel {
+        flex: 0 0 320px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .right-panel {
+        flex: 1;
+        min-width: 0;
+      }
+      .status {
+        font-size: 0.85rem;
+        color: #aaa;
+        margin-bottom: 0.5rem;
+      }
+      .current-query-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+      .current-query {
+        font-weight: 600;
+        color: #fff;
+        font-size: 1.1rem;
+      }
+      .results {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      .result-card {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: #2a2a4a;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 0.6rem 0.8rem;
+        transition: border-color 0.2s;
+      }
+      .result-card:hover {
+        border-color: #6c63ff;
+      }
+      .result-card .info {
+        flex: 1;
+        min-width: 0;
+      }
+      .result-card .title {
+        font-weight: 600;
+        color: #fff;
+      }
+      .result-card .meta {
+        font-size: 0.8rem;
+        color: #aaa;
+      }
+      .result-card .dup-tag {
+        color: #e74c3c;
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+      .result-card .author-count {
+        color: #f39c12;
+        font-size: 0.8rem;
+      }
+      .result-card button {
+        padding: 0.3rem 0.7rem;
+        font-size: 0.8rem;
+      }
+      .result-card .preview-btn {
+        background: #27ae60;
+        border-color: #27ae60;
+      }
+      .result-card .preview-btn:hover {
+        background: #219a52;
+      }
+      .result-card .edit-btn {
+        background: #2980b9;
+        border-color: #2980b9;
+      }
+      .result-card .edit-btn:hover {
+        background: #1f6fa3;
+      }
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      #stopBtn {
+        margin-left: auto;
+      }
+      .log {
+        background: #111;
+        border-radius: 8px;
+        padding: 1rem;
+        max-height: 300px;
+        overflow-y: auto;
+        font-size: 0.82rem;
+      }
+      .log-entry {
+        margin-bottom: 0.3rem;
+      }
+      .log-entry.added {
+        color: #2ecc71;
+      }
+      .log-entry.skipped {
+        color: #f39c12;
+      }
+      .log-entry.error {
+        color: #e74c3c;
+      }
+      .log-entry.info {
+        color: #aaa;
+      }
+      .new-songs-section {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid #333;
+      }
+      .new-songs-section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+      }
+      .new-songs-list {
+        font-size: 0.85rem;
+      }
+      .new-songs-list li {
+        margin-bottom: 0.2rem;
+      }
+      .hidden {
+        display: none;
+      }
+      .right-panel-content {
+        display: flex;
+        gap: 1rem;
+      }
+      .results-col {
+        flex: 1;
+        min-width: 0;
+      }
+      .wiki-panel {
+        flex: 0 0 280px;
+        border: 1px solid #444;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        align-self: flex-start;
+      }
+      .wiki-panel h3 {
+        background: #2a2a4a;
+        color: #e0e0e0;
+        margin: 0;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+      }
+      .wiki-panel iframe {
+        width: 100%;
+        height: 450px;
+        border: none;
+        display: block;
+      }
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      }
+      .modal-overlay.hidden {
+        display: none;
+      }
+      .modal-content {
+        background: #2a2a4a;
+        border: 1px solid #555;
+        border-radius: 12px;
+        padding: 1.5rem;
+        min-width: 340px;
+        max-width: 450px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .modal-content h3 {
+        color: #fff;
+        margin-bottom: 0.25rem;
+      }
+      .modal-content label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        font-size: 0.85rem;
+        color: #aaa;
+      }
+      .modal-content input {
+        font-size: 0.95rem;
+        padding: 0.5rem 0.75rem;
+      }
+      .modal-buttons {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎵 Add Song Tool</h1>
+
+    <div class="top-bar">
+      <label style="flex: 1">
+        Source (one query per line)
+        <textarea
+          id="sourceInput"
+          name="sourceInput"
+          placeholder="Enter search queries, one per line...&#10;e.g.:&#10;Author Title&#10;Title Author&#10;..."
+        ></textarea>
+      </label>
+      <div style="display: flex; flex-direction: column; gap: 0.5rem">
+        <label>
+          Song file
+          <select id="songFileSelect"></select>
+        </label>
+        <button id="startBtn">▶ Start</button>
+        <button id="saveBtn" class="secondary" disabled>💾 Save &amp; Stop</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="left-panel">
+        <div class="status" id="statusText">Ready. Enter queries and press Start.</div>
+        <div class="log" id="logPanel"></div>
+        <div class="new-songs-section hidden" id="newSongsSection">
+          <h2>New songs added (<span id="newSongsCount">0</span>)</h2>
+          <ul class="new-songs-list" id="newSongsList"></ul>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="current-query-row hidden" id="currentQueryRow">
+          <button id="changeQueryBtn" class="secondary" title="Change query">✎</button>
+          <div class="current-query" id="currentQuery"></div>
+        </div>
+        <div class="right-panel-content">
+          <div class="results-col">
+            <div class="results" id="resultsContainer"></div>
+            <div class="actions hidden" id="actionsBar">
+              <button id="skipBtn" class="secondary">⏭ Skip</button>
+              <button id="stopBtn" class="secondary">⏹ Stop</button>
+            </div>
+          </div>
+          <div class="wiki-panel hidden" id="wikiPanel">
+            <h3>📖 Wikipedia</h3>
+            <iframe
+              id="wikiFrame"
+              sandbox="allow-scripts allow-same-origin"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+
+    <!-- Override Modal -->
+    <div id="overrideModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h3>✏️ Edit Song Details</h3>
+        <label>
+          Title
+          <input type="text" id="overrideTitle" />
+        </label>
+        <label>
+          Author
+          <input type="text" id="overrideAuthor" />
+        </label>
+        <label>
+          Year
+          <input type="number" id="overrideYear" />
+        </label>
+        <label>
+          Skip (optional)
+          <input type="number" id="overrideSkip" placeholder="Leave empty to not set" />
+        </label>
+        <div class="modal-buttons">
+          <button id="overrideConfirmBtn">✓ Confirm</button>
+          <button id="overrideCancelBtn" class="secondary">✗ Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/add-song-ui.js"></script>
+  </body>
+</html>

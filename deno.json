@@ -16,6 +16,7 @@
     "validate-songs": "deno run --allow-read scripts/validate-songs.ts",
     "check-songs": "deno run --allow-read --allow-net scripts/check-songs.ts",
     "add-song": "deno run -A scripts/add-song.ts",
+    "add-song-web": "deno run -A scripts/add-song-server.ts",
     "songs-per-year": "deno run --allow-read scripts/songs-per-year.ts",
     "tc": "deno check src/**/*.ts src/**/*.tsx",
     "lint": "deno run -A npm:oxlint",
