@@ -53,6 +53,23 @@ export default function App() {
     }
   }, [state]);
 
+  useEffect(() => {
+    if (state.gameStarted) {
+      const id = "goatcounter-script";
+      if (!document.querySelector(`#${id}`)) {
+        const script = document.createElement("script");
+        script.id = id;
+        script.async = true;
+        script.dataset.goatcounter = "https://thatwastheyear.goatcounter.com/count";
+        script.crossOrigin = "anonymous";
+        script.integrity =
+          "sha384-atnOLvQb9t+jTSipvd75X2yginT4PjVbqDdlJAmxMm+wYElFmeR6EmLP5bYeoRVQ";
+        script.src = "//gc.zgo.at/count.v5.js";
+        document.body.append(script);
+      }
+    }
+  }, [state.gameStarted]);
+
   async function handleStartGame(
     playerNames: string[],
     endCondition: {
