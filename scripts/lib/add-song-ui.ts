@@ -270,7 +270,16 @@ function showResults(results: ITunesTrack[], query: string): void {
       <div class="info">
         <div class="title">${escapeHtml(r.trackName)}</div>
         <div class="meta">${escapeHtml(r.artistName)} · ${year} · <a href="${escapeAttr(r.trackViewUrl || "#")}" target="_blank" rel="noopener noreferrer" style="color:#6c63ff;">ID: ${r.trackId}</a></div>
-        ${similar.length > 0 ? `<div class="dup-tag">⚠️ DUP: ${similar.map((s) => `${s.t} (${s.y})`).join(", ")}</div>` : ""}
+        ${
+          similar.length > 0
+            ? `<div class="dup-tag">⚠️ DUP: ${similar.map((s) => `${s.t} (${s.y})`).join(", ")}</div>`
+            : authorSongs.some((s) => String(s.y) === year)
+              ? `<div class="dup-tag">⚠️ Same year by author: ${authorSongs
+                  .filter((s) => String(s.y) === year)
+                  .map((s) => `${s.t} (${s.y})`)
+                  .join(", ")}</div>`
+              : ""
+        }
         ${authorSongs.length > 0 ? `<div class="author-count" title="${escapeAttr(authorSongs.map((s) => `${s.t} - ${s.y}`).join("\n"))}">ℹ️ ${r.artistName}: ${authorSongs.length} song(s) in library</div>` : ""}
       </div>
       <button class="preview-btn" data-preview="${escapeAttr(r.previewUrl || "")}">🔊</button>
@@ -305,9 +314,25 @@ function showResults(results: ITunesTrack[], query: string): void {
   });
 }
 
+function scrollSourceToCurrentLine(): void {
+  // Place the cursor at the start of the current line so the textarea scrolls it into view
+  const lines = sourceInput.value.split("\n");
+  let pos = 0;
+  for (let i = 0; i < queryIndex && i < lines.length; i++) {
+    pos += lines[i].length + 1; // +1 for the newline character
+  }
+  sourceInput.selectionStart = pos;
+  sourceInput.selectionEnd = pos;
+  sourceInput.focus();
+  // Use scrollTop calculation as a fallback to position the line at the top
+  const lineHeight = parseFloat(getComputedStyle(sourceInput).lineHeight) || 18;
+  sourceInput.scrollTop = queryIndex * lineHeight;
+}
+
 async function processCurrentQuery(): Promise<void> {
   const query = queries[queryIndex];
   statusText.textContent = `Processing ${queryIndex + 1}/${queries.length}: "${query}"`;
+  scrollSourceToCurrentLine();
   try {
     const results = await searchItunes(query);
     showResults(results, query);
