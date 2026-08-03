@@ -1,3 +1,4 @@
+import { buildRanges, RANGES_SIZE } from "../src/gameState.ts";
 import { loadSongsFromArgs } from "./lib/load-songs.ts";
 
 const allSongs = await loadSongsFromArgs();
@@ -36,4 +37,24 @@ console.log("-------|" + "-".repeat(maxBar + 5));
 for (const [decade, count] of sortedDecades) {
   const bar = "█".repeat(Math.round((count / maxCount) * maxBar));
   console.log(`${decade}s | ${bar} ${count}`);
+}
+
+// Histogram using buildRanges (30 ranges)
+const ranges = buildRanges(allSongs, RANGES_SIZE);
+const maxRangeCount = Math.max(...ranges.map((r) => r.songs.length));
+const maxLabelLen = Math.max(
+  ...ranges.map(
+    (r) => (r.startYear === r.endYear ? `${r.startYear}` : `${r.startYear}-${r.endYear}`).length,
+  ),
+);
+
+console.log("\nRange" + " ".repeat(maxLabelLen - 4) + "| Songs");
+console.log("-".repeat(maxLabelLen + 1) + "|" + "-".repeat(maxBar + 5));
+for (const range of ranges) {
+  const label =
+    range.startYear === range.endYear
+      ? `${range.startYear}`
+      : `${range.startYear}-${range.endYear}`;
+  const bar = "█".repeat(Math.round((range.songs.length / maxRangeCount) * maxBar));
+  console.log(`${label.padStart(maxLabelLen)} | ${bar} ${range.songs.length}`);
 }

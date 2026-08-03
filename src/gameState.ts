@@ -1,4 +1,7 @@
 import type { DetailedSong, GameAction, GameState, Song } from "./types.ts";
+import { shuffleDeck } from "./shuffleDeck.ts";
+
+export { buildRanges, RANGES_SIZE, shuffleDeck } from "./shuffleDeck.ts";
 
 export const STORAGE_KEY = "thatWasTheYear_gameState";
 
@@ -7,7 +10,6 @@ export const initialGameState: GameState = {
   currentPlayerIndex: 0,
   roundCount: 1,
   currentSong: null,
-  deck: [],
   allSongs: [],
   songPacks: ["base"],
   endCondition: { type: "infinite", value: 10 },
@@ -16,51 +18,10 @@ export const initialGameState: GameState = {
   lastResult: null,
 };
 
-function fisherYatesShuffle<T>(arr: T[]): T[] {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-export function shuffleDeck(deck: Song[], players: number): Song[] {
-  // Sort chronologically so we can distribute across eras
-  const sorted = [...deck].sort((a, b) => a.y - b.y);
-
-  // Deal songs round-robin into N piles (one per player).
-  // Because songs are sorted by year, each pile gets an evenly-spaced slice
-  // of the full timeline (e.g. pile 0 gets songs at indices 0, N, 2N, …).
-  const piles: Song[][] = Array.from({ length: players }, () => []);
-  for (let i = 0; i < sorted.length; i++) {
-    piles[i % players].push(sorted[i]);
-  }
-
-  // Randomise within each pile so the order within an era is unpredictable
-  piles.forEach((s) => fisherYatesShuffle(s));
-
-  // Interleave: take one song from each pile per iteration.
-  // This guarantees that each "round" of N draws spans different eras.
-  // We use the smallest pile length to avoid index-out-of-bounds
-  // (the last pile may have one fewer song if deck size isn't divisible by N).
-  const result: Song[] = [];
-  const minLen = piles.at(-1)?.length;
-  if (minLen === undefined) {
-    console.error("Empty piles!");
-    return result;
-  }
-  for (let i = 0; i < minLen; i++) {
-    for (const pile of piles) {
-      result.push(pile.pop()!);
-    }
-  }
-  return result;
-}
-
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case "INIT_DECK": {
-      return { ...state, deck: [], allSongs: action.songs };
+      return { ...state, allSongs: action.songs };
     }
 
     case "SET_END_CONDITION":
@@ -69,22 +30,28 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     case "SET_SONG_PACKS":
       return { ...state, songPacks: action.songPacks };
 
-    case "START_GAME":
+    case "START_GAME": {
+      const decks = shuffleDeck(state.allSongs, action.players.length, state.endCondition.value);
       return {
         ...state,
-        deck: shuffleDeck(state.allSongs, action.players.length),
-        players: action.players,
+        players: action.players.map((p, i) => ({ ...p, deck: decks[i] })),
         currentPlayerIndex: 0,
         roundCount: 1,
         gameStarted: true,
       };
+    }
 
-    case "DRAW_SONG":
+    case "DRAW_SONG": {
+      const newPlayers = state.players.map((p, i) => {
+        if (i !== state.currentPlayerIndex) return p;
+        return { ...p, deck: p.deck.slice(0, -1) };
+      });
       return {
         ...state,
         currentSong: action.song,
-        deck: state.deck.slice(0, -1),
+        players: newPlayers,
       };
+    }
 
     case "UPDATE_CURRENT_SONG":
       return { ...state, currentSong: action.song };
@@ -129,8 +96,8 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           gameOver = newPlayers.some((p) => p.timeline.length - 1 >= value);
         }
         if (!gameOver) {
-          // Check if songs in deck are enough
-          gameOver = state.deck.length < state.players.length;
+          // Check if any player's deck is empty
+          gameOver = newPlayers.some((p) => p.deck.length === 0);
         }
       }
 
@@ -168,7 +135,6 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         players: state.players,
         endCondition: state.endCondition,
         songPacks: state.songPacks,
-        deck: [],
         allSongs: state.allSongs,
         lastResult: null,
       };
@@ -214,14 +180,14 @@ function isValidGameState(obj: unknown): obj is GameState {
         typeof p.name === "string" &&
         Array.isArray(p.timeline) &&
         p.timeline.every(isValidDetailedSong) &&
+        Array.isArray(p.deck) &&
+        p.deck.every(isValidSong) &&
         (!("missedSongs" in p) ||
           (Array.isArray(p.missedSongs) && p.missedSongs.every(isValidDetailedSong))),
     ) &&
     typeof s.currentPlayerIndex === "number" &&
     typeof s.roundCount === "number" &&
     (s.currentSong === null || isValidDetailedSong(s.currentSong)) &&
-    Array.isArray(s.deck) &&
-    s.deck.every(isValidSong) &&
     typeof s.endCondition === "object" &&
     s.endCondition !== null &&
     ["infinite", "turns", "correctSongs"].includes(s.endCondition.type) &&
@@ -246,8 +212,13 @@ export function loadGameState(): GameState | null {
   }
   try {
     const parsed = JSON.parse(saved);
-    return isValidGameState(parsed) ? parsed : null;
+    if (isValidGameState(parsed)) {
+      return parsed;
+    }
+    localStorage.removeItem(STORAGE_KEY);
+    return null;
   } catch {
+    localStorage.removeItem(STORAGE_KEY);
     return null;
   }
 }

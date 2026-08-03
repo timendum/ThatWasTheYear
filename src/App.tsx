@@ -102,13 +102,15 @@ export default function App() {
       name,
       timeline: [startingSong],
       missedSongs: [] as DetailedSong[],
+      deck: [] as Song[],
     }));
     dispatch({ type: "START_GAME", players });
   }
 
   async function handleDrawSong() {
-    if (state.deck.length === 0) return;
-    const rawSong = state.deck.at(-1);
+    const currentPlayer = state.players[state.currentPlayerIndex];
+    if (currentPlayer.deck.length === 0) return;
+    const rawSong = currentPlayer.deck.at(-1);
     if (!rawSong) {
       console.error("Deck is empty in handleDrawSong");
       return;

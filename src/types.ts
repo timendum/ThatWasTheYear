@@ -17,6 +17,7 @@ export interface Player {
   name: string;
   timeline: DetailedSong[];
   missedSongs: DetailedSong[];
+  deck: Song[];
 }
 
 export type SongPack = "base" | "it";
@@ -36,7 +37,6 @@ export interface GameState {
   currentPlayerIndex: number;
   roundCount: number;
   currentSong: DetailedSong | null;
-  deck: Song[];
   allSongs: Song[];
   songPacks: SongPack[];
   endCondition: EndCondition;

@@ -48,11 +48,12 @@ function makeDetailedSong(year: number, title = `Song ${year}`): DetailedSong {
   };
 }
 
-function makePlayer(name: string, timelineYears: number[] = []): Player {
+function makePlayer(name: string, timelineYears: number[] = [], deckYears: number[] = []): Player {
   return {
     name,
     timeline: timelineYears.map((y) => makeDetailedSong(y)),
     missedSongs: [],
+    deck: deckYears.map((y) => makeSong(y)),
   };
 }
 
@@ -61,17 +62,27 @@ function startWith(overrides: Partial<GameState>): GameState {
 }
 
 function makeStandardGame(): GameState {
-  const deck = [makeSong(1985), makeSong(1995), makeSong(2005), makeSong(2015)];
+  const deckSongs = [makeSong(1985), makeSong(1995), makeSong(2005), makeSong(2015)];
 
-  const players = [makePlayer("Marco", [1990, 2000]), makePlayer("Mirco", [1990, 2000])];
-  const allSongs = [...deck, ...players[0].timeline, ...players[1].timeline];
+  const players = [
+    makePlayer(
+      "Marco",
+      [1990, 2000],
+      [deckSongs[0], deckSongs[1]].map((s) => s.y),
+    ),
+    makePlayer(
+      "Mirco",
+      [1990, 2000],
+      [deckSongs[2], deckSongs[3]].map((s) => s.y),
+    ),
+  ];
+  const allSongs = [...deckSongs, ...players[0].timeline, ...players[1].timeline];
   const currentSong = makeDetailedSong(1996);
   const state = startWith({
     allSongs,
     players,
     currentPlayerIndex: 0,
     currentSong: currentSong,
-    deck,
     roundCount: 1,
     endCondition: { type: "infinite", value: 10 },
   });
@@ -97,7 +108,7 @@ function checkRestore(gs: GameState) {
 
 describe("gameReducer", () => {
   describe("INIT_DECK", () => {
-    test("sets allSongs and clears deck", () => {
+    test("sets allSongs", () => {
       const songs = [makeSong(2000), makeSong(2001)];
 
       const result = gameReducer(initialGameState, {
@@ -106,7 +117,6 @@ describe("gameReducer", () => {
       });
 
       expect(result.allSongs).toEqual(songs);
-      expect(result.deck).toEqual([]);
 
       checkRestore(result);
     });
@@ -156,7 +166,7 @@ describe("gameReducer", () => {
   });
 
   describe("START_GAME", () => {
-    test("sets players, shuffles deck, and starts game", () => {
+    test("sets players, shuffles deck per player, and starts game", () => {
       const sbase = makeStandardGame();
       const state = startWith({ allSongs: sbase.allSongs });
 
@@ -166,25 +176,26 @@ describe("gameReducer", () => {
       });
 
       expect(result.gameStarted).toBe(true);
-      expect(result.players).toEqual(sbase.players);
+      expect(result.players.length).toBe(sbase.players.length);
       expect(result.currentPlayerIndex).toBe(0);
       expect(result.roundCount).toBe(1);
-      expect(result.deck.length).toBeGreaterThan(0);
+      expect(result.players.every((p) => p.deck.length > 0)).toBe(true);
 
       checkRestore(result);
     });
   });
 
   describe("DRAW_SONG", () => {
-    test("sets currentSong and removes last card from deck", () => {
+    test("sets currentSong and removes last card from current player's deck", () => {
       const sbase = makeStandardGame();
       const state = startWith({ ...sbase });
       const drawn = makeDetailedSong(2002);
+      const deckLenBefore = state.players[state.currentPlayerIndex].deck.length;
 
       const result = gameReducer(state, { type: "DRAW_SONG", song: drawn });
 
       expect(result.currentSong).toEqual(drawn);
-      expect(result.deck.length).toEqual(sbase.deck.length - 1);
+      expect(result.players[result.currentPlayerIndex].deck.length).toEqual(deckLenBefore - 1);
 
       checkRestore(result);
     });
@@ -301,14 +312,19 @@ describe("gameReducer", () => {
       checkRestore(result);
     });
 
-    test("game over when deck runs out", () => {
+    test("game over when a player's deck runs out", () => {
       const sbase = makeStandardGame();
+      // Give the last player an empty deck so the game ends at round boundary
+      const players = sbase.players.map((p, i) => ({
+        ...p,
+        deck: i === sbase.players.length - 1 ? ([] as Song[]) : p.deck,
+      }));
       const state = startWith({
         ...sbase,
+        players,
         roundCount: 1,
         currentPlayerIndex: sbase.players.length - 1,
         endCondition: { type: "infinite", value: 10 },
-        deck: [makeSong(1980)], // only 1 card left, need 2 for next round
       });
 
       const result = gameReducer(state, { type: "PLACE_SONG", position: 1 });
@@ -417,10 +433,11 @@ describe("gameReducer", () => {
 });
 
 describe("shuffleDeck", () => {
-  test("returns songs distributed across players", () => {
+  test("returns per-player decks distributed across eras", () => {
     const songs = Array.from({ length: 10 }, (_, i) => makeSong(2000 + i));
     expect(songs.length).toBe(10);
-    const result = shuffleDeck(songs, 2);
-    expect(result.length).toBe(10);
+    const result = shuffleDeck(songs, 2, 10);
+    expect(result.length).toBe(2);
+    expect(result[0].length + result[1].length).toBe(10);
   });
 });

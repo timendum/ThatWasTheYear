@@ -78,6 +78,7 @@ Songs are loaded differently depending on context:
 ### State Management
 
 - Game state is a plain `GameState` object managed via `useReducer(gameReducer, initialGameState)` in App.tsx
+- Each player has their own `deck: Song[]` (there is no global deck). On `START_GAME`, `shuffleDeck` partitions songs into year-based ranges and deals batches from all ranges round-robin, ensuring each deck spans the full timeline. On `DRAW_SONG`, the current player's deck is popped.
 - All state transitions are handled by dispatching `GameAction` objects to the pure `gameReducer` function in `gameState.ts`; song loading and iTunes API logic live separately in `songService.ts`
 - Placement correctness (including `releaseYear` fallback) is computed solely in the reducer's `PLACE_SONG` case; the result is stored in `GameState.lastResult`
 - Async side effects (iTunes API fetches via `songService`) happen in event handlers; results are dispatched into the reducer
@@ -87,11 +88,11 @@ Songs are loaded differently depending on context:
 ### Game Flow
 
 1. **Restore/Init**: On mount, fetches `songs.json` and attempts to restore saved game from localStorage
-2. **Setup**: SetupScreen collects player names (minimum one) and end condition (infinite / N turns / first to N correct); each player starts with a placeholder year card (year ≈ average of all songs ± random offset). The deck is shuffled via a stratified strategy: songs are sorted by year, dealt round-robin into per-player piles, each pile is Fisher-Yates shuffled, then piles are interleaved back — so consecutive draws span different eras rather than clustering in one time period
-3. **Draw**: Player clicks "Play Random Song" → pops from shuffled deck → fetches iTunes details → plays 10s audio preview
+2. **Setup**: SetupScreen collects player names (minimum one) and end condition (infinite / N turns / first to N correct); each player starts with a placeholder year card (year ≈ average of all songs ± random offset). Songs are partitioned into year-based ranges, batches are extracted from each range and shuffled together, then dealt round-robin — so each player's deck is era-balanced and draw order mixes time periods
+3. **Draw**: Player clicks "Play Random Song" → pops from their own shuffled deck → fetches iTunes details → plays 10s audio preview
 4. **Place**: Player clicks a drop zone on their timeline to place the song chronologically
 5. **Result**: Modal shows correct/wrong — if correct the card is inserted, if wrong it is discarded — turn passes to next player, round increments when all players have gone
-6. **Game Over**: At end of each round, checks end condition (turn limit reached or a player hit the correct-songs target); shows GameOverScreen with summary
+6. **Game Over**: At end of each round, checks end condition (turn limit reached, a player hit the correct-songs target, or any player's deck is empty); shows GameOverScreen with summary
 7. **Reset**: Clears localStorage, preserves player name and end condition, reshuffles the full song library, returns to SetupScreen
 
 ### Audio

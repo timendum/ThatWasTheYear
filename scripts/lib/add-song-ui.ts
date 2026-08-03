@@ -325,7 +325,7 @@ function scrollSourceToCurrentLine(): void {
   sourceInput.selectionEnd = pos;
   sourceInput.focus();
   // Use scrollTop calculation as a fallback to position the line at the top
-  const lineHeight = parseFloat(getComputedStyle(sourceInput).lineHeight) || 18;
+  const lineHeight = Number(getComputedStyle(sourceInput).lineHeight) || 18;
   sourceInput.scrollTop = queryIndex * lineHeight;
 }
 
