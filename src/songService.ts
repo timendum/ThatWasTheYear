@@ -2,6 +2,7 @@ import type { DetailedSong, ITunesResponse, ITunesTrack, Song, SongPack } from "
 
 const SONG_PACK_FILES: Record<SongPack, string> = {
   base: "./songs.json",
+  extra: "./songs2.json",
   it: "./songs-it.json",
 };
 

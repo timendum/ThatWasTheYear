@@ -20,7 +20,7 @@ export interface Player {
   deck: Song[];
 }
 
-export type SongPack = "base" | "it";
+export type SongPack = "base" | "extra" | "it";
 
 export interface EndCondition {
   type: "infinite" | "turns" | "correctSongs";

@@ -111,14 +111,25 @@ export default function SetupScreen({
           type="button"
           className={`song-pack-pill${songPacks.has("base") ? " song-pack-pill-active" : ""}`}
           onClick={() => togglePack("base")}
+          title="Timeless and classic songs"
           tabIndex={0}
         >
           All-Time Hits
         </button>
         <button
           type="button"
+          className={`song-pack-pill${songPacks.has("extra") ? " song-pack-pill-active" : ""}`}
+          onClick={() => togglePack("extra")}
+          title="Chart-topping hits from movies, pop culture, and beyond"
+          tabIndex={0}
+        >
+          Global Hits
+        </button>
+        <button
+          type="button"
           className={`song-pack-pill${songPacks.has("it") ? " song-pack-pill-active" : ""}`}
           onClick={() => togglePack("it")}
+          title="Italian music from various eras"
           tabIndex={0}
         >
           Italian
