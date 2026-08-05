@@ -20,7 +20,8 @@ export interface Player {
   deck: Song[];
 }
 
-export type SongPack = "base" | "extra" | "it";
+export const SONG_PACKS = ["base", "extra", "it"] as const;
+export type SongPack = (typeof SONG_PACKS)[number];
 
 export interface EndCondition {
   type: "infinite" | "turns" | "correctSongs";

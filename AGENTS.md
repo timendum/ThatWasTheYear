@@ -26,6 +26,7 @@ Hosted at: <https://timendum.github.io/ThatWasTheYear/>
 | `deno task check-songs` | Validate songs.json against iTunes data |
 | `deno task validate-songs` | Validate songs.json structure |
 | `deno task add-song` | Add a new song to songs.json |
+| `deno task add-song-web` | Web UI for adding songs (runs local server) |
 | `deno task checks` | Run type-check + lint + format check + test + CSS lint |
 
 ## Project Structure
@@ -41,8 +42,9 @@ assets/               Static files (copied to dist/ on build)
 src/
   index.tsx             Entry point, renders <App /> into #root
   App.tsx               Root component, orchestrates game flow and audio
-  gameState.ts          gameReducer, initialGameState, utility functions (shuffleDeck, save/load, getStartingYear)
+  gameState.ts          gameReducer, initialGameState, save/load, getStartingYear (re-exports shuffleDeck)
   gameState.test.ts     Tests for gameState (Deno test runner)
+  shuffleDeck.ts        shuffleDeck, buildRanges — range-balanced deck distribution algorithm
   songService.ts        Song loading (fetch from JSON packs) and iTunes API lookups (getDetailedSong)
   songService.test.ts   Tests for songService (Deno test runner)
   types.ts              Shared interfaces: Song, DetailedSong, Player, PlacementResult, GameState, GameAction, EndCondition
@@ -56,13 +58,19 @@ src/
     GameOverScreen.tsx    End-of-game summary screen
     ErrorBoundary.tsx     Class-based error boundary (React requires class for error boundaries)
 scripts/
-  build.ts           Production build using esbuild + asset copy
-  server.ts          Deno dev server (builds src/index.tsx on-the-fly via esbuild)
-  copy-assets.ts     Copies assets/ → dist/ during build
-  check-songs.ts     Validates song data against iTunes API
-  validate-songs.ts  Validates songs.json structure
-  add-song.ts        Adds a new song to songs.json
-  songs-per-year.ts  Reports song count per year
+  build.ts              Production build using esbuild + asset copy
+  server.ts             Deno dev server (builds src/index.tsx on-the-fly via esbuild)
+  check-songs.ts        Validates song data against iTunes API
+  validate-songs.ts     Validates songs.json structure
+  add-song.ts           Adds a new song to songs.json (CLI)
+  add-song-server.ts    Web UI server for adding songs
+  add-song.html         HTML form for add-song-server
+  songs-per-year.ts     Reports song count per year
+  lib/
+    add-song-shared.ts  Shared logic for add-song scripts
+    add-song-ui.ts      UI helpers for add-song web form
+    load-songs.ts       Loads song JSON files from disk (used by CLI scripts)
+    normalize.ts        Text normalization utilities
 ```
 
 ## Architecture
@@ -71,14 +79,14 @@ scripts/
 
 Songs are loaded differently depending on context:
 
-- **Browser (runtime)**: `songService.ts` defines a `SONG_PACK_FILES` map (`base` → `./songs.json`, `it` → `./songs-it.json`). `loadSongPacks(packs)` fetches the selected packs via `fetch()` and merges them into a flat `Song[]`. The `SongPack` type (`"base" | "it"`) is defined in `types.ts`.
+- **Browser (runtime)**: `songService.ts` defines a `SONG_PACK_FILES` map (id → json file). `loadSongPacks(packs)` fetches the selected packs via `fetch()` and merges them into a flat `Song[]`. The `SongPack` type is defined in `types.ts`.
 - **CLI scripts**: `scripts/lib/load-songs.ts` exports `loadSongsFromArgs()`, which reads JSON files via `Deno.readTextFile()`. Defaults to `assets/songs.json`; accepts file paths as CLI arguments.
 - **iTunes enrichment**: `songService.ts` also handles iTunes API lookups (`getDetailedSong`, `getDetailedITunesSong`) — first tries lookup by `itunesId`, falls back to search by artist + title. Returns artwork, preview URL, and a `releaseYear` when it differs from `song.y` by exactly 1.
 
 ### State Management
 
 - Game state is a plain `GameState` object managed via `useReducer(gameReducer, initialGameState)` in App.tsx
-- Each player has their own `deck: Song[]` (there is no global deck). On `START_GAME`, `shuffleDeck` partitions songs into year-based ranges and deals batches from all ranges round-robin, ensuring each deck spans the full timeline. On `DRAW_SONG`, the current player's deck is popped.
+- Each player has their own `deck: Song[]` (there is no global deck). On `START_GAME`, `shuffleDeck` (in `src/shuffleDeck.ts`) partitions songs into year-based ranges via `buildRanges`, extracts batches from each range, shuffles them together, and deals round-robin — ensuring each deck spans the full timeline. On `DRAW_SONG`, the current player's deck is popped.
 - All state transitions are handled by dispatching `GameAction` objects to the pure `gameReducer` function in `gameState.ts`; song loading and iTunes API logic live separately in `songService.ts`
 - Placement correctness (including `releaseYear` fallback) is computed solely in the reducer's `PLACE_SONG` case; the result is stored in `GameState.lastResult`
 - Async side effects (iTunes API fetches via `songService`) happen in event handlers; results are dispatched into the reducer
@@ -99,6 +107,7 @@ Songs are loaded differently depending on context:
 
 - Single `Audio` element managed via `useRef` in App.tsx
 - 10-second playback limit enforced by `setTimeout`
+- Songs can specify a `skip` offset (seconds) to start playback later in the preview
 
 ## Conventions
 

@@ -11,7 +11,6 @@
   },
   "tasks": {
     "build": "deno run -A scripts/build.ts",
-    "copy-assets": "deno run --allow-read --allow-write scripts/copy-assets.ts",
     "serve": "deno run -A --watch scripts/server.ts",
     "validate-songs": "deno run --allow-read scripts/validate-songs.ts",
     "check-songs": "deno run --allow-read --allow-net scripts/check-songs.ts",

@@ -1,3 +1,4 @@
+import { SONG_PACKS } from "./types.ts";
 import type { DetailedSong, GameAction, GameState, Song } from "./types.ts";
 import { shuffleDeck } from "./shuffleDeck.ts";
 
@@ -193,7 +194,7 @@ function isValidGameState(obj: unknown): obj is GameState {
     ["infinite", "turns", "correctSongs"].includes(s.endCondition.type) &&
     typeof s.endCondition.value === "number" &&
     Array.isArray(s.songPacks) &&
-    s.songPacks.every((p: string) => ["base", "it"].includes(p)) &&
+    s.songPacks.every((p: string) => SONG_PACKS.includes(p as typeof SONG_PACKS[number])) &&
     typeof s.gameStarted === "boolean" &&
     typeof s.gameOver === "boolean"
   );
