@@ -112,7 +112,11 @@ export const RANGES_SIZE = 20;
  */
 export function shuffleDeck(songs: Song[], players: number, endValue: number): Song[][] {
   const ranges = buildRanges(songs, RANGES_SIZE);
-  const bucketSize = Math.max(3, Math.round((endValue * 3) / RANGES_SIZE));
+  const bucketSize = Math.min(
+    Math.max(3, Math.round((endValue * 3) / RANGES_SIZE)),
+    Math.floor(songs.length / players),
+  );
+  const minTake = Math.max(1, Math.round(bucketSize / ranges.length));
 
   // Shuffle each range in place so extraction is random within each era
   for (const range of ranges) {
@@ -128,7 +132,7 @@ export function shuffleDeck(songs: Song[], players: number, endValue: number): S
     // Extract up to bucketSize songs from each range into one batch
     const batch: Song[] = [];
     for (const range of ranges) {
-      const take = Math.min(bucketSize, range.songs.length);
+      const take = Math.min(minTake, range.songs.length);
       batch.push(...range.songs.splice(0, take));
     }
     // Shuffle the batch so songs from different eras are interleaved
