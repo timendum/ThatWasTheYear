@@ -121,8 +121,9 @@ export function shuffleDeck(songs: Song[], players: number, endValue: number): S
 
   // Build player decks by extracting bags of songs evenly from all ranges.
   const decks: Song[][] = Array.from({ length: players }, () => []);
-
   // Until we have songs
+  // We'll assign each shuffled batch entirely to a single player in turn.
+  let currentPlayer = 0;
   while (ranges.some((r) => r.songs.length > 0)) {
     // Extract up to bucketSize songs from each range into one batch
     const batch: Song[] = [];
@@ -130,14 +131,12 @@ export function shuffleDeck(songs: Song[], players: number, endValue: number): S
       const take = Math.min(bucketSize, range.songs.length);
       batch.push(...range.songs.splice(0, take));
     }
-
     // Shuffle the batch so songs from different eras are interleaved
     fisherYatesShuffle(batch);
 
-    // Deal the shuffled batch round-robin to players
-    for (let i = 0; i < batch.length; i++) {
-      decks[i % players].push(batch[i]);
-    }
+    // Give the entire shuffled batch to the current player
+    decks[currentPlayer].push(...batch);
+    currentPlayer = (currentPlayer + 1) % players;
   }
 
   return decks;
