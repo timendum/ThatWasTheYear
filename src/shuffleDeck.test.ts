@@ -18,7 +18,7 @@ describe("shuffleDeck era balance", () => {
 
     // Try a few attempts to reduce flakiness from randomness; pass if any attempt meets criteria
     let passed = false;
-    const attempts = 5;
+    const attempts = 3;
 
     for (let attempt = 0; attempt < attempts && !passed; attempt++) {
       const decks = shuffleDeck(songs, players, endValue);

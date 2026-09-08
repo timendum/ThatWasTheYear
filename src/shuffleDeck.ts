@@ -143,5 +143,10 @@ export function shuffleDeck(songs: Song[], players: number, endValue: number): S
     currentPlayer = (currentPlayer + 1) % players;
   }
 
+  // Reverse each deck so the first-extracted (best-balanced) batch is drawn from the tail first.
+  for (const deck of decks) {
+    deck.reverse();
+  }
+
   return decks;
 }
