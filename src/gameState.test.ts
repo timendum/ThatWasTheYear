@@ -1,5 +1,5 @@
 /* oxlint-disable eslint/max-lines */
-import { beforeAll, describe, it as test } from "@std/testing/bdd";
+import { before, describe, test } from "node:test";
 import { expect } from "@std/expect";
 import {
   gameReducer,
@@ -10,7 +10,7 @@ import {
 } from "./gameState.ts";
 import type { DetailedSong, GameState, Player, Song, SongPack } from "./types.ts";
 
-beforeAll(() => {
+before(() => {
   // Stub localStorage for RESET action
   if (globalThis.localStorage === undefined) {
     const store: Record<string, string> = {};

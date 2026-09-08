@@ -1,6 +1,6 @@
 /// <reference lib="deno.ns" />
 
-import { describe, it as test } from "@std/testing/bdd";
+import { describe, test } from "node:test";
 import { expect } from "@std/expect";
 import { shuffleDeck } from "./shuffleDeck.ts";
 import type { Song } from "./types.ts";

@@ -1,4 +1,4 @@
-import { beforeAll, describe, it as test } from "@std/testing/bdd";
+import { before, describe, test } from "node:test";
 import { expect } from "@std/expect";
 import { loadSongPacks } from "./songService.ts";
 import type { Song } from "./types.ts";
@@ -11,7 +11,7 @@ describe("loadSongPacks", () => {
   const baseSongs = [makeSong(2000), makeSong(2001)];
   const itSongs = [makeSong(1990), makeSong(1991)];
 
-  beforeAll(() => {
+  before(() => {
     globalThis.fetch = ((url: string) => {
       if (url === "./songs.json") {
         return Promise.resolve({ json: () => Promise.resolve(baseSongs) } as Response);
