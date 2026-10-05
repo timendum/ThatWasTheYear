@@ -106,7 +106,49 @@ async function saveResults(songs: Song[]) {
   console.log(`\nWrote ${outputData.length} results to ./assets/ok-songs.json`);
 }
 
+function printCheckResult(song: Song, result: ReturnType<typeof checkSong>) {
+  const trackInfo = result.track
+    ? `${result.track.trackName} - ${result.track.artistName} (${result.track.releaseDate?.slice(
+        0,
+        4,
+      )})`
+    : "Not found";
+  console.log(`DB: ${song.t} - ${song.a} (${song.y}) [itunesId=${song.itunesId}]`);
+  console.log(`iTunes: ${trackInfo}`);
+  console.log(
+    `Matches: found=${result.check.found ? "✅" : "❌"}, ` +
+      `preview=${result.check.mp ? "✅" : "❌"}, ` +
+      `artwork=${result.check.mi ? "✅" : "❌"}, ` +
+      `title=${result.check.mt ? "✅" : "❌"}, ` +
+      `artist=${result.check.ma ? "✅" : "❌"}, ` +
+      `year=${result.check.my === 0 ? "✅" : result.check.my === 1 ? "⚠️" : "❌"}`,
+  );
+}
+
+async function checkSingleSong(file: string, itunesId: number) {
+  const songs = await loadSongsFromArgs([file]);
+  const song = songs.find((s) => s.itunesId === itunesId);
+  if (!song) {
+    console.error(`No song with itunesId=${itunesId} found in ${file}`);
+    Deno.exit(1);
+  }
+  const track = await getDetailedITunesSong(song);
+  const result = checkSong(song, track);
+  printCheckResult(song, result);
+}
+
 async function main() {
+  // Optional second argument: check only that one song
+  const [file, idArg] = Deno.args;
+  if (idArg !== undefined) {
+    if (!/^\d+$/u.test(idArg.trim())) {
+      console.error(`Second argument must be a numeric itunesId, got: ${idArg}`);
+      Deno.exit(1);
+    }
+    await checkSingleSong(file, Math.trunc(Number(idArg.trim())));
+    return;
+  }
+
   const existing = await loadExisting();
   console.log(`Found ${existing.size} already-accepted songs.`);
   const songs = await loadSongsFromArgs();
@@ -152,16 +194,7 @@ async function main() {
             4,
           )})`
         : "Not found";
-      console.log(`DB: ${song.t} - ${song.a} (${song.y})`);
-      console.log(`iTunes: ${trackInfo}`);
-      console.log(
-        `Matches: found=${result.check.found ? "✅" : "❌"}, ` +
-          `preview=${result.check.mp ? "✅" : "❌"}, ` +
-          `artwork=${result.check.mi ? "✅" : "❌"}, ` +
-          `title=${result.check.mt ? "✅" : "❌"}, ` +
-          `artist=${result.check.ma ? "✅" : "❌"}, ` +
-          `year=${result.check.my === 0 ? "✅" : result.check.my === 1 ? "⚠️" : "❌"}`,
-      );
+      printCheckResult(song, result);
       const answer = ask("Overwrite? (y/n) or provide new iTunes ID or quit: ") ?? "";
       if (answer.toLowerCase() === "y") {
         console.log(`Accepted: ${trackInfo}`);
