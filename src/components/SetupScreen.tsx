@@ -1,5 +1,5 @@
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import type { EndCondition, SongPack } from "../types.ts";
+import type { EndCondition, SongPack } from "../types";
 
 interface SetupScreenProps {
   onStartGame: (playerNames: string[], endCondition: EndCondition, songPacks: SongPack[]) => void;

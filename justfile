@@ -9,38 +9,37 @@ help:
 # bundle the extension into dist/
 build:
   @echo "==> build"
-  deno task build
+  bun run build
 
 # dev server (hot reload). Supports extra args
 dev *ARGS:
   @echo "==> dev server"
-  deno task serve
+  bun run serve {{ARGS}}
 
 # type-check all TypeScript sources
 tc:
   @echo "==> typecheck"
-  deno task tc
+  bun run tc
 
 # run tests
 test *ARGS:
   @echo "==> test"
-  deno task test
+  bun run test
 
 # format sources
 fmt *ARGS:
   @echo "==> format"
-  deno run -A npm:oxfmt {{ARGS}}
+  bun run fmt {{ARGS}}
 
 # verify formatting without writing changes
 fmt-check:
   @echo "==> format check"
-  deno task fmt:check
+  bun run fmt:check
 
 lint *ARGS:
   @echo "==> lint"
-  deno lint {{ARGS}}
-  deno task lint {{ARGS}}
-  deno task slint
+  bun run lint {{ARGS}}
+  bun run slint
 
 # run all quality gates: typecheck + test + format check
 checks: tc test fmt-check lint

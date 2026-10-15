@@ -1,6 +1,6 @@
 import { Fragment, useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import type { EndCondition, Player } from "../types.ts";
-import SongCard from "./SongCard.tsx";
+import type { EndCondition, Player } from "../types";
+import SongCard from "./SongCard";
 
 interface PlayerLaneProps {
   player: Player;
@@ -45,11 +45,11 @@ export default function PlayerLane({
 
   // Track which drop zone is currently centered in the carousel
   const [selectedDropZone, setSelectedDropZone] = useState<number | null>(null);
-  const prevHasCurrentSongRef = useRef(hasCurrentSong);
+  const [prevHasCurrentSong, setPrevHasCurrentSong] = useState(hasCurrentSong);
 
-  // Reset selection during render when hasCurrentSong changes
-  if (prevHasCurrentSongRef.current !== hasCurrentSong) {
-    prevHasCurrentSongRef.current = hasCurrentSong;
+  // Reset selection when hasCurrentSong changes
+  if (prevHasCurrentSong !== hasCurrentSong) {
+    setPrevHasCurrentSong(hasCurrentSong);
     setSelectedDropZone(null);
   }
 
@@ -213,7 +213,7 @@ export default function PlayerLane({
           tabIndex={0}
           disabled={!dropZonesActive}
         >
-          ▼
+          ◆
         </button>
         {player.timeline.map((song, i) => {
           const sameYear = i + 1 < player.timeline.length && song.y === player.timeline[i + 1].y;
@@ -232,7 +232,7 @@ export default function PlayerLane({
                 tabIndex={0}
                 disabled={!dropZonesActive}
               >
-                {sameYear ? "=" : "▼"}
+                {sameYear ? "=" : "◆"}
               </button>
             </Fragment>
           );

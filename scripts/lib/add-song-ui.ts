@@ -11,8 +11,8 @@ import {
   searchItunes,
   sortSongs,
   trackToSong,
-} from "./add-song-shared.ts";
-import type { ITunesTrack, Song } from "./add-song-shared.ts";
+} from "./add-song-shared";
+import type { ITunesTrack, Song } from "./add-song-shared";
 
 // State
 let existingSongs: Song[] = [];

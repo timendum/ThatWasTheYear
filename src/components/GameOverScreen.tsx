@@ -1,5 +1,5 @@
-import type { Player } from "../types.ts";
-import PlayersContainer from "./PlayersContainer.tsx";
+import type { Player } from "../types";
+import PlayersContainer from "./PlayersContainer";
 
 interface GameOverScreenProps {
   players: Player[];

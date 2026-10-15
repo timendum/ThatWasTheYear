@@ -17,7 +17,16 @@
   },
   "rules": {
     "max-lines-per-function": "allow",
-    "no-inline-comments": "allow"
+    "no-inline-comments": "allow",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
+        "destructuredArrayIgnorePattern": "^_"
+      }
+    ]
   },
   "settings": {
     "react": {

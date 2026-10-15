@@ -1,5 +1,5 @@
-import { buildRanges, RANGES_SIZE } from "../src/gameState.ts";
-import { loadSongsFromArgs } from "./lib/load-songs.ts";
+import { buildRanges, RANGES_SIZE } from "../src/gameState";
+import { loadSongsFromArgs } from "./lib/load-songs";
 
 const allSongs = await loadSongsFromArgs();
 

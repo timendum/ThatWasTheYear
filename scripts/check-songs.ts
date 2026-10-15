@@ -5,10 +5,10 @@
 // so the operator can accept, reject, or supply a corrected iTunes ID.
 // Accepted results are saved to assets/ok-songs.json for future runs (cache).
 
-import type { ITunesTrack, Song } from "../src/types.ts";
-import { getDetailedITunesSong } from "../src/songService.ts";
-import { loadSongsFromArgs } from "./lib/load-songs.ts";
-import { extractFeat, normalizeTrackTitle, stripTrailingParen } from "./lib/normalize.ts";
+import type { ITunesTrack, Song } from "../src/types";
+import { getDetailedITunesSong } from "../src/songService";
+import { loadSongsFromArgs } from "./lib/load-songs";
+import { extractFeat, normalizeTrackTitle, stripTrailingParen } from "./lib/normalize";
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => {
@@ -74,7 +74,7 @@ function checkSong(song: Song, track: ITunesTrack | undefined) {
 async function loadExisting(): Promise<Map<string, Song>> {
   const map = new Map();
   try {
-    const text = await Deno.readTextFile("./assets/ok-songs.json");
+    const text = await Bun.file("./assets/ok-songs.json").text();
     const data = JSON.parse(text);
     for (const entry of data) {
       map.set(`${entry.t}|||${entry.a}`, entry);
@@ -102,7 +102,7 @@ async function saveResults(songs: Song[]) {
       }),
     )
     .join(",\n");
-  await Deno.writeTextFile("./assets/ok-songs.json", `[\n${jsonLines}\n]`);
+  await Bun.write("./assets/ok-songs.json", `[\n${jsonLines}\n]`);
   console.log(`\nWrote ${outputData.length} results to ./assets/ok-songs.json`);
 }
 
@@ -130,7 +130,7 @@ async function checkSingleSong(file: string, itunesId: number) {
   const song = songs.find((s) => s.itunesId === itunesId);
   if (!song) {
     console.error(`No song with itunesId=${itunesId} found in ${file}`);
-    Deno.exit(1);
+    process.exit(1);
   }
   const track = await getDetailedITunesSong(song);
   const result = checkSong(song, track);
@@ -139,11 +139,11 @@ async function checkSingleSong(file: string, itunesId: number) {
 
 async function main() {
   // Optional second argument: check only that one song
-  const [file, idArg] = Deno.args;
+  const [file, idArg] = Bun.argv.slice(2);
   if (idArg !== undefined) {
     if (!/^\d+$/u.test(idArg.trim())) {
       console.error(`Second argument must be a numeric itunesId, got: ${idArg}`);
-      Deno.exit(1);
+      process.exit(1);
     }
     await checkSingleSong(file, Math.trunc(Number(idArg.trim())));
     return;

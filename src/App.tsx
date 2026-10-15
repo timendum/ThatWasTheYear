@@ -5,14 +5,14 @@ import {
   initialGameState,
   loadGameState,
   saveGameState,
-} from "./gameState.ts";
-import { getDetailedSong, loadSongPacks } from "./songService.ts";
-import SetupScreen from "./components/SetupScreen.tsx";
-import Controls from "./components/Controls.tsx";
-import PlayersContainer from "./components/PlayersContainer.tsx";
-import ResultModal from "./components/ResultModal.tsx";
-import GameOverScreen from "./components/GameOverScreen.tsx";
-import type { DetailedSong, Song, SongPack } from "./types.ts";
+} from "./gameState";
+import { getDetailedSong, loadSongPacks } from "./songService";
+import SetupScreen from "./components/SetupScreen";
+import Controls from "./components/Controls";
+import PlayersContainer from "./components/PlayersContainer";
+import ResultModal from "./components/ResultModal";
+import GameOverScreen from "./components/GameOverScreen";
+import type { DetailedSong, Song, SongPack } from "./types";
 
 export default function App() {
   const [state, dispatch] = useReducer(gameReducer, initialGameState);

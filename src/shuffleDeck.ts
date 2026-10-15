@@ -1,4 +1,4 @@
-import type { Song } from "./types.ts";
+import type { Song } from "./types";
 
 function fisherYatesShuffle<T>(arr: T[]): T[] {
   for (let i = arr.length - 1; i > 0; i--) {

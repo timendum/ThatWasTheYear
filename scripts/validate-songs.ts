@@ -3,7 +3,7 @@
 // flags unexpected keys, and detects duplicate songs (same title + artist).
 // Exits with code 1 if any errors are found.
 
-import { loadSongsFromArgs } from "./lib/load-songs.ts";
+import { loadSongsFromArgs } from "./lib/load-songs";
 
 const allSongs = await loadSongsFromArgs();
 
@@ -54,7 +54,7 @@ for (let i = 0; i < allSongs.length; i++) {
 
 if (errors > 0) {
   console.error(`\n${errors} error(s) found in songs.json`);
-  Deno.exit(1);
+  process.exit(1);
 } else {
   console.log(`✓ songs.json valid (${allSongs.length} songs)`);
 }

@@ -1,5 +1,3 @@
-/// <reference lib="deno.ns" />
-
 /**
  * Interactive CLI script to add songs to the song library.
  *
@@ -8,14 +6,14 @@
  * to the target songs JSON file (default: assets/songs.json).
  *
  * Usage:
- *   deno task add-song [songsFile]          Interactive mode (prompts for queries)
- *   deno task add-song --txt queries.txt    Batch mode (one query per line)
+ *   bun run add-song [songsFile]          Interactive mode (prompts for queries)
+ *   bun run add-song --txt queries.txt    Batch mode (one query per line)
  */
 
 import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
-import type { Song } from "../src/types.ts";
-import { DEFAULT_FILES, loadSongsFromArgs, loadSongsLibs } from "./lib/load-songs.ts";
+import type { Song } from "../src/types";
+import { DEFAULT_FILES, loadSongsFromArgs, loadSongsLibs } from "./lib/load-songs";
 import {
   countByAuthor,
   findSimilarSongs,
@@ -24,12 +22,12 @@ import {
   searchItunes,
   sortSongs,
   trackToSong,
-} from "./lib/add-song-shared.ts";
+} from "./lib/add-song-shared";
 
 function parseArgs(): { txtFile: string | null; songFile: string | null } {
   let txtFile: string | null = null;
   let songFile: string | null = null;
-  const args = [...Deno.args];
+  const args = Bun.argv.slice(2);
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--txt" && i + 1 < args.length) {
       txtFile = args[i + 1];
@@ -43,7 +41,7 @@ function parseArgs(): { txtFile: string | null; songFile: string | null } {
 
 async function* querySource(txtFile: string | null): AsyncGenerator<string> {
   if (txtFile) {
-    const content = await Deno.readTextFile(txtFile);
+    const content = await Bun.file(txtFile).text();
     for (const line of content.split("\n")) {
       const trimmed = line.trim();
       if (trimmed) yield trimmed;
@@ -194,7 +192,7 @@ async function main() {
     songs.push(...newSongs);
     sortSongs(songs);
 
-    await Deno.writeTextFile(filename, formatSongsJson(songs));
+    await Bun.write(filename, formatSongsJson(songs));
     console.log(`✅ Saved: ${newSongs.length} new songs - total ${songs.length} songs`);
   }
 }

@@ -1,11 +1,11 @@
 /**
  * Shared logic for the add-song tool (used by both CLI and browser UI).
- * This file must remain free of Deno/Node-specific APIs so it can be
+ * This file must remain free of Bun/Node-specific APIs so it can be
  * bundled for the browser.
  */
 
-import type { ITunesResponse, ITunesTrack, Song } from "../../src/types.ts";
-import { normalizeAuthor, normalizeTitle } from "./normalize.ts";
+import type { ITunesResponse, ITunesTrack, Song } from "../../src/types";
+import { normalizeAuthor, normalizeTitle } from "./normalize";
 
 export { normalizeAuthor, normalizeTitle };
 export type { ITunesTrack, Song };

@@ -1,4 +1,4 @@
-import type { DetailedSong, ITunesResponse, ITunesTrack, Song, SongPack } from "./types.ts";
+import type { DetailedSong, ITunesResponse, ITunesTrack, Song, SongPack } from "./types";
 
 const SONG_PACK_FILES: Record<SongPack, string> = {
   base: "./songs.json",

@@ -1,6 +1,6 @@
 import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
-import { STORAGE_KEY } from "../gameState.ts";
+import { STORAGE_KEY } from "../gameState";
 
 interface Props {
   children: ReactNode;

@@ -1,8 +1,8 @@
-import { SONG_PACKS } from "./types.ts";
-import type { DetailedSong, GameAction, GameState, Song } from "./types.ts";
-import { shuffleDeck } from "./shuffleDeck.ts";
+import { SONG_PACKS } from "./types";
+import type { DetailedSong, GameAction, GameState, Song } from "./types";
+import { shuffleDeck } from "./shuffleDeck";
 
-export { buildRanges, RANGES_SIZE, shuffleDeck } from "./shuffleDeck.ts";
+export { buildRanges, RANGES_SIZE, shuffleDeck } from "./shuffleDeck";
 
 export const STORAGE_KEY = "thatWasTheYear_gameState";
 

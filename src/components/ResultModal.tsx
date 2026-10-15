@@ -1,5 +1,5 @@
 import { KeyboardEvent, useEffect, useRef } from "react";
-import type { DetailedSong } from "../types.ts";
+import type { DetailedSong } from "../types";
 
 interface ResultModalProps {
   isCorrect: boolean;

@@ -3,25 +3,22 @@
  * Reads file paths from command-line arguments (defaults to assets/songs.json)
  * and returns the merged array of Song objects.
  */
-/// <reference lib="deno.ns" />
 
-import { expandGlobSync } from "@std/fs/expand-glob";
-import type { Song } from "../../src/types.ts";
+import { Glob } from "bun";
+import type { Song } from "../../src/types";
 
-export const ALL_SONG_FILES: string[] = [...expandGlobSync("assets/*.json")].map(
-  (entry) => entry.path,
-);
+export const ALL_SONG_FILES: string[] = [...new Glob("assets/*.json").scanSync(".")];
 
 export const DEFAULT_FILES = ["assets/songs.json"];
 
-export async function loadSongsFromArgs(args: string[] = Deno.args): Promise<Song[]> {
+export async function loadSongsFromArgs(args: string[] = Bun.argv.slice(2)): Promise<Song[]> {
   const files = args.length > 0 ? args : DEFAULT_FILES;
   const allSongs: Song[] = [];
 
   for (const file of files) {
     let text: string;
     try {
-      text = await Deno.readTextFile(file);
+      text = await Bun.file(file).text();
     } catch {
       console.warn(`Skipping ${file}: file not found`);
       continue;

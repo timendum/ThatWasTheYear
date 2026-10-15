@@ -1,7 +1,6 @@
-import { before, describe, test } from "node:test";
-import { expect } from "@std/expect";
-import { loadSongPacks } from "./songService.ts";
-import type { Song } from "./types.ts";
+import { beforeAll, describe, expect, test } from "bun:test";
+import { loadSongPacks } from "./songService";
+import type { Song } from "./types";
 
 function makeSong(year: number, title = `Song ${year}`): Song {
   return { t: title, a: `Artist ${year}`, y: year };
@@ -11,7 +10,7 @@ describe("loadSongPacks", () => {
   const baseSongs = [makeSong(2000), makeSong(2001)];
   const itSongs = [makeSong(1990), makeSong(1991)];
 
-  before(() => {
+  beforeAll(() => {
     globalThis.fetch = ((url: string) => {
       if (url === "./songs.json") {
         return Promise.resolve({ json: () => Promise.resolve(baseSongs) } as Response);

@@ -8,13 +8,13 @@ The player hears a 10-second preview and must drop the mystery card into the cor
 
 ## How to play
 
-Start the game and enter at least two player names (additional players can be added).  
-Each player begins with one random song in their timeline.  
-On your turn, click "Play Random Song" to draw a mystery song.  
-A 10-second preview will play, you may replay it by clicking the "Replay ♫" button.  
-Select the slot at the position into the timeline you believe is correct chronologically.  
-If your guess is correct, the card is inserted at that position.  
-If incorrect, your guess fails and the turn passes to the next player.  
+Start the game and enter at least two player names (additional players can be added).
+Each player begins with one random song in their timeline.
+On your turn, click "Play Random Song" to draw a mystery song.
+A 10-second preview will play, you may replay it by clicking the "Replay ♫" button.
+Select the slot at the position into the timeline you believe is correct chronologically.
+If your guess is correct, the card is inserted at that position.
+If incorrect, your guess fails and the turn passes to the next player.
 Play to see who scores the most points!
 
 ### Usage Requirements
@@ -29,18 +29,18 @@ The iTunes Search API is used to fetch album artwork and audio previews (No API 
 
 ## Development
 
-TypeScript with Deno, no runtime dependencies beyond React.
+TypeScript with Bun, no runtime dependencies beyond React.
 
 ## Setup
 
 ```bash
-deno install
+bun install
 ```
 
 ## Test
 
 ```bash
-deno task serve
+bun run serve
 ```
 
 Visit <http://localhost:3000>
@@ -48,5 +48,5 @@ Visit <http://localhost:3000>
 ## Build
 
 ```bash
-deno task build
+bun run build
 ```

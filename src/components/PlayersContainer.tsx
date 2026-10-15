@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import type { EndCondition, Player } from "../types.ts";
-import PlayerLane from "./PlayerLane.tsx";
+import { useEffect, useState } from "react";
+import type { EndCondition, Player } from "../types";
+import PlayerLane from "./PlayerLane";
 
 interface PlayersContainerProps {
   players: Player[];
@@ -20,10 +20,10 @@ export default function PlayersContainer({
   onPlaceSong,
 }: PlayersContainerProps) {
   const [focusedDropZone, setFocusedDropZone] = useState<number | null>(null);
-  const prevHasCurrentSong = useRef(hasCurrentSong);
+  const [prevHasCurrentSong, setPrevHasCurrentSong] = useState(hasCurrentSong);
 
-  if (prevHasCurrentSong.current !== hasCurrentSong) {
-    prevHasCurrentSong.current = hasCurrentSong;
+  if (prevHasCurrentSong !== hasCurrentSong) {
+    setPrevHasCurrentSong(hasCurrentSong);
     setFocusedDropZone(null);
   }
 

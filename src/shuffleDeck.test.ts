@@ -1,9 +1,6 @@
-/// <reference lib="deno.ns" />
-
-import { describe, test } from "node:test";
-import { expect } from "@std/expect";
-import { shuffleDeck } from "./shuffleDeck.ts";
-import type { Song } from "./types.ts";
+import { describe, expect, test } from "bun:test";
+import { shuffleDeck } from "./shuffleDeck";
+import type { Song } from "./types";
 
 describe("shuffleDeck era balance", () => {
   test("first 50 draws (5 players x 10) are evenly spread across years", async () => {

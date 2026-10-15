@@ -1,5 +1,5 @@
-import type { DetailedSong, EndCondition, Player } from "../types.ts";
-import SongCard from "./SongCard.tsx";
+import type { DetailedSong, EndCondition, Player } from "../types";
+import SongCard from "./SongCard";
 
 interface ControlsProps {
   currentPlayer: string;
@@ -63,7 +63,7 @@ export default function Controls({
                 tabIndex={0}
                 type="submit"
               >
-                Play Random Song
+                Play Next Song
               </button>
             )}
             {showReplay && (
