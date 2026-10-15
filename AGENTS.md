@@ -8,7 +8,7 @@ Hosted at: <https://timendum.github.io/ThatWasTheYear/>
 
 ## Tech Stack
 
-- **Runtime/Bundler**: Bun 1.x + esbuild (no Webpack/Vite)
+- **Runtime/Bundler**: Bun 1.x + esbuild (no Webpack/Vite). Babel is used only as a React Compiler pass: `scripts/lib/react-compiler-plugin.ts` is an esbuild plugin that runs `babel-plugin-react-compiler` over `.tsx` files before esbuild bundles. No general Babel toolchain.
 - **Framework**: React 19 (functional components, hooks only)
 - **Language**: TypeScript (strict mode)
 - **Dependencies**: react, react-dom (zero runtime deps beyond React)

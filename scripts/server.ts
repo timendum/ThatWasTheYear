@@ -1,6 +1,7 @@
 /// Utility http server to serve updated resources without a build step.
 
 import * as esbuild from "esbuild";
+import { reactCompilerPlugin } from "./lib/react-compiler-plugin";
 
 Bun.serve({
   port: 3000,
@@ -22,6 +23,7 @@ Bun.serve({
         target: "es2023",
         platform: "browser",
         jsx: "automatic",
+        plugins: [reactCompilerPlugin()],
       });
       return new Response(result.outputFiles[0].text, {
         headers: { "content-type": "application/javascript" },
