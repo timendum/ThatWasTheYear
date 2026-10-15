@@ -11,6 +11,7 @@ await esbuild.build({
   sourcemap: "external",
   minify: true,
   jsx: "automatic",
+  legalComments: "none",
 });
 
 cpSync("assets", "dist/", { recursive: true });
